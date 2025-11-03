@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXT STEP | Home</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="/logo-fallback.js" defer></script>
+</head>
+
+<body>
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+    <div class="loading-bar" id="loadingBar"></div>
+
+    <header class="navbar" id="navbar">
+        <div class="logo-area slide-in">
+            <div class="logo-circle">
+                <img src="/logo/blue-orange-circle-logo.jpg" class="nav-logo" alt="Next Step logo" onerror="this.onerror=null;this.src='/logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg'">
+            </div>
+            <h3 class="brand">NEXT STEP</h3>
+        </div>
+        <nav class="main-nav fade-in">
+            <a href="index.html" onclick="smoothScroll('#top')">Home</a>
+            <a href="#about" onclick="smoothScroll('#about')">About</a>
+            <a href="#site-contact" onclick="smoothScroll('#site-contact')">Contact</a>
+        </nav>
+        <div class="nav-actions fade-in">
+            <a href="home.html" class="nav-cta">Login</a>
+        </div>
+    </header>
+
+    <section class="hero" id="top">
+        <video autoplay muted loop id="myVideo" class="bg-video">
+            <source src="video/792db66fb503efb4b3d0a0072867054a_720w.mp4" type="video/mp4">
+            <!-- fallback poster image -->
+        </video>
+
+        <div class="overlay">
+            <h1>Welcome to NEXT STEP</h1>
+            <p>Track your academic journey and prepare for your next step in life.</p>
+            <a href="signup.html" class="btn primary" onmouseover="this.innerHTML='Join Us Now!'" onmouseout="this.innerHTML='Sign up'">Sign up</a>
+        </div>
+
+    </section>
+
+    <section id="about" class="section-white">
+        <h2 class="section-heading fade-in">ABOUT US</h2>
+        <div class="content-wrap">
+            <p class="lead fade-in">Welcome to <strong>Next Step</strong>. We believe that every student's journey doesn't end at graduation—it evolves. Our system is designed to track, connect, and empower alumni, while providing valuable insights for educational institutions
+                to improve and grow.</p>
+            <div class="section-spacing fade-in">
+                <h3 class="subheading">Objectives</h3>
+                <ol class="objectives">
+                    <li onclick="highlightItem(this)">Develop a profile of the graduates.</li>
+                    <li onclick="highlightItem(this)">Analyze employment outcomes and career trajectories.</li>
+                    <li onclick="highlightItem(this)">Evaluate the alignment between academic skills and job requirements.</li>
+                    <li onclick="highlightItem(this)">Gather feedback on institutional services and support.</li>
+                    <li onclick="highlightItem(this)">Formulate evidence-based recommendations for improvement.</li>
+                </ol>
+            </div>
+            <div class="section-spacing fade-in">
+                <h3 class="subheading">Mission</h3>
+                <p class="lead">Next Step is committed to fostering lifelong connections between graduates and their alma mater by providing a dynamic platform for alumni engagement, career tracking, and professional growth. We support continuous learning, mentorship,
+                    and data-driven improvements in education through meaningful alumni involvement.</p>
+            </div>
+            <div class="fade-in">
+                <h3 class="subheading">Vision</h3>
+                <p class="lead">To be the leading digital hub that empowers alumni to thrive, inspire future generations, and shape institutional excellence through collaboration, innovation, and shared success.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer id="site-contact">
+        <div class="footer-content">
+            <div class="footer-col social fade-in">
+                <div class="logo-circle small"><img src="/logo/blue-orange-circle-logo.jpg" class="nav-logo" alt="logo" onerror="this.onerror=null;this.src='/logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg'"></div>
+                <div>
+                    <div class="follow">VISIT US ON</div>
+                    <div class="icons">
+                        <a href="#" onclick="showAlert('Facebook')"> Facebook</a>
+                        <a href="#" onclick="showAlert('Twitter')">  Twitter</a>
+                        <a href="#" onclick="showAlert('Instagram')"> Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-col contact fade-in">
+                <div class="footer-title">CONTACT INFORMATION</div>
+                <div class="contact-item" onclick="copyToClipboard('+1 (555) 789-2346')" title="Click to copy">📞 Phone: +1 (555) 789-2346</div>
+                <div class="contact-item" onclick="copyToClipboard('alumni@nextstep.edu')" title="Click to copy">📧 Email: alumni@nextstep.edu</div>
+            </div>
+            <div class="footer-col campus fade-in">
+                <div class="footer-title">CAMPUS ADDRESS</div>
+                <div class="map-item" onclick="openMap()" title="Click to view on map">📍 100 University Drive</div>
+                <div>Northbridge City, Westbrook</div>
+            </div>
+        </div>
+    </footer>
+</body>
+<script>
+    // Smooth scrolling function
+    function smoothScroll(target) {
+        event.preventDefault();
+        const element = document.querySelector(target);
+        if (element) {
+            element.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    }
+
+    // Highlight objectives when clicked
+    function highlightItem(item) {
+        item.style.background = 'linear-gradient(45deg, #004AAD, #FF6B35)';
+        item.style.color = 'white';
+        item.style.padding = '10px';
+        item.style.borderRadius = '5px';
+        item.style.margin = '5px 0';
+
+        setTimeout(() => {
+            item.style.background = '';
+            item.style.color = '';
+            item.style.padding = '';
+            item.style.borderRadius = '';
+            item.style.margin = '';
+        }, 2000);
+    }
+
+    // Copy to clipboard function
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            showNotification('Copied to clipboard: ' + text);
+        });
+    }
+
+    // Show alert for social media
+    function showAlert(platform) {
+        showNotification('Opening ' + platform + '...');
+    }
+
+    // Open map function
+    function openMap() {
+        showNotification('Opening map location...');
+    }
+
+    // Show notification
+    function showNotification(message) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(45deg, #004AAD, #FF6B35);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+            `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease-out';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    // Scroll indicator
+    window.addEventListener('scroll', () => {
+        const scrollTop = document.documentElement.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrollPercent = (scrollTop / scrollHeight) * 100;
+        document.getElementById('scrollIndicator').style.width = scrollPercent + '%';
+
+        // Navbar background change on scroll
+        const navbar = document.getElementById('navbar');
+        if (scrollTop > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // Loading animation
+    window.addEventListener('load', () => {
+        const loadingBar = document.getElementById('loadingBar');
+        loadingBar.style.width = '100%';
+        setTimeout(() => {
+            loadingBar.style.opacity = '0';
+            setTimeout(() => loadingBar.remove(), 500);
+        }, 1000);
+    });
+
+    // Intersection Observer for animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animationDelay = '0s';
+                entry.target.classList.add('fade-in');
+            }
+        });
+    }, observerOptions);
+
+    // Observe all elements with fade-in class
+    document.addEventListener('DOMContentLoaded', () => {
+        const elements = document.querySelectorAll('.fade-in');
+        elements.forEach(el => observer.observe(el));
+    });
+</script>
+
+</body>
+
+</html>

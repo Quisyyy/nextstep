@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXT STEP | Homepage</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="logo-area">
+            <div class="logo-circle">
+                <img src="../logo/blue-orange-circle-logo.jpg" class="nav-logo" alt="Next Step logo">
+            </div>
+            <h3 class="brand">NEXT STEP</h3>
+        </div>
+        <nav class="main-nav">
+            <a href="home.html">Home</a>
+            <a href="Information.html">Information</a>
+            <a href="#about">About</a>
+        </nav>
+        <div class="nav-actions">
+            <button class="user-icon" aria-label="profile">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z" fill="#fff"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <section class="hero">
+        <video autoplay muted loop id="myVideo" class="bg-video">
+            <source src="../video/9738c22044bba02e03a120fc8bcae46d.mp4" type="video/mp4">
+        </video>
+        <div class="overlay">
+            <h1 id="hero-title">Welcome to Next Step</h1>
+            <p id="hero-text">Next Step is a dedicated platform designed to help alumni connect, grow, and take the next step in their professional journey. Our mission is to bridge the gap between education and employment by providing graduates with access to job opportunities,
+                career resources, and a supportive alumni network. Click and Fill up the Information Sheet.</p>
+            <a id="hero-cta" href="Information.html" class="btn primary">Fill up</a>
+        </div>
+    </section>
+
+    <section id="about" class="section-white">
+        <h2 id="about-heading" class="section-heading">ABOUT US</h2>
+        <div class="content-wrap">
+            <p id="about-lead" class="lead">Welcome to <strong>Next Step</strong>. We believe that every student's journey doesn't end at graduation—it evolves. Our system is designed to track, connect, and empower alumni, while providing valuable insights for educational institutions
+                to improve and grow.</p>
+            <div class="section-spacing">
+                <h3 class="subheading">Objectives</h3>
+                <ol id="objectives-list" class="objectives">
+                    <li>To develop a profile of the graduates.</li>
+                    <li>To analyze employment outcomes and career trajectories.</li>
+                    <li>To evaluate the alignment between acquired academic skills and job requirements.</li>
+                    <li>To gather feedback on the effectiveness of institutional services and support.</li>
+                    <li>To formulate evidence-based recommendations for academic and institutional improvement.</li>
+                </ol>
+            </div>
+            <div class="section-spacing">
+                <h3 class="subheading">Mission</h3>
+                <p id="mission-text" class="lead">Next Step is committed to fostering lifelong connections between graduates and their alma mater by providing a dynamic platform for alumni engagement, career tracking, and professional growth. We support continuous learning, mentorship,
+                    and data-driven improvements in education through meaningful alumni involvement.</p>
+            </div>
+            <div>
+                <h3 class="subheading">Vision</h3>
+                <p id="vision-text" class="lead">To be the leading digital hub that empowers alumni to thrive, inspire future generations, and shape institutional excellence through collaboration, innovation, and shared success.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer id="site-contact">
+        <div class="footer-content">
+            <div>
+                <h4>VISIT US ON</h4>
+                <p>
+                    <a href="#" class="footer-icons"><img src="../logo/facebook.png" alt="Facebook"></a>
+                    <a href="#" class="footer-icons"><img src="../logo/twitter.png" alt="Twitter"></a>
+                    <a href="#" class="footer-icons"><img src="../logo/instagram.png" alt="Instagram"></a>
+                </p>
+            </div>
+            <div>
+                <h4>CONTACT INFORMATION</h4>
+                <p>Main Office: +1 (555) 789-2346<br> Admissions: +1 (555) 789-2345<br> Alumni Affairs (Main/Connect): +1 (555) 789-2400<br> Email (General Inquiries): alumni@nextstep.edu<br> AlumniConnect Portal: www.alumniconnect.edu</p>
+            </div>
+            <div>
+                <h4>CAMPUS ADDRESS</h4>
+                <p>100 University Drive<br> Northbridge City, Westbrook<br> Suite 405<br> United States</p>
+            </div>
+        </div>
+    </footer>
+    <script src="/user-menu.js" defer></script>
+    <script src="/supabase-client.js" defer></script>
+    <script>
+        (async function() {
+            const url = 'data/homepage.json';
+            const fallback = {
+                hero: {
+                    title: 'Welcome to Next Step',
+                    text: 'Next Step is a dedicated platform designed to help alumni connect, grow, and take the next step in their professional journey.',
+                    ctaText: 'Fill up',
+                    ctaHref: 'Information.html'
+                },
+                about: {
+                    heading: 'ABOUT US',
+                    lead: 'Welcome to Next Step. We believe that every student\'s journey doesn\'t end at graduation—it evolves.',
+                    objectives: [
+                        'To develop a profile of the graduates.',
+                        'To analyze employment outcomes and career trajectories.',
+                        'To evaluate the alignment between acquired academic skills and job requirements.',
+                        'To gather feedback on the effectiveness of institutional services and support.',
+                        'To formulate evidence-based recommendations for academic and institutional improvement.'
+                    ],
+                    mission: 'Next Step is committed to fostering lifelong connections between graduates and their alma mater by providing a dynamic platform for alumni engagement, career tracking, and professional growth.',
+                    vision: 'To be the leading digital hub that empowers alumni to thrive, inspire future generations, and shape institutional excellence through collaboration, innovation, and shared success.'
+                }
+            };
+
+            function apply(data) {
+                try {
+                    const hTitle = document.getElementById('hero-title');
+                    const hText = document.getElementById('hero-text');
+                    const hCta = document.getElementById('hero-cta');
+                    const aHeading = document.getElementById('about-heading');
+                    const aLead = document.getElementById('about-lead');
+                    const objList = document.getElementById('objectives-list');
+                    const mission = document.getElementById('mission-text');
+                    const vision = document.getElementById('vision-text');
+
+                    if (hTitle && data.hero && data.hero.title) hTitle.textContent = data.hero.title;
+                    if (hText && data.hero && data.hero.text) hText.textContent = data.hero.text;
+                    if (hCta && data.hero) {
+                        hCta.textContent = data.hero.ctaText || hCta.textContent;
+                        if (data.hero.ctaHref) hCta.setAttribute('href', data.hero.ctaHref);
+                    }
+
+                    if (aHeading && data.about && data.about.heading) aHeading.textContent = data.about.heading;
+                    if (aLead && data.about && data.about.lead) aLead.textContent = data.about.lead;
+                    if (objList && Array.isArray(data.about && data.about.objectives)) {
+                        objList.innerHTML = '';
+                        data.about.objectives.forEach(item => {
+                            const li = document.createElement('li');
+                            li.textContent = item;
+                            objList.appendChild(li);
+                        });
+                    }
+                    if (mission && data.about && data.about.mission) mission.textContent = data.about.mission;
+                    if (vision && data.about && data.about.vision) vision.textContent = data.about.vision;
+                } catch (e) {
+                    console.warn('apply homepage data failed', e);
+                }
+            }
+
+            async function loadFromSupabase() {
+                if (!window.supabase || typeof window.supabase.from !== 'function') return null;
+                try {
+                    const {
+                        data,
+                        error
+                    } = await window.supabase.from('homepage').select('key, content');
+                    if (error) {
+                        console.warn('supabase fetch error', error);
+                        return null;
+                    }
+                    const combined = {};
+                    (data || []).forEach(r => {
+                        try {
+                            combined[r.key] = r.content;
+                        } catch (e) {}
+                    });
+                    return combined;
+                } catch (e) {
+                    console.warn('supabase read failed', e);
+                    return null;
+                }
+            }
+
+            // Try Supabase first (if configured), fall back to local JSON, then embedded fallback
+            try {
+                const supa = await loadFromSupabase();
+                if (supa) {
+                    apply(supa);
+                    return;
+                }
+            } catch (e) { /* ignore and fallback */ }
+
+            fetch(url).then(r => {
+                if (!r.ok) throw new Error('network');
+                return r.json();
+            }).then(data => apply(data)).catch(() => {
+                console.info('Using fallback homepage data');
+                apply(fallback);
+            });
+        })();
+    </script>
+</body>
+
+</html>

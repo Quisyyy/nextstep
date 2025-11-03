@@ -1,0 +1,569 @@
+/* General Reset */
+
+
+/* Contact / Footer Section - standardized */
+
+#site-contact {
+    background: #0b66b3;
+    /* brand blue */
+    color: #fff;
+    padding: 36px 18px;
+}
+
+#site-contact .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 28px;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+#site-contact .footer-col {
+    flex: 1 1 240px;
+    min-width: 220px;
+}
+
+#site-contact .footer-col.social {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+#site-contact .footer-col.social .logo-circle.small {
+    width: 56px;
+    height: 56px;
+    padding: 6px;
+}
+
+#site-contact .follow {
+    font-weight: 700;
+    margin-top: 6px;
+}
+
+#site-contact .footer-title,
+#site-contact h4 {
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+#site-contact p,
+#site-contact .footer-col div,
+#site-contact .icons {
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.6;
+}
+
+#site-contact a img {
+    height: 22px;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+@media (max-width: 720px) {
+    #site-contact .footer-content {
+        padding: 8px;
+        gap: 18px;
+    }
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    background-color: #f0f4f8;
+    /* light background for pages without video */
+    font-family: "Poppins", sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* prevent horizontal scroll from video */
+}
+
+
+/* Shared Container */
+
+.container {
+    background: #fff;
+    padding: 40px 50px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 320px;
+}
+
+
+/* Position card centered on pages with fixed navbar */
+
+.container {
+    margin: 110px auto 40px;
+    /* push below fixed navbar and center */
+}
+
+.logo {
+    width: 80px;
+    margin-bottom: 15px;
+}
+
+h2 {
+    margin-bottom: 25px;
+    color: #222;
+}
+
+
+/* Buttons */
+
+.btn {
+    display: inline-block;
+    background: #004AAD;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 25px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #003b8c;
+}
+
+.btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+/* Form Inputs */
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+
+/* Back Button */
+
+.back-btn {
+    display: inline-block;
+    margin-top: 10px;
+    color: #004AAD;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.back-btn:hover {
+    text-decoration: underline;
+}
+
+
+/* Navbar */
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #0b66b3;
+    /* brighter blue */
+    color: #fff;
+    display: grid;
+    grid-template-columns: 220px 1fr 80px;
+    /* logo / nav / actions */
+    align-items: center;
+    padding: 12px 24px;
+    z-index: 40;
+}
+
+.navbar .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-logo {
+    width: 46px;
+    height: 46px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: #fff;
+    padding: 6px;
+}
+
+
+/* smaller logo inside the centered card */
+
+.container .nav-logo {
+    width: 72px;
+    height: auto;
+    padding: 0;
+    background: transparent;
+    margin-bottom: 12px;
+}
+
+.brand {
+    font-size: 18px;
+    letter-spacing: 1px;
+}
+
+.main-nav a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 18px;
+    font-weight: 700;
+    opacity: 1;
+}
+
+.main-nav {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.nav-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.user-icon {
+    background: transparent;
+    border: none;
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.nav-actions .cloud-icon {
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    /* small padding but transparent */
+    border-radius: 6px;
+}
+
+
+/* navbar sign-up pill */
+
+.nav-cta {
+    background: #fff;
+    color: #0b66b3;
+    padding: 8px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+
+/* circular logo container used in header */
+
+.logo-circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    padding: 6px;
+}
+
+
+/* Hero Section */
+
+.hero {
+    position: relative;
+    min-height: 100vh;
+    /* ensure it fills viewport */
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.bg-video {
+    position: fixed;
+    /* sit behind the page and fill viewport */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.overlay h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.overlay .btn {
+    background: #0b66b3;
+    color: #fff;
+    border-radius: 22px;
+    padding: 10px 18px;
+    display: inline-block;
+    box-shadow: 0 6px 18px rgba(11, 102, 179, 0.22);
+    text-decoration: none;
+}
+
+.overlay .btn:hover {
+    background: #09549a;
+}
+
+
+/* frame around the hero like the mock */
+
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 8px solid #0b66b3;
+    z-index: 5;
+    pointer-events: none;
+    border-radius: 6px;
+}
+
+
+/* About heading and section spacing */
+
+#about .section-heading {
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    font-size: 20px;
+    margin-top: 28px;
+}
+
+#about .content-wrap {
+    padding: 28px 24px 40px;
+}
+
+#about .subheading {
+    font-weight: 700;
+    text-align: center;
+    margin-top: 18px;
+}
+
+.overlay p {
+    margin-bottom: 18px;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+
+/* Video Background */
+
+.cta-floating {
+    position: absolute;
+    left: 28px;
+    bottom: 28px;
+    background: #0b66b3;
+    color: #fff;
+    padding: 18px 34px;
+    border-radius: 26px;
+    text-decoration: none;
+    z-index: 30;
+    box-shadow: 0 6px 18px rgba(11, 102, 179, 0.32);
+}
+
+.btn.primary {
+    background: #fff;
+    color: #0b66b3;
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+
+/* Responsive */
+
+@media (max-width: 880px) {
+    .overlay {
+        margin-left: 28px;
+        max-width: 320px;
+        padding: 24px;
+    }
+    .hero {
+        height: calc(100vh - 56px);
+    }
+}
+
+@media (max-width: 560px) {
+    .main-nav {
+        display: none;
+    }
+    .overlay {
+        margin-left: 18px;
+        max-width: calc(100% - 36px);
+    }
+    .cta-floating {
+        left: 16px;
+        bottom: 16px;
+    }
+}
+
+
+/* Page-local hero/about fixes: centered framed hero, contained video, compact overlay */
+
+.hero {
+    position: relative;
+    margin: 72px auto 24px;
+    /* push below fixed navbar and center */
+    max-width: 1200px;
+    min-height: 420px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    align-items: center;
+}
+
+
+/* place the video inside the hero (covers hero area only) */
+
+.bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+
+/* blue frame around the hero */
+
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 8px solid #0b66b3;
+    border-radius: 8px;
+    z-index: 5;
+    pointer-events: none;
+}
+
+
+/* overlay as a compact left card inside the hero */
+
+.overlay {
+    position: relative;
+    z-index: 10;
+    background: linear-gradient(90deg, rgba(3, 37, 76, 0.9) 0%, rgba(3, 37, 76, 0.55) 60%);
+    color: #fff;
+    padding: 22px 28px;
+    border-radius: 6px;
+    max-width: 360px;
+    margin: 36px 0 0 36px;
+    /* sit near the top-left inside the hero */
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    align-self: flex-start;
+}
+
+.overlay h1 {
+    font-size: 26px;
+    margin-bottom: 8px;
+}
+
+.overlay p {
+    margin-bottom: 14px;
+    font-size: 14px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+
+/* make the CTA a blue pill inside the overlay */
+
+.overlay .btn {
+    background: #0b66b3;
+    color: #fff;
+    border-radius: 26px;
+    padding: 12px 22px;
+    display: inline-block;
+    box-shadow: 0 8px 20px rgba(11, 102, 179, 0.22);
+    text-decoration: none;
+    font-size: 15px;
+}
+
+.overlay .btn:hover {
+    background: #09549a;
+}
+
+
+/* About section card below */
+
+#about.section-white {
+    background: #fff;
+    color: #222;
+    padding: 2.5rem 1.5rem 3rem;
+    margin-top: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+#about .content-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 18px;
+}
+
+#about .section-heading {
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    font-size: 20px;
+    color: #0a3f77;
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+#about .subheading {
+    font-weight: 700;
+    text-align: left;
+    margin-top: 22px;
+}
+
+.section-spacing {
+    margin-top: 1.25rem;
+}
+
+.logo-circle.small img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+@media (min-width: 900px) {
+    .hero {
+        min-height: 520px;
+    }
+}

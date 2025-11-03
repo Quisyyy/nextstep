@@ -1,0 +1,21 @@
+{
+    "hero": {
+        "title": "Welcome to Next Step",
+        "text": "Next Step is a dedicated platform designed to help alumni connect, grow, and take the next step in their professional journey. Our mission is to bridge the gap between education and employment by providing graduates with access to job opportunities, career resources, and a supportive alumni network. Click and Fill up the Information Sheet.",
+        "ctaText": "Fill up",
+        "ctaHref": "Information.html"
+    },
+    "about": {
+        "heading": "ABOUT US",
+        "lead": "Welcome to <strong>Next Step</strong>. We believe that every student's journey doesn't end at graduation—it evolves. Our system is designed to track, connect, and empower alumni, while providing valuable insights for educational institutions to improve and grow.",
+        "objectives": [
+            "To develop a profile of the graduates.",
+            "To analyze employment outcomes and career trajectories.",
+            "To evaluate the alignment between acquired academic skills and job requirements.",
+            "To gather feedback on the effectiveness of institutional services and support.",
+            "To formulate evidence-based recommendations for academic and institutional improvement."
+        ],
+        "mission": "Next Step is committed to fostering lifelong connections between graduates and their alma mater by providing a dynamic platform for alumni engagement, career tracking, and professional growth. We support continuous learning, mentorship, and data-driven improvements in education through meaningful alumni involvement.",
+        "vision": "To be the leading digital hub that empowers alumni to thrive, inspire future generations, and shape institutional excellence through collaboration, innovation, and shared success."
+    }
+}
