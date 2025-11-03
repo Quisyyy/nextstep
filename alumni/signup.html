@@ -35,11 +35,13 @@
     <div class="container">
         <img src="logo/557536151_1257403522824074_2017646524872962832_n.png" class="nav-logo" alt="Next Step logo">
         <h2>Welcome to NEXT STEP</h2>
-        <form action="login.html" method="get">
-            <input type="email" placeholder="Email address" required>
-            <input type="password" placeholder="Password" required>
-            <input type="password" placeholder="Confirm Password" required>
-            <button type="submit" class="btn">Sign Up</button>
+        <form id="signupForm">
+            <input id="signupName" type="text" placeholder="Full name" required>
+            <input id="signupEmail" type="email" placeholder="Email address" required>
+            <input id="signupPhone" type="text" placeholder="Contact Number (optional)">
+            <input id="signupPassword" type="password" placeholder="Password" required>
+            <input id="signupConfirm" type="password" placeholder="Confirm Password" required>
+            <div style="margin-top:8px"><button id="signupBtn" type="submit" class="btn">Sign Up</button> <span id="signupStatus" style="margin-left:10px;color:#0b66b3;font-weight:600"></span></div>
         </form>
         <p>Already have an account? <a href="login.html">Login</a></p>
         <a href="index.html" class="back-btn">← Back</a>
