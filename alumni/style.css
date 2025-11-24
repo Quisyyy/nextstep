@@ -91,6 +91,21 @@ body {
 }
 
 
+/* Smooth scroll to in-page anchors */
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+/* Prevent anchors from being hidden under fixed navbar */
+
+#about,
+#site-contact {
+    scroll-margin-top: 96px;
+}
+
+
 /* Shared Container */
 
 .container {
@@ -434,41 +449,36 @@ input {
 
 .hero {
     position: relative;
-    margin: 72px auto 24px;
-    /* push below fixed navbar and center */
-    max-width: 1200px;
-    min-height: 420px;
-    border-radius: 8px;
+    margin: 72px 0 0;
+    /* space below navbar */
+    min-height: calc(100vh - 72px);
+    width: 100%;
     overflow: hidden;
-    background: transparent;
     display: flex;
     align-items: center;
+    justify-content: flex-start;
 }
 
 
 /* place the video inside the hero (covers hero area only) */
 
 .bg-video {
-    position: absolute;
+    position: fixed;
+    /* full viewport background */
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    z-index: 0;
+    z-index: -1;
+    filter: brightness(0.9);
 }
 
 
 /* blue frame around the hero */
 
 .hero::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border: 8px solid #0b66b3;
-    border-radius: 8px;
-    z-index: 5;
-    pointer-events: none;
+    display: none;
 }
 
 
@@ -476,16 +486,15 @@ input {
 
 .overlay {
     position: relative;
-    z-index: 10;
-    background: linear-gradient(90deg, rgba(3, 37, 76, 0.9) 0%, rgba(3, 37, 76, 0.55) 60%);
+    z-index: 1;
+    background: rgba(3, 37, 76, 0.72);
+    backdrop-filter: blur(2px);
     color: #fff;
-    padding: 22px 28px;
-    border-radius: 6px;
-    max-width: 360px;
-    margin: 36px 0 0 36px;
-    /* sit near the top-left inside the hero */
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-    align-self: flex-start;
+    padding: 28px 34px;
+    border-radius: 10px;
+    max-width: 420px;
+    margin-left: 48px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
 }
 
 .overlay h1 {
@@ -560,6 +569,55 @@ input {
     height: 48px;
     object-fit: cover;
     border-radius: 50%;
+}
+
+
+/* Signup Form Styles */
+
+.form-row {
+    margin-bottom: 15px;
+}
+
+.form-row label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+}
+
+.form-row input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.form-row input:focus {
+    outline: none;
+    border-color: #0b66b3;
+    box-shadow: 0 0 0 2px rgba(11, 102, 179, 0.1);
+}
+
+.field-help {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.privacy-note {
+    font-size: 0.9rem;
+    color: #444;
+    margin-top: 10px;
+    line-height: 1.4;
+}
+
+.privacy-note code {
+    background: #f5f5f5;
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-size: 0.85em;
 }
 
 @media (min-width: 900px) {

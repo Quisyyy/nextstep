@@ -1,15 +1,15 @@
 (function() {
     // Candidate logo URLs to try (absolute and relative). Order matters.
     const candidates = [
-        '/logo/blue-orange-circle-logo.jpg',
         '/logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg',
+        '/logo/557536151_1257403522824074_2017646524872962832_n.png',
         '/logo/Blue & Orange Circle Illustrative Education Logo.jpg',
-        'logo/blue-orange-circle-logo.jpg',
         'logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg',
-        '../logo/blue-orange-circle-logo.jpg',
+        'logo/557536151_1257403522824074_2017646524872962832_n.png',
         '../logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg',
-        '../../logo/blue-orange-circle-logo.jpg',
-        '../../logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg'
+        '../logo/557536151_1257403522824074_2017646524872962832_n.png',
+        '../../logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg',
+        '../../logo/557536151_1257403522824074_2017646524872962832_n.png'
     ];
 
     function testSrc(url) {

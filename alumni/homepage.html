@@ -12,21 +12,20 @@
     <header class="navbar">
         <div class="logo-area">
             <div class="logo-circle">
-                <img src="../logo/blue-orange-circle-logo.jpg" class="nav-logo" alt="Next Step logo">
+                <img src="../logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg" class="nav-logo" alt="Next Step logo" onerror="this.onerror=null;this.src='../logo/557536151_1257403522824074_2017646524872962832_n.png'">
             </div>
             <h3 class="brand">NEXT STEP</h3>
         </div>
         <nav class="main-nav">
-            <a href="home.html">Home</a>
-            <a href="Information.html">Information</a>
-            <a href="#about">About</a>
+            <a href="homepage.html" id="nav-home">Home</a>
+            <a href="Information.html" id="nav-info">Information</a>
+            <a href="profile.html" id="nav-profile">Profile</a>
+            <a href="#about" id="nav-about">About</a>
+            <a href="#site-contact" id="nav-contact">Contact</a>
         </nav>
         <div class="nav-actions">
-            <button class="user-icon" aria-label="profile">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z" fill="#fff"/>
-                </svg>
-            </button>
+            <a href="../login.html" class="nav-cta" id="nav-login">Login</a>
+            <button id="nav-logout" class="nav-cta" style="display:none">Logout</button>
         </div>
     </header>
 
@@ -89,9 +88,9 @@
             </div>
         </div>
     </footer>
-    <script src="/user-menu.js" defer></script>
     <script src="/supabase-client.js" defer></script>
     <script>
+        // Dynamic content populated from JSON/Supabase (kept from original file)
         (async function() {
             const url = 'data/homepage.json';
             const fallback = {
@@ -192,6 +191,105 @@
                 apply(fallback);
             });
         })();
+
+        // Session-aware navbar and hero CTA + robust video autoplay
+        async function waitForSupabase(ms = 4000) {
+            const start = Date.now();
+            while (Date.now() - start < ms) {
+                if (window.supabase && window.supabaseClientReady) return true;
+                await new Promise(r => setTimeout(r, 120));
+            }
+            return false;
+        }
+
+        document.addEventListener('DOMContentLoaded', async() => {
+            const email = (localStorage.getItem('currentUserEmail') || '').trim().toLowerCase();
+            const loginLink = document.getElementById('nav-login');
+            const logoutBtn = document.getElementById('nav-logout');
+            const heroCta = document.getElementById('hero-cta');
+            const vid = document.getElementById('myVideo');
+            const aboutLink = document.getElementById('nav-about');
+            const contactLink = document.getElementById('nav-contact');
+
+            if (email) {
+                if (loginLink) loginLink.style.display = 'none';
+                if (logoutBtn) logoutBtn.style.display = 'inline-block';
+            }
+
+            // Decide CTA ('Go to Profile' vs 'Fill up') based on profile existence
+            if (email && heroCta) {
+                try {
+                    const ready = await waitForSupabase();
+                    if (ready) {
+                        const {
+                            data,
+                            error
+                        } = await window.supabase
+                            .from('alumni_profiles')
+                            .select('id')
+                            .eq('email', email)
+                            .limit(1);
+                        if (!error && data && data.length) {
+                            heroCta.textContent = 'Go to Profile';
+                            heroCta.setAttribute('href', 'profile.html');
+                        } else {
+                            heroCta.textContent = 'Fill up';
+                            heroCta.setAttribute('href', 'Information.html');
+                        }
+                    }
+                } catch (e) {}
+            }
+
+            // Ensure background video plays after redirects/login
+            if (vid) {
+                vid.muted = true;
+                const tryPlay = () => vid.play().catch(() => {
+                    const resume = () => {
+                        vid.play().catch(() => {});
+                        document.removeEventListener('click', resume);
+                    };
+                    document.addEventListener('click', resume, {
+                        once: true
+                    });
+                });
+                tryPlay();
+                vid.addEventListener('canplay', tryPlay, {
+                    once: true
+                });
+                document.addEventListener('visibilitychange', () => {
+                    if (!document.hidden) tryPlay();
+                });
+            }
+
+            // Attach smooth scroll behavior (in case browser doesn't auto smooth)
+            function smoothScroll(targetId) {
+                const el = document.querySelector(targetId);
+                if (!el) return;
+                window.scrollTo({
+                    top: el.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+            if (aboutLink) {
+                aboutLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    smoothScroll('#about');
+                });
+            }
+            if (contactLink) {
+                contactLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    smoothScroll('#site-contact');
+                });
+            }
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('currentUserEmail');
+                    window.location.href = '../login.html';
+                });
+            }
+        });
     </script>
 </body>
 

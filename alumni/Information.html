@@ -12,16 +12,13 @@
 <body>
     <header class="navbar">
         <div class="logo-area">
-            <div class="logo-circle"><img src="logo/557536151_1257403522824074_2017646524872962832_n.png" class="nav-logo" alt="logo"></div>
+            <div class="logo-circle"><img src="../logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg" class="nav-logo" alt="logo" onerror="this.onerror=null;this.src='../logo/557536151_1257403522824074_2017646524872962832_n.png'"></div>
             <h3 class="brand">NEXT STEP</h3>
         </div>
-        <nav class="main-nav"><a href="homepage.html">Home</a><a href="Information.html">Information</a><a href="#about">About</a></nav>
+        <nav class="main-nav"><a href="homepage.html">Home</a><a href="Information.html">Information</a><a href="profile.html">Profile</a><a href="#about">About</a></nav>
         <div class="nav-actions">
-            <button class="user-icon" aria-label="profile">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z" fill="#fff"/>
-                </svg>
-            </button>
+            <a href="../login.html" class="nav-cta" id="nav-login">Login</a>
+            <button id="nav-logout" class="nav-cta" style="display:none">Logout</button>
         </div>
     </header>
 
@@ -107,9 +104,61 @@
             <div class="col"></div>
         </div>
 
-        <!-- Career Interest section removed per request -->
+        <!-- Job Status & Career Information -->
+        <div class="section-title">Job Status & Career Information</div>
+        <div class="row">
+            <div class="col">
+                <label for="jobStatus">Job Status</label>
+                <select id="jobStatus">
+                    <option value="">Select Job Status</option>
+                    <option value="employed">Employed</option>
+                    <option value="self-employed">Self-Employed</option>
+                    <option value="unemployed">Unemployed</option>
+                    <option value="student">Student</option>
+                    <option value="freelancer">Freelancer</option>
+                </select>
+            </div>
+            <div class="col">
+                <label for="currentJob">Current Job/Position</label>
+                <input id="currentJob" type="text" placeholder="e.g. Software Engineer, Manager">
+            </div>
+        </div>
 
-        <!-- Removed duplicate Career Interest block per user request -->
+        <div class="row">
+            <div class="col">
+                <label for="previousRoles">Previous Roles</label>
+                <input id="previousRoles" type="text" placeholder="e.g. Junior Developer, Intern">
+            </div>
+            <div class="col">
+                <label for="careerPath">Career Path</label>
+                <input id="careerPath" type="text" placeholder="e.g. Technology, Business, Education">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label for="industry">What industry are you in?</label>
+                <input id="industry" type="text" placeholder="e.g. IT, Finance, Healthcare, Education">
+            </div>
+            <div class="col">
+                <label for="professionalCertificates">Professional Certificates</label>
+                <input id="professionalCertificates" type="text" placeholder="e.g. AWS Certified, PMP, CPA">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label for="openForMentorship">Are you open for mentorship?</label>
+                <select id="openForMentorship">
+                    <option value="">Select Option</option>
+                    <option value="yes">Yes, I'm open to mentoring others</option>
+                    <option value="seeking">Yes, I'm seeking a mentor</option>
+                    <option value="both">Both - I can mentor and seek mentorship</option>
+                    <option value="no">No, not at this time</option>
+                </select>
+            </div>
+            <div class="col"></div>
+        </div>
 
         <div class="form-actions">
             <button id="saveProfile" class="save-btn">Save</button>
@@ -122,7 +171,7 @@
     <footer id="site-contact">
         <div class="footer-content">
             <div class="footer-col social">
-                <div class="logo-circle small"><img src="logo/557536151_1257403522824074_2017646524872962832_n.png" class="nav-logo" alt="logo"></div>
+                <div class="logo-circle small"><img src="../logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg" class="nav-logo" alt="logo" onerror="this.onerror=null;this.src='../logo/557536151_1257403522824074_2017646524872962832_n.png'"></div>
                 <div>
                     <div class="follow">VISIT US ON</div>
                     <div class="icons"><a href="#">[facebook]</a> <a href="#">[twitter]</a> <a href="#">[instagram]</a></div>
@@ -141,9 +190,27 @@
         </div>
     </footer>
 
-    <script src="/user-menu.js" defer></script>
     <script src="/supabase-client.js" defer></script>
+    <script src="/database-setup.js" defer></script>
     <script src="/information.js" defer></script>
+    <script>
+        // Navbar login/logout toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const email = (localStorage.getItem('currentUserEmail') || '').trim().toLowerCase();
+            const loginLink = document.getElementById('nav-login');
+            const logoutBtn = document.getElementById('nav-logout');
+            if (email) {
+                if (loginLink) loginLink.style.display = 'none';
+                if (logoutBtn) logoutBtn.style.display = 'inline-block';
+            }
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('currentUserEmail');
+                    window.location.href = '../login.html';
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>
