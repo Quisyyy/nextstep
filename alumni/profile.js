@@ -164,6 +164,9 @@ function displayProfile(data) {
     const editButton = document.querySelector('a.btn-edit');
     if (editButton && data.id) {
         editButton.href = `Information.html?edit=${data.id}`;
+        console.log('✅ Edit button configured with ID:', data.id);
+    } else {
+        console.warn('⚠️ Edit button or profile ID missing:', { editButton, profileId: data.id });
     }
 }
 

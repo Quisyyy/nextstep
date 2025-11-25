@@ -256,7 +256,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         const existingData = await loadProfileForEdit(editProfileId);
         if (existingData) {
             populateFormWithData(existingData);
-            console.log('✅ Form populated with existing data');
+            // CRITICAL: Store the ID for update operations
+            saveButton.dataset.existingId = editProfileId;
+            console.log('✅ Form populated with existing data, stored ID:', editProfileId);
         } else {
             console.warn('⚠️ Could not load profile data for editing');
             const status = document.getElementById('saveStatus');
@@ -303,6 +305,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         const isEditMode = !!effectiveEditId;
 
         // Enhanced logging for debugging
+        console.log(`🔄 Form submission started (${isEditMode ? 'UPDATE' : 'CREATE'} mode)`);
+        console.log('Edit IDs:', { explicitEditId, inlineExistingId, effectiveEditId });
         if (window.debugWidget) window.debugWidget.log(`🔄 Form submission started (${isEditMode ? 'UPDATE' : 'CREATE'} mode)`);
 
         const payload = {
@@ -337,6 +341,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                 if (isEditMode) {
                     // UPDATE existing record
+                    console.log('✅ Supabase ready, attempting update for ID:', effectiveEditId);
+                    console.log('Update payload:', payload);
                     if (window.debugWidget) window.debugWidget.log('✅ Supabase ready, attempting update');
                     const result = await window.supabase
                         .from('alumni_profiles')
@@ -345,7 +351,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         .select();
                     data = result.data;
                     error = result.error;
-                    console.log('supabase update result', { data, error });
+                    console.log('supabase update result', { data, error, effectiveEditId });
                     if (window.debugWidget) window.debugWidget.log(`📊 Update result: ${error ? 'ERROR' : 'SUCCESS'}`);
                 } else {
                     // INSERT new record
