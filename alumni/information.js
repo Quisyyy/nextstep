@@ -291,11 +291,13 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     saveButton.addEventListener('click', async function(e) {
         e.preventDefault();
+        console.log('🔥 SAVE BUTTON CLICKED - Starting debug trace');
+        
         const status = document.getElementById('saveStatus');
         if (status) {
-            status.innerHTML = '';
-            status.style.fontSize = '';
-            status.style.color = '';
+            status.innerHTML = 'Processing...';
+            status.style.fontSize = '14px';
+            status.style.color = '#007bff';
         }
 
         // Check if we're in edit mode
@@ -306,23 +308,57 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         // Enhanced logging for debugging
         console.log(`🔄 Form submission started (${isEditMode ? 'UPDATE' : 'CREATE'} mode)`);
-        console.log('Edit IDs:', { explicitEditId, inlineExistingId, effectiveEditId });
+        console.log('🔍 Debug Info:', {
+            urlParams: window.location.search,
+            explicitEditId,
+            inlineExistingId,
+            effectiveEditId,
+            isEditMode,
+            buttonDataset: saveButton.dataset,
+            currentUserEmail: localStorage.getItem('currentUserEmail')
+        });
         if (window.debugWidget) window.debugWidget.log(`🔄 Form submission started (${isEditMode ? 'UPDATE' : 'CREATE'} mode)`);
 
+        // Basic form validation
+        const fullName = document.getElementById('fullname').value?.trim();
+        const email = document.getElementById('email').value?.trim();
+        const degree = document.getElementById('degree').value;
+        
+        if (!fullName || !email || !degree) {
+            const missingFields = [];
+            if (!fullName) missingFields.push('Full Name');
+            if (!email) missingFields.push('Email');  
+            if (!degree) missingFields.push('Degree/Course');
+            
+            const errorMsg = `Please fill in the required fields: ${missingFields.join(', ')}`;
+            console.warn('❌ Form validation failed:', errorMsg);
+            
+            if (status) {
+                status.innerHTML = `❌ ${errorMsg}`;
+                status.style.fontSize = '14px';
+                status.style.color = '#dc3545';
+            }
+            
+            alert(errorMsg);
+            return;
+        }
+
         const payload = {
-            full_name: document.getElementById('fullname').value || null,
-            email: document.getElementById('email').value || null,
+            full_name: fullName,
+            email: email,
             birth_month: document.getElementById('birth-month').value || null,
             birth_day: document.getElementById('birth-day').value || null,
             birth_year: document.getElementById('birth-year').value || null,
-            contact: document.getElementById('contact').value || null,
-            address: document.getElementById('address').value || null,
-            degree: document.getElementById('degree').value || null,
-            student_number: document.getElementById('studentNumber').value || null,
-            major: document.getElementById('major').value || null,
-            honors: document.getElementById('honors').value || null,
+            contact: document.getElementById('contact').value?.trim() || null,
+            address: document.getElementById('address').value?.trim() || null,
+            degree: degree,
+            student_number: document.getElementById('studentNumber').value?.trim() || null,
+            major: document.getElementById('major').value?.trim() || null,
+            honors: document.getElementById('honors').value?.trim() || null,
             graduated_year: document.getElementById('graduated').value || null
         };
+        
+        console.log('📋 Form payload prepared:', payload);
 
         // Only set created_at for new records
         if (!isEditMode) {
@@ -364,25 +400,37 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
 
                 if (error) throw error;
+                
+                console.log('✅ SUCCESS: Supabase operation completed!', { 
+                    operation: isEditMode ? 'UPDATE' : 'INSERT',
+                    data, 
+                    recordCount: data ? data.length : 0
+                });
+                
                 if (status) {
-                    status.innerHTML = '✅';
-                    status.style.fontSize = '24px';
+                    status.innerHTML = '✅ Profile ' + (isEditMode ? 'Updated' : 'Saved') + ' Successfully!';
+                    status.style.fontSize = '16px';
                     status.style.color = '#28a745';
+                    status.style.fontWeight = 'bold';
                 }
                 if (window.debugWidget) window.debugWidget.log(`✅ Successfully ${isEditMode ? 'updated' : 'saved'} to Supabase`);
 
                 // Store profile ID for the profile page
                 if (data && data[0] && data[0].id) {
+                    console.log('🔗 Storing profile ID and redirecting:', data[0].id);
                     localStorage.setItem('lastProfileId', data[0].id);
                     // Redirect to profile page after successful save/update
                     setTimeout(() => {
+                        console.log('🚀 Redirecting to profile page...');
                         window.location.href = 'profile.html?id=' + data[0].id;
-                    }, 1000);
+                    }, 1500);
                 } else if (isEditMode && effectiveEditId) {
+                    console.log('🔗 Using existing ID for redirect:', effectiveEditId);
                     // For updates, use the existing ID
                     setTimeout(() => {
+                        console.log('🚀 Redirecting to profile page...');
                         window.location.href = 'profile.html?id=' + effectiveEditId;
-                    }, 1000);
+                    }, 1500);
                 }
 
                 // notify admin/list pages in the same origin to refresh
@@ -393,11 +441,27 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (window.debugWidget) window.debugWidget.log('❌ Supabase not ready after timeout');
             }
         } catch (err) {
-            console.warn('Supabase insert failed', err);
+            console.error('❌ SAVE FAILED:', err);
+            console.error('Error details:', {
+                message: err.message,
+                code: err.code,
+                details: err.details,
+                hint: err.hint,
+                stack: err.stack
+            });
             if (window.debugWidget) window.debugWidget.log(`❌ Supabase error: ${err.message || err}`);
+            
             // Surface helpful message to the UI with origin info for debugging
             const msg = (err && err.message) ? err.message : String(err);
-            if (status) status.textContent = 'Supabase save failed: ' + msg;
+            if (status) {
+                status.innerHTML = `❌ Save Failed: ${msg}`;
+                status.style.fontSize = '14px';
+                status.style.color = '#dc3545';
+                status.style.fontWeight = 'bold';
+            }
+            
+            // Alert user with the error
+            alert(`Profile save failed!\n\nError: ${msg}\n\nPlease check your internet connection and try again. If the problem persists, check the browser console for more details.`);
         }
         // fallback queue
         try {
