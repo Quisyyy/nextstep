@@ -18,6 +18,14 @@ create table if not exists public.alumni_profiles (
   contact text,
   address text,
   graduated_year int,
+  -- Job Status & Career Information fields
+  job_status text,
+  current_job text,
+  previous_roles text,
+  career_path text,
+  industry text,
+  professional_certificates text,
+  open_for_mentorship text,
   created_at timestamptz default now()
 );
 
@@ -35,6 +43,15 @@ create policy anon_insert on public.alumni_profiles for insert with check (true)
 -- Ensure table has the expected columns (use ALTER ... ADD COLUMN IF NOT EXISTS so this script can be re-run)
 alter table public.alumni_profiles add column if not exists degree_label text;
 alter table public.alumni_profiles add column if not exists created_at timestamptz default now();
+
+-- Add new Job Status & Career Information columns (for existing tables)
+alter table public.alumni_profiles add column if not exists job_status text;
+alter table public.alumni_profiles add column if not exists current_job text;
+alter table public.alumni_profiles add column if not exists previous_roles text;
+alter table public.alumni_profiles add column if not exists career_path text;
+alter table public.alumni_profiles add column if not exists industry text;
+alter table public.alumni_profiles add column if not exists professional_certificates text;
+alter table public.alumni_profiles add column if not exists open_for_mentorship text;
 
 -- Now insert seed rows (won't fail if columns already existed)
 insert into public.alumni_profiles (full_name, email, student_number, degree, degree_label, created_at)

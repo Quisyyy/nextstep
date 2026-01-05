@@ -12,21 +12,20 @@
     <header class="navbar">
         <div class="logo-area">
             <div class="logo-circle">
-                <img src="logo/blue-orange-circle-logo.jpg" class="nav-logo" alt="Next Step logo">
+                <img src="logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg" class="nav-logo" alt="Next Step logo" onerror="this.onerror=null;this.src='logo/557536151_1257403522824074_2017646524872962832_n.png'">
             </div>
             <h3 class="brand">NEXT STEP</h3>
         </div>
         <nav class="main-nav">
-            <a href="home.html">Home</a>
-            <a href="Information.html">Information</a>
-            <a href="#about">About</a>
+            <a href="homepage.html" id="nav-home">Home</a>
+            <a href="Information.html" id="nav-info">Information</a>
+            <a href="alumni/profile.html" id="nav-profile">Profile</a>
+            <a href="#about" id="nav-about">About</a>
+            <a href="#site-contact" id="nav-contact">Contact</a>
         </nav>
         <div class="nav-actions">
-            <button class="user-icon" aria-label="profile">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z" fill="#fff"/>
-                </svg>
-            </button>
+            <a href="login.html" class="nav-cta" id="nav-login">Login</a>
+            <button id="nav-logout" class="nav-cta" style="display:none">Logout</button>
         </div>
     </header>
 
@@ -35,21 +34,21 @@
             <source src="video/9738c22044bba02e03a120fc8bcae46d.mp4" type="video/mp4">
         </video>
         <div class="overlay">
-            <h1>Welcome to Next Step</h1>
-            <p>Next Step is a dedicated platform designed to help alumni connect, grow, and take the next step in their professional journey. Our mission is to bridge the gap between education and employment by providing graduates with access to job opportunities,
+            <h1 id="hero-title">Welcome to Next Step</h1>
+            <p id="hero-text">Next Step is a dedicated platform designed to help alumni connect, grow, and take the next step in their professional journey. Our mission is to bridge the gap between education and employment by providing graduates with access to job opportunities,
                 career resources, and a supportive alumni network. Click and Fill up the Information Sheet.</p>
-            <a href="Information.html" class="btn primary">Fill up</a>
+            <a id="hero-cta" href="Information.html" class="btn primary">Fill up</a>
         </div>
     </section>
 
     <section id="about" class="section-white">
-        <h2 class="section-heading">ABOUT US</h2>
+        <h2 id="about-heading" class="section-heading">ABOUT US</h2>
         <div class="content-wrap">
-            <p class="lead">Welcome to <strong>Next Step</strong>. We believe that every student's journey doesn't end at graduation—it evolves. Our system is designed to track, connect, and empower alumni, while providing valuable insights for educational institutions
+            <p id="about-lead" class="lead">Welcome to <strong>Next Step</strong>. We believe that every student's journey doesn't end at graduation—it evolves. Our system is designed to track, connect, and empower alumni, while providing valuable insights for educational institutions
                 to improve and grow.</p>
             <div class="section-spacing">
                 <h3 class="subheading">Objectives</h3>
-                <ol class="objectives">
+                <ol id="objectives-list" class="objectives">
                     <li>To develop a profile of the graduates.</li>
                     <li>To analyze employment outcomes and career trajectories.</li>
                     <li>To evaluate the alignment between acquired academic skills and job requirements.</li>
@@ -59,24 +58,25 @@
             </div>
             <div class="section-spacing">
                 <h3 class="subheading">Mission</h3>
-                <p class="lead">Next Step is committed to fostering lifelong connections between graduates and their alma mater by providing a dynamic platform for alumni engagement, career tracking, and professional growth. We support continuous learning, mentorship,
+                <p id="mission-text" class="lead">Next Step is committed to fostering lifelong connections between graduates and their alma mater by providing a dynamic platform for alumni engagement, career tracking, and professional growth. We support continuous learning, mentorship,
                     and data-driven improvements in education through meaningful alumni involvement.</p>
             </div>
             <div>
                 <h3 class="subheading">Vision</h3>
-                <p class="lead">To be the leading digital hub that empowers alumni to thrive, inspire future generations, and shape institutional excellence through collaboration, innovation, and shared success.</p>
+                <p id="vision-text" class="lead">To be the leading digital hub that empowers alumni to thrive, inspire future generations, and shape institutional excellence through collaboration, innovation, and shared success.</p>
             </div>
         </div>
     </section>
 
     <footer id="site-contact">
         <div class="footer-content">
-            <div class="footer-col social">
-                <div class="logo-circle small"><img src="logo/blue-orange-circle-logo.jpg" class="nav-logo" alt="logo"></div>
-                <div>
-                    <div class="follow">VISIT US ON</div>
-                    <div class="icons"><a href="#">[facebook]</a> <a href="#">[twitter]</a> <a href="#">[instagram]</a></div>
-                </div>
+            <div>
+                <h4>VISIT US ON</h4>
+                <p>
+                    <a href="#" class="footer-icons"><img src="logo/facebook.png" alt="Facebook"></a>
+                    <a href="#" class="footer-icons"><img src="logo/twitter.png" alt="Twitter"></a>
+                    <a href="#" class="footer-icons"><img src="logo/instagram.png" alt="Instagram"></a>
+                </p>
             </div>
             <div>
                 <h4>CONTACT INFORMATION</h4>
@@ -88,7 +88,9 @@
             </div>
         </div>
     </footer>
-    <script src="/user-menu.js" defer></script>
+    <script src="/supabase-client.js" defer></script>
+    <script src="/logout-dialog.js" defer></script>
+    <script src="/homepage.js" defer></script>
 </body>
 
 </html>

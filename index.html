@@ -7,6 +7,7 @@
     <title>NEXT STEP | Home</title>
     <link rel="stylesheet" href="style.css">
     <script src="/logo-fallback.js" defer></script>
+    <script src="index.js" defer></script>
 </head>
 
 <body>
@@ -16,17 +17,17 @@
     <header class="navbar" id="navbar">
         <div class="logo-area slide-in">
             <div class="logo-circle">
-                <img src="/logo/blue-orange-circle-logo.jpg" class="nav-logo" alt="Next Step logo" onerror="this.onerror=null;this.src='/logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg'">
+                <img src="/logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg" class="nav-logo" alt="Next Step logo" onerror="this.onerror=null;this.src='/logo/557536151_1257403522824074_2017646524872962832_n.png'">
             </div>
             <h3 class="brand">NEXT STEP</h3>
         </div>
         <nav class="main-nav fade-in">
-            <a href="index.html" onclick="smoothScroll('#top')">Home</a>
-            <a href="#about" onclick="smoothScroll('#about')">About</a>
-            <a href="#site-contact" onclick="smoothScroll('#site-contact')">Contact</a>
+            <a href="index.html" onclick="smoothScroll('#top', event)">Home</a>
+            <a href="#about" onclick="smoothScroll('#about', event)">About</a>
+            <a href="#site-contact" onclick="smoothScroll('#site-contact', event)">Contact</a>
         </nav>
         <div class="nav-actions fade-in">
-            <a href="home.html" class="nav-cta">Login</a>
+            <a href="login.html" class="nav-cta">Login</a>
         </div>
     </header>
 
@@ -74,7 +75,7 @@
     <footer id="site-contact">
         <div class="footer-content">
             <div class="footer-col social fade-in">
-                <div class="logo-circle small"><img src="/logo/blue-orange-circle-logo.jpg" class="nav-logo" alt="logo" onerror="this.onerror=null;this.src='/logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg'"></div>
+                <div class="logo-circle small"><img src="/logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg" class="nav-logo" alt="logo" onerror="this.onerror=null;this.src='/logo/557536151_1257403522824074_2017646524872962832_n.png'"></div>
                 <div>
                     <div class="follow">VISIT US ON</div>
                     <div class="icons">
@@ -96,126 +97,6 @@
             </div>
         </div>
     </footer>
-</body>
-<script>
-    // Smooth scrolling function
-    function smoothScroll(target) {
-        event.preventDefault();
-        const element = document.querySelector(target);
-        if (element) {
-            element.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-    }
-
-    // Highlight objectives when clicked
-    function highlightItem(item) {
-        item.style.background = 'linear-gradient(45deg, #004AAD, #FF6B35)';
-        item.style.color = 'white';
-        item.style.padding = '10px';
-        item.style.borderRadius = '5px';
-        item.style.margin = '5px 0';
-
-        setTimeout(() => {
-            item.style.background = '';
-            item.style.color = '';
-            item.style.padding = '';
-            item.style.borderRadius = '';
-            item.style.margin = '';
-        }, 2000);
-    }
-
-    // Copy to clipboard function
-    function copyToClipboard(text) {
-        navigator.clipboard.writeText(text).then(() => {
-            showNotification('Copied to clipboard: ' + text);
-        });
-    }
-
-    // Show alert for social media
-    function showAlert(platform) {
-        showNotification('Opening ' + platform + '...');
-    }
-
-    // Open map function
-    function openMap() {
-        showNotification('Opening map location...');
-    }
-
-    // Show notification
-    function showNotification(message) {
-        const notification = document.createElement('div');
-        notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: linear-gradient(45deg, #004AAD, #FF6B35);
-                color: white;
-                padding: 15px 20px;
-                border-radius: 10px;
-                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-                z-index: 10000;
-                animation: slideIn 0.3s ease-out;
-            `;
-        notification.textContent = message;
-        document.body.appendChild(notification);
-
-        setTimeout(() => {
-            notification.style.animation = 'slideOut 0.3s ease-out';
-            setTimeout(() => notification.remove(), 300);
-        }, 3000);
-    }
-
-    // Scroll indicator
-    window.addEventListener('scroll', () => {
-        const scrollTop = document.documentElement.scrollTop;
-        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrollPercent = (scrollTop / scrollHeight) * 100;
-        document.getElementById('scrollIndicator').style.width = scrollPercent + '%';
-
-        // Navbar background change on scroll
-        const navbar = document.getElementById('navbar');
-        if (scrollTop > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
-    });
-
-    // Loading animation
-    window.addEventListener('load', () => {
-        const loadingBar = document.getElementById('loadingBar');
-        loadingBar.style.width = '100%';
-        setTimeout(() => {
-            loadingBar.style.opacity = '0';
-            setTimeout(() => loadingBar.remove(), 500);
-        }, 1000);
-    });
-
-    // Intersection Observer for animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.animationDelay = '0s';
-                entry.target.classList.add('fade-in');
-            }
-        });
-    }, observerOptions);
-
-    // Observe all elements with fade-in class
-    document.addEventListener('DOMContentLoaded', () => {
-        const elements = document.querySelectorAll('.fade-in');
-        elements.forEach(el => observer.observe(el));
-    });
-</script>
-
 </body>
 
 </html>
