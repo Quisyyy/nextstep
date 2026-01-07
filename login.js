@@ -17,36 +17,57 @@
         el.style.color = type === 'error' ? '#d32f2f' : type === 'success' ? '#2e7d32' : '#0b66b3';
     }
 
-    async function emailExists(raw) {
-        const email = (raw || '').trim().toLowerCase();
+    async function verifyUserCredentials(email, password) {
         const tables = ['signups', 'alumni_profiles'];
         let lastError = null;
+        
         for (const t of tables) {
             try {
-                // exact match (use array response to avoid "multiple rows" errors)
+                // exact match with password check
                 let { data, error } = await window.supabase
                     .from(t)
-                    .select('email')
+                    .select('email, password')
                     .eq('email', email)
                     .limit(1);
+                
                 if (error) throw error;
-                if (Array.isArray(data) && data.length) return true;
+                
+                if (Array.isArray(data) && data.length) {
+                    const user = data[0];
+                    // Check if password matches
+                    if (user.password === password) {
+                        return { success: true, user };
+                    } else {
+                        return { success: false, error: 'Incorrect password' };
+                    }
+                }
 
                 // ilike fallback
                 ({ data, error } = await window.supabase
                     .from(t)
-                    .select('email')
+                    .select('email, password')
                     .ilike('email', email)
                     .limit(1));
+                
                 if (error) throw error;
-                if (Array.isArray(data) && data.length) return true;
+                
+                if (Array.isArray(data) && data.length) {
+                    const user = data[0];
+                    // Check if password matches
+                    if (user.password === password) {
+                        return { success: true, user };
+                    } else {
+                        return { success: false, error: 'Incorrect password' };
+                    }
+                }
             } catch (err) {
                 console.warn(`supabase query failed for ${t}`, err);
                 lastError = err;
             }
         }
+        
         if (lastError) throw lastError;
-        return false;
+        return { success: false, error: 'Account not found' };
     }
 
     async function handleLoginSubmit(e) {
@@ -66,13 +87,23 @@
             const ready = await ensureSupabaseReady();
             if (!ready) throw new Error('Service not ready. Try again shortly.');
             if (!window.supabase) throw new Error('Supabase client missing');
-            const exists = await emailExists(email);
-            if (!exists) {
-                setStatus(statusEl, "You don't have an account yet, Please create or sign up.", 'error');
+            
+            // Verify user credentials (email and password)
+            const result = await verifyUserCredentials(email, password);
+            
+            if (!result.success) {
+                if (result.error === 'Account not found') {
+                    setStatus(statusEl, "You don't have an account yet, Please create or sign up.", 'error');
+                } else if (result.error === 'Incorrect password') {
+                    setStatus(statusEl, "Incorrect password. Please try again.", 'error');
+                } else {
+                    setStatus(statusEl, result.error || 'Login failed', 'error');
+                }
                 btn && (btn.disabled = false);
-                emailInput && emailInput.focus();
+                passwordInput && passwordInput.focus();
                 return;
             }
+            
             setStatus(statusEl, '✅ Login successful. Redirecting…', 'success');
             localStorage.setItem('currentUserEmail', email);
             // Go to app homepage after login
