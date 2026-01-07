@@ -17,56 +17,90 @@
         el.style.color = type === 'error' ? '#d32f2f' : type === 'success' ? '#2e7d32' : '#0b66b3';
     }
 
-    async function verifyUserCredentials(email, password) {
-        const tables = ['signups', 'alumni_profiles'];
-        let lastError = null;
-        
-        for (const t of tables) {
-            try {
-                // exact match with password check
-                let { data, error } = await window.supabase
-                    .from(t)
-                    .select('email, password')
-                    .eq('email', email)
-                    .limit(1);
-                
-                if (error) throw error;
-                
-                if (Array.isArray(data) && data.length) {
-                    const user = data[0];
-                    // Check if password matches
-                    if (user.password === password) {
-                        return { success: true, user };
-                    } else {
-                        return { success: false, error: 'Incorrect password' };
-                    }
-                }
+    // Simple password hashing for verification
+    async function simpleHash(password) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
 
-                // ilike fallback
-                ({ data, error } = await window.supabase
-                    .from(t)
-                    .select('email, password')
-                    .ilike('email', email)
-                    .limit(1));
-                
-                if (error) throw error;
-                
-                if (Array.isArray(data) && data.length) {
-                    const user = data[0];
-                    // Check if password matches
-                    if (user.password === password) {
-                        return { success: true, user };
-                    } else {
-                        return { success: false, error: 'Incorrect password' };
-                    }
+    async function verifyUserCredentials(email, password) {
+        const passwordHash = await simpleHash(password);
+        
+        // Try signups table first (has password_hash)
+        try {
+            let { data, error } = await window.supabase
+                .from('signups')
+                .select('email, password_hash')
+                .eq('email', email)
+                .limit(1);
+            
+            if (!error && Array.isArray(data) && data.length) {
+                const user = data[0];
+                if (user.password_hash === passwordHash) {
+                    return { success: true, user };
+                } else {
+                    return { success: false, error: 'The Password is incorrect.' };
                 }
-            } catch (err) {
-                console.warn(`supabase query failed for ${t}`, err);
-                lastError = err;
             }
+
+            // ilike fallback
+            ({ data, error } = await window.supabase
+                .from('signups')
+                .select('email, password_hash')
+                .ilike('email', email)
+                .limit(1));
+            
+            if (!error && Array.isArray(data) && data.length) {
+                const user = data[0];
+                if (user.password_hash === passwordHash) {
+                    return { success: true, user };
+                } else {
+                    return { success: false, error: 'The Password is incorrect.' };
+                }
+            }
+        } catch (err) {
+            console.warn('signups table query failed', err);
         }
         
-        if (lastError) throw lastError;
+        // Try alumni_profiles table (may have different password column)
+        try {
+            let { data, error } = await window.supabase
+                .from('alumni_profiles')
+                .select('email, password_hash')
+                .eq('email', email)
+                .limit(1);
+            
+            if (!error && Array.isArray(data) && data.length) {
+                const user = data[0];
+                if (user.password_hash === passwordHash) {
+                    return { success: true, user };
+                } else {
+                    return { success: false, error: 'The Password is incorrect.' };
+                }
+            }
+
+            // ilike fallback
+            ({ data, error } = await window.supabase
+                .from('alumni_profiles')
+                .select('email, password_hash')
+                .ilike('email', email)
+                .limit(1));
+            
+            if (!error && Array.isArray(data) && data.length) {
+                const user = data[0];
+                if (user.password_hash === passwordHash) {
+                    return { success: true, user };
+                } else {
+                    return { success: false, error: 'The Password is incorrect.' };
+                }
+            }
+        } catch (err) {
+            console.warn('alumni_profiles table query failed', err);
+        }
+        
         return { success: false, error: 'Account not found' };
     }
 
@@ -94,8 +128,6 @@
             if (!result.success) {
                 if (result.error === 'Account not found') {
                     setStatus(statusEl, "You don't have an account yet, Please create or sign up.", 'error');
-                } else if (result.error === 'Incorrect password') {
-                    setStatus(statusEl, "Incorrect password. Please try again.", 'error');
                 } else {
                     setStatus(statusEl, result.error || 'Login failed', 'error');
                 }
