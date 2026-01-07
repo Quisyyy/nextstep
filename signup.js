@@ -127,6 +127,36 @@ async function handleSignupSubmission(event) {
         return;
     }
 
+    // Password complexity validation
+    const hasUpperCase = /[A-Z]/.test(formData.password);
+    const hasLowerCase = /[a-z]/.test(formData.password);
+    const hasNumber = /[0-9]/.test(formData.password);
+    const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password);
+
+    if (!hasUpperCase) {
+        statusSpan.textContent = 'Password must contain at least one uppercase letter';
+        statusSpan.style.color = '#d32f2f';
+        return;
+    }
+
+    if (!hasLowerCase) {
+        statusSpan.textContent = 'Password must contain at least one lowercase letter';
+        statusSpan.style.color = '#d32f2f';
+        return;
+    }
+
+    if (!hasNumber) {
+        statusSpan.textContent = 'Password must contain at least one number';
+        statusSpan.style.color = '#d32f2f';
+        return;
+    }
+
+    if (!hasSymbol) {
+        statusSpan.textContent = 'Password must contain at least one symbol (!@#$%^&*...)';
+        statusSpan.style.color = '#d32f2f';
+        return;
+    }
+
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
