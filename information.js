@@ -607,12 +607,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                 if (error) throw error;
                 
-                if (status) {
-                    status.innerHTML = '✅ ' + (isEditMode ? 'Updated!' : 'Saved!');
-                    status.style.fontSize = '18px';
-                    status.style.color = '#28a745';
-                }
-
                 // Store profile ID for the profile page
                 const profileId = data && data[0] && data[0].id ? data[0].id : editProfileId;
                 
@@ -622,13 +616,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                     // Clear any cached profile data to force fresh load
                     localStorage.removeItem('cachedProfile_' + profileId);
                     
-                    // Redirect to profile page after successful save/update
+                    // Redirect to profile page immediately (no delay, no status message)
                     const redirectUrl = 'alumni/profile.html?id=' + profileId + (isEditMode ? '&updated=true' : '');
                     console.log('Redirecting to:', redirectUrl);
                     
-                    setTimeout(() => {
-                        window.location.href = redirectUrl;
-                    }, 1500);
+                    window.location.href = redirectUrl;
                 } else {
                     console.error('❌ No profile ID available for redirect');
                     if (status) {
