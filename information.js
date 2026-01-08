@@ -609,22 +609,28 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const profileId = data && data[0] && data[0].id ? data[0].id : editProfileId;
                 
                 if (profileId) {
-                    console.log('Storing profile ID:', profileId);
+                    console.log('✅ Save successful! Profile ID:', profileId);
                     localStorage.setItem('lastProfileId', profileId);
+                    
+                    // Store the email to ensure profile loads correctly
+                    const savedEmail = data && data[0] && data[0].email ? data[0].email : payload.email;
+                    if (savedEmail) {
+                        localStorage.setItem('lastProfileEmail', savedEmail.toLowerCase());
+                        console.log('📧 Stored email for profile:', savedEmail);
+                    }
+                    
                     // Clear any cached profile data to force fresh load
                     localStorage.removeItem('cachedProfile_' + profileId);
                     
-                    // Redirect to profile page immediately (no delay, no status message)
-                    const redirectUrl = 'alumni/profile.html?id=' + profileId + (isEditMode ? '&updated=true' : '');
-                    console.log('Redirecting to:', redirectUrl);
+                    // Add small delay to ensure database commits the changes
+                    const redirectUrl = 'alumni/profile.html?id=' + profileId + (isEditMode ? '&updated=true' : '&created=true');
+                    console.log('🔄 Redirecting to:', redirectUrl);
                     
-                    window.location.href = redirectUrl;
+                    setTimeout(() => {
+                        window.location.href = redirectUrl;
+                    }, 800); // 800ms delay for database commit
                 } else {
                     console.error('❌ No profile ID available for redirect');
-                    if (status) {
-                        status.textContent = 'Saved but could not redirect';
-                        status.style.color = 'orange';
-                    }
                 }
 
                 // notify admin/list pages in the same origin to refresh

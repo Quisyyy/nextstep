@@ -276,11 +276,14 @@ window.addEventListener('alumni:saved', function(e) {
 // Check if we're returning from an edit (shows success message)
 function checkForUpdateSuccess() {
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('updated') === 'true') {
+    const updated = urlParams.get('updated') === 'true';
+    const created = urlParams.get('created') === 'true';
+    
+    if (updated || created) {
         // Show success message briefly
         const successMsg = document.createElement('div');
-        successMsg.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #28a745; color: white; padding: 15px 30px; border-radius: 8px; z-index: 9999; box-shadow: 0 4px 8px rgba(0,0,0,0.2);';
-        successMsg.textContent = '✅ Profile updated successfully!';
+        successMsg.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #28a745; color: white; padding: 15px 30px; border-radius: 8px; z-index: 9999; box-shadow: 0 4px 8px rgba(0,0,0,0.2); font-size: 16px;';
+        successMsg.textContent = created ? '✅ Profile created successfully!' : '✅ Profile updated successfully!';
         document.body.appendChild(successMsg);
         setTimeout(() => successMsg.remove(), 3000);
         
