@@ -10,12 +10,25 @@ function getEditProfileId() {
 
 // Load existing profile data for editing
 async function loadProfileForEdit(profileId) {
+    console.log('🔍 loadProfileForEdit called with ID:', profileId);
+    
+    const debugDiv = document.getElementById('debugInfo');
+    const debugText = document.getElementById('debugText');
+    if (debugDiv) debugDiv.style.display = 'block';
+    if (debugText) debugText.innerHTML = `Attempting to load profile ID: ${profileId}...`;
+    
     try {
-        const ready = await ensureSupabaseReady(5000);
+        console.log('⏳ Waiting for Supabase to be ready...');
+        const ready = await ensureSupabaseReady(10000); // Increased to 10 seconds
+        
         if (!ready) {
-            console.warn('Supabase not ready for loading profile data');
+            console.error('❌ Supabase not ready after 10 seconds');
+            if (debugText) debugText.innerHTML = 'ERROR: Database connection not ready';
             return null;
         }
+        
+        console.log('✅ Supabase is ready, fetching profile...');
+        if (debugText) debugText.innerHTML = `Fetching profile ${profileId} from database...`;
 
         const { data, error } = await window.supabase
             .from('alumni_profiles')
@@ -24,20 +37,39 @@ async function loadProfileForEdit(profileId) {
             .single();
 
         if (error) {
-            console.error('Error loading profile for edit:', error);
+            console.error('❌ Error loading profile:', error);
+            if (debugText) debugText.innerHTML = `ERROR: ${error.message}`;
+            return null;
+        }
+        
+        if (!data) {
+            console.warn('⚠️ No data returned for profile ID:', profileId);
+            if (debugText) debugText.innerHTML = 'ERROR: Profile not found';
             return null;
         }
 
+        console.log('✅ Profile data loaded successfully:', data);
+        if (debugText) debugText.innerHTML = `Profile loaded: ${data.full_name || 'No name'}`;
         return data;
+        
     } catch (err) {
-        console.error('Failed to load profile for edit:', err);
+        console.error('❌ Exception in loadProfileForEdit:', err);
+        if (debugText) debugText.innerHTML = `EXCEPTION: ${err.message}`;
         return null;
     }
 }
 
 // Populate form with existing data
 function populateFormWithData(data) {
-    if (!data) return;
+    if (!data) {
+        console.error('❌ populateFormWithData called with no data');
+        return;
+    }
+
+    console.log('📝 Populating form with data:', data);
+    
+    const debugText = document.getElementById('debugText');
+    if (debugText) debugText.innerHTML = 'Populating form fields...';
 
     // Personal information
     document.getElementById('fullname').value = data.full_name || '';
@@ -45,17 +77,38 @@ function populateFormWithData(data) {
     document.getElementById('contact').value = data.contact || '';
     document.getElementById('address').value = data.address || '';
 
-    // Birthday
-    if (data.birth_month) document.getElementById('birth-month').value = data.birth_month;
-    if (data.birth_day) document.getElementById('birth-day').value = data.birth_day;
-    if (data.birth_year) document.getElementById('birth-year').value = data.birth_year;
+    // Birthday - ensure values are strings for select elements
+    if (data.birth_month) {
+        const monthVal = String(data.birth_month);
+        document.getElementById('birth-month').value = monthVal;
+        console.log('Set month to:', monthVal);
+    }
+    if (data.birth_year) {
+        const yearVal = String(data.birth_year);
+        document.getElementById('birth-year').value = yearVal;
+        updateDaysForSelection(); // Update days based on month/year
+        console.log('Set year to:', yearVal);
+    }
+    if (data.birth_day) {
+        const dayVal = String(data.birth_day);
+        document.getElementById('birth-day').value = dayVal;
+        console.log('Set day to:', dayVal);
+    }
+    // Compute age after all birthday fields are set
+    computeAge();
 
     // Academic information
-    if (data.degree) document.getElementById('degree').value = data.degree;
+    if (data.degree) {
+        document.getElementById('degree').value = data.degree;
+        console.log('Set degree to:', data.degree);
+    }
     document.getElementById('studentNumber').value = data.student_number || '';
     document.getElementById('major').value = data.major || '';
     document.getElementById('honors').value = data.honors || '';
-    if (data.graduated_year) document.getElementById('graduated').value = data.graduated_year;
+    if (data.graduated_year) {
+        document.getElementById('graduated').value = String(data.graduated_year);
+        console.log('Set graduated year to:', data.graduated_year);
+    }
 
     // Job Status & Career Information
     if (data.job_status) document.getElementById('jobStatus').value = data.job_status;
@@ -70,13 +123,24 @@ function populateFormWithData(data) {
     const formTitle = document.querySelector('.form-title');
     if (formTitle) {
         formTitle.textContent = 'Edit Information Sheet';
+        formTitle.style.color = '#0066cc';
     }
 
     // Update save button text
     const saveButton = document.getElementById('saveProfile');
     if (saveButton) {
         saveButton.textContent = 'Update Profile';
+        saveButton.style.background = '#28a745';
     }
+
+    if (debugText) debugText.innerHTML = '✅ Form populated successfully! (Profile ID: ' + data.id + ')';
+    console.log('✅ Form populated successfully');
+    
+    // Hide debug info after 3 seconds
+    setTimeout(() => {
+        const debugDiv = document.getElementById('debugInfo');
+        if (debugDiv) debugDiv.style.display = 'none';
+    }, 3000);
 }
 
 // Populate month/day/year selects and compute age
@@ -175,17 +239,20 @@ monthSelect.value = '';
 daySelect.value = '';
 yearSelect.value = '';
 
-// populate graduated years
+// populate graduated years (2023-2026 only)
 const gradSelect = document.getElementById('graduated');
-(function() {
-    const current = new Date().getFullYear();
-    for (let y = current; y >= current - 50; y--) {
+if (gradSelect) {
+    const allowedYears = [2023, 2024, 2025, 2026];
+    allowedYears.forEach(y => {
         const o = document.createElement('option');
         o.value = y;
         o.text = y;
         gradSelect.appendChild(o);
-    }
-})();
+    });
+    console.log('Graduated years populated:', allowedYears);
+} else {
+    console.error('Graduate select element not found');
+}
 
 // Degree label map
 const degreeLabels = {
@@ -201,14 +268,73 @@ const degreeLabels = {
 
 function labelForDegree(code) { return degreeLabels[code] || ''; }
 
+// Student number validation (2019-xxxxx-SM-0 to 2022-xxxxx-SM-0)
+function validateStudentNumber(studentNum) {
+    if (!studentNum || studentNum.trim() === '') {
+        return { valid: true, message: '' }; // Allow empty (optional field)
+    }
+    
+    // Pattern: 2019-xxxxx-SM-0 to 2022-xxxxx-SM-0
+    const pattern = /^20(19|20|21|22)-\d{5}-SM-0$/;
+    
+    if (!pattern.test(studentNum)) {
+        return { 
+            valid: false, 
+            message: 'Invalid student number format. Must be 2019-xxxxx-SM-0 to 2022-xxxxx-SM-0' 
+        };
+    }
+    
+    return { valid: true, message: '' };
+}
+
+// Add real-time validation for student number
+const studentNumberInput = document.getElementById('studentNumber');
+const studentNumberError = document.getElementById('studentNumberError');
+
+if (studentNumberInput && studentNumberError) {
+    studentNumberInput.addEventListener('blur', function() {
+        const result = validateStudentNumber(this.value);
+        if (!result.valid) {
+            studentNumberError.textContent = result.message;
+            studentNumberError.style.display = 'block';
+            this.style.borderColor = 'red';
+        } else {
+            studentNumberError.style.display = 'none';
+            this.style.borderColor = '';
+        }
+    });
+    
+    studentNumberInput.addEventListener('input', function() {
+        if (studentNumberError.style.display === 'block') {
+            const result = validateStudentNumber(this.value);
+            if (result.valid) {
+                studentNumberError.style.display = 'none';
+                this.style.borderColor = '';
+            }
+        }
+    });
+}
+
 // ensureSupabaseReady helper
 async function ensureSupabaseReady(timeout = 2000) {
+    console.log('⏳ ensureSupabaseReady: Checking for Supabase...');
     const start = Date.now();
+    let attempts = 0;
     while (Date.now() - start < timeout) {
-        if (window.supabase && window.supabase.from) return true;
-        if (window.supabaseClientReady === false) return false;
+        attempts++;
+        if (window.supabase && window.supabase.from) {
+            console.log(`✅ Supabase ready after ${attempts} attempts (${Date.now() - start}ms)`);
+            return true;
+        }
+        if (window.supabaseClientReady === false) {
+            console.error('❌ Supabase client failed to initialize');
+            return false;
+        }
         await new Promise(r => setTimeout(r, 100));
     }
+    console.error(`❌ Supabase timeout after ${timeout}ms (${attempts} attempts)`);
+    console.log('window.supabase:', window.supabase);
+    console.log('window.supabaseClientReady:', window.supabaseClientReady);
     return !!(window.supabase && window.supabase.from);
 }
 
@@ -253,26 +379,74 @@ async function flushSubmitQueue() {
 
 // submit handler (button) - wrapped in DOMContentLoaded to ensure elements exist
 document.addEventListener('DOMContentLoaded', async function() {
+    console.log('═══════════════════════════════════════');
+    console.log('🚀 Information form initializing...');
+    console.log('Current URL:', window.location.href);
+    console.log('═══════════════════════════════════════');
+    
     const saveButton = document.getElementById('saveProfile');
     if (!saveButton) {
         console.error('❌ Save button #saveProfile not found! Check HTML element IDs.');
+        alert('Error: Save button not found. Please refresh the page.');
         return;
     }
+    console.log('✅ Save button found');
+
+    // Wait for all dropdowns to be populated
+    console.log('⏳ Waiting 500ms for dropdowns to populate...');
+    await new Promise(resolve => setTimeout(resolve, 500));
+    console.log('✅ Wait complete');
 
     // Check if we're in edit mode and load existing data
     const editProfileId = getEditProfileId();
+    console.log('📋 Edit Profile ID from URL:', editProfileId || 'NONE (new profile mode)');
+    
     if (editProfileId) {
-        console.log('🔧 Edit mode detected, loading profile:', editProfileId);
-        const existingData = await loadProfileForEdit(editProfileId);
-        if (existingData) {
-            populateFormWithData(existingData);
-            console.log('✅ Form populated with existing data');
-        } else {
-            console.warn('⚠️ Could not load profile data for editing');
-            const status = document.getElementById('saveStatus');
-            if (status) status.textContent = 'Warning: Could not load existing profile data';
+        console.log('🔧 ═══ EDIT MODE ACTIVATED ═══');
+        console.log('Profile ID to load:', editProfileId);
+        
+        // Show edit mode indicator
+        const editModeIndicator = document.getElementById('editModeIndicator');
+        if (editModeIndicator) {
+            editModeIndicator.style.display = 'block';
+            editModeIndicator.textContent = '🔧 EDIT MODE - Loading Profile ID: ' + editProfileId;
         }
+        
+        // Show loading indicator
+        const status = document.getElementById('saveStatus');
+        if (status) {
+            status.textContent = '⏳ Loading profile data...';
+            status.style.color = '#0066cc';
+        }
+        
+        console.log('📞 Calling loadProfileForEdit...');
+        const existingData = await loadProfileForEdit(editProfileId);
+        
+        if (existingData) {
+            console.log('✅ Data retrieved successfully:', existingData);
+            console.log('📝 Calling populateFormWithData...');
+            populateFormWithData(existingData);
+            console.log('✅ populateFormWithData completed');
+            if (status) status.textContent = '';
+        } else {
+            console.error('❌ loadProfileForEdit returned NULL');
+            console.error('This means either:');
+            console.error('  1. Supabase is not ready');
+            console.error('  2. Profile not found in database');
+            console.error('  3. Database query error');
+            if (status) {
+                status.textContent = '⚠️ Could not load profile data!';
+                status.style.color = 'red';
+            }
+            alert('ERROR: Could not load profile data.\n\nPlease check:\n1. Is the database online?\n2. Does this profile exist?\n3. Check browser console (F12) for details.');
+        }
+    } else {
+        console.log('📝 New profile mode (no edit ID in URL)');
     }
+    
+    console.log('═══════════════════════════════════════');
+    console.log('✅ Initialization complete - ready for user interaction');
+    console.log('═══════════════════════════════════════');
 
     saveButton.addEventListener('click', async function(e) {
         e.preventDefault();
@@ -283,9 +457,32 @@ document.addEventListener('DOMContentLoaded', async function() {
             status.style.color = '';
         }
 
+        // Validate student number before submission
+        const studentNum = document.getElementById('studentNumber').value;
+        const validationResult = validateStudentNumber(studentNum);
+        if (!validationResult.valid) {
+            const studentNumberError = document.getElementById('studentNumberError');
+            if (studentNumberError) {
+                studentNumberError.textContent = validationResult.message;
+                studentNumberError.style.display = 'block';
+            }
+            document.getElementById('studentNumber').style.borderColor = 'red';
+            if (status) {
+                status.textContent = 'Please fix the errors before submitting';
+                status.style.color = 'red';
+            }
+            // Scroll to the error
+            document.getElementById('studentNumber').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
         // Check if we're in edit mode
         const editProfileId = getEditProfileId();
         const isEditMode = !!editProfileId;
+        
+        console.log('💾 Preparing to save...');
+        console.log('Mode:', isEditMode ? 'UPDATE (Edit)' : 'INSERT (New)');
+        console.log('Profile ID:', editProfileId || 'N/A');
 
         const payload = {
             full_name: document.getElementById('fullname').value || null,
@@ -314,8 +511,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             payload.created_at = new Date().toISOString();
         }
 
+        console.log('Starting save operation. Edit mode:', isEditMode, 'Profile ID:', editProfileId);
+        
         try {
-            const ready = await ensureSupabaseReady(2500);
+            const ready = await ensureSupabaseReady(10000); // Increased to 10 seconds
             if (ready) {
                 payload.degree_label = labelForDegree(payload.degree);
 
@@ -323,41 +522,119 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                 if (isEditMode) {
                     // UPDATE existing record
+                    console.log('📝 Updating profile ID:', editProfileId);
+                    console.log('Payload:', JSON.stringify(payload, null, 2));
+                    
+                    // Remove any fields that might not exist in the database schema
+                    const cleanPayload = { ...payload };
+                    delete cleanPayload.updated_at; // Remove if exists
+                    
+                    console.log('Clean payload (no updated_at):', JSON.stringify(cleanPayload, null, 2));
+                    
+                    // Important: When updating, we need to make sure we're not violating unique constraints
+                    // The update should work because we're updating the same record
                     const result = await window.supabase
                         .from('alumni_profiles')
-                        .update(payload)
+                        .update(cleanPayload)
                         .eq('id', editProfileId)
                         .select();
+                    
                     data = result.data;
                     error = result.error;
-                    console.log('supabase update result', { data, error });
+                    
+                    console.log('✅ Update result:', { data, error });
+                    
+                    if (error) {
+                        console.error('❌ Update error:', error);
+                        console.error('Error details:', {
+                            message: error.message,
+                            details: error.details,
+                            hint: error.hint,
+                            code: error.code
+                        });
+                        
+                        // Check if it's a unique constraint violation
+                        if (error.code === '23505') {
+                            const constraintMatch = error.message.match(/alumni_profiles_(\w+)_key/);
+                            const field = constraintMatch ? constraintMatch[1] : 'field';
+                            
+                            if (status) {
+                                status.textContent = `Error: This ${field} is already in use by another profile`;
+                                status.style.color = 'red';
+                            }
+                            alert(`Cannot update: The ${field} you entered is already used by another profile.\n\nPlease use a different ${field}.`);
+                        } else {
+                            if (status) {
+                                status.textContent = 'Update failed: ' + (error.message || 'Unknown error');
+                                status.style.color = 'red';
+                            }
+                            alert('Update failed: ' + error.message);
+                        }
+                        return; // Stop execution
+                    }
+                    
+                    if (!data || data.length === 0) {
+                        console.warn('⚠️ Update returned no data, checking if it succeeded...');
+                        // Verify the update worked by fetching the record
+                        const { data: checkData, error: checkError } = await window.supabase
+                            .from('alumni_profiles')
+                            .select('*')
+                            .eq('id', editProfileId)
+                            .single();
+                        
+                        if (checkError) {
+                            console.error('❌ Verification failed:', checkError);
+                            if (status) {
+                                status.textContent = 'Update status unknown: ' + checkError.message;
+                                status.style.color = 'orange';
+                            }
+                            return;
+                        }
+                        
+                        console.log('✅ Verification successful, update worked');
+                        data = [checkData];
+                    }
+                    
+                    console.log('✅ Profile updated successfully');
                 } else {
                     // INSERT new record
+                    console.log('📝 Creating new profile');
                     const result = await window.supabase.from('alumni_profiles').insert([payload]).select();
                     data = result.data;
                     error = result.error;
-                    console.log('supabase insert result', { data, error });
+                    console.log('Insert result:', { data, error });
                 }
 
                 if (error) throw error;
+                
                 if (status) {
-                    status.innerHTML = '✅';
-                    status.style.fontSize = '24px';
+                    status.innerHTML = '✅ ' + (isEditMode ? 'Updated!' : 'Saved!');
+                    status.style.fontSize = '18px';
                     status.style.color = '#28a745';
                 }
 
                 // Store profile ID for the profile page
-                if (data && data[0] && data[0].id) {
-                    localStorage.setItem('lastProfileId', data[0].id);
+                const profileId = data && data[0] && data[0].id ? data[0].id : editProfileId;
+                
+                if (profileId) {
+                    console.log('Storing profile ID:', profileId);
+                    localStorage.setItem('lastProfileId', profileId);
+                    // Clear any cached profile data to force fresh load
+                    localStorage.removeItem('cachedProfile_' + profileId);
+                    
                     // Redirect to profile page after successful save/update
+                    const redirectUrl = 'alumni/profile.html?id=' + profileId + (isEditMode ? '&updated=true' : '');
+                    console.log('Redirecting to:', redirectUrl);
+                    
                     setTimeout(() => {
-                        window.location.href = 'alumni/profile.html?id=' + data[0].id;
-                    }, 1000);
-                } else if (isEditMode) {
-                    // For updates, use the existing ID
-                    setTimeout(() => {
-                        window.location.href = 'alumni/profile.html?id=' + editProfileId;
-                    }, 1000);
+                        window.location.href = redirectUrl;
+                    }, 1500);
+                } else {
+                    console.error('❌ No profile ID available for redirect');
+                    if (status) {
+                        status.textContent = 'Saved but could not redirect';
+                        status.style.color = 'orange';
+                    }
                 }
 
                 // notify admin/list pages in the same origin to refresh

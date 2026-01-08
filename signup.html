@@ -115,6 +115,13 @@
             <!-- hidden developer / UX fields -->
             <input type="hidden" id="signupRole" name="role" value="student">
 
+            <div class="form-row" style="margin-top: 20px;">
+                <label style="display: flex; align-items: flex-start; font-weight: normal; cursor: pointer;">
+                    <input type="checkbox" id="signupTerms" name="terms" style="width: auto; margin-right: 8px; margin-top: 3px; cursor: pointer;" required>
+                    <span style="font-size: 14px; line-height: 1.5;">I agree to the <a href="#" style="color: #0b66b3; text-decoration: underline;">Terms and Conditions</a> and <a href="#" style="color: #0b66b3; text-decoration: underline;">Privacy Policy</a></span>
+                </label>
+            </div>
+
             <div style="margin-top:8px">
                 <button id="signupBtn" type="submit" class="btn">Sign Up</button>
                 <span id="signupStatus" role="status" aria-live="polite" style="margin-left:10px;color:#0b66b3;font-weight:600"></span>

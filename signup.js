@@ -108,6 +108,14 @@ async function handleSignupSubmission(event) {
         role: document.getElementById('signupRole').value || 'student'
     };
 
+    // Check terms and conditions checkbox
+    const termsCheckbox = document.getElementById('signupTerms');
+    if (!termsCheckbox || !termsCheckbox.checked) {
+        statusSpan.textContent = 'You must agree to the Terms and Conditions to sign up';
+        statusSpan.style.color = '#d32f2f';
+        return;
+    }
+
     // Basic validation
     if (!formData.full_name || !formData.email || !formData.password) {
         statusSpan.textContent = 'Please fill in all required fields';

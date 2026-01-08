@@ -39,6 +39,12 @@ create policy anon_select on public.alumni_profiles for select using (true);
 drop policy if exists anon_insert on public.alumni_profiles;
 create policy anon_insert on public.alumni_profiles for insert with check (true);
 
+drop policy if exists anon_update on public.alumni_profiles;
+create policy anon_update on public.alumni_profiles for update using (true) with check (true);
+
+drop policy if exists anon_delete on public.alumni_profiles;
+create policy anon_delete on public.alumni_profiles for delete using (true);
+
 -- Optional: add a couple of seed rows
 -- Ensure table has the expected columns (use ALTER ... ADD COLUMN IF NOT EXISTS so this script can be re-run)
 alter table public.alumni_profiles add column if not exists degree_label text;

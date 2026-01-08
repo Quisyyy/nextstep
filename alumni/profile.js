@@ -193,7 +193,14 @@ function displayProfile(data) {
     // Update edit button to include profile ID for editing
     const editButton = document.querySelector('a.btn-edit');
     if (editButton && data.id) {
-        editButton.href = `../Information.html?edit=${data.id}`;
+        const editUrl = `../Information.html?edit=${data.id}`;
+        editButton.href = editUrl;
+        console.log('✅ Edit button URL set to:', editUrl);
+        console.log('Profile ID:', data.id);
+    } else {
+        console.warn('⚠️ Edit button setup failed');
+        console.log('Edit button element:', editButton);
+        console.log('Profile ID:', data.id);
     }
 }
 
@@ -212,8 +219,33 @@ function initAuthNav() {
     }
 }
 
+// Listen for profile updates from the Information page
+window.addEventListener('alumni:saved', function(e) {
+    console.log('Profile updated, reloading...');
+    // Small delay to ensure database is updated
+    setTimeout(() => loadProfile(), 500);
+});
+
+// Check if we're returning from an edit (shows success message)
+function checkForUpdateSuccess() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('updated') === 'true') {
+        // Show success message briefly
+        const successMsg = document.createElement('div');
+        successMsg.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #28a745; color: white; padding: 15px 30px; border-radius: 8px; z-index: 9999; box-shadow: 0 4px 8px rgba(0,0,0,0.2);';
+        successMsg.textContent = '✅ Profile updated successfully!';
+        document.body.appendChild(successMsg);
+        setTimeout(() => successMsg.remove(), 3000);
+        
+        // Clean up URL without reload
+        const cleanUrl = window.location.pathname + (urlParams.get('id') ? '?id=' + urlParams.get('id') : '');
+        window.history.replaceState({}, document.title, cleanUrl);
+    }
+}
+
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', function() {
     initAuthNav();
+    checkForUpdateSuccess();
     loadProfile();
 });
