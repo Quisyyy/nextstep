@@ -72,7 +72,7 @@ async function fetchLatestProfileByEmail(email) {
     return { data: data && data[0] ? data[0] : null, error };
 }
 
-// Load and display profile bound to logged-in email only (no global fallback)
+// Load and display profile bound to logged-in email only (no cross-account data)
 async function loadProfile() {
     const loadingDiv = document.getElementById('loading');
     const errorDiv = document.getElementById('error');
@@ -82,9 +82,16 @@ async function loadProfile() {
     errorDiv.style.display = 'none';
     contentDiv.style.display = 'none';
 
+    // CRITICAL: Get current logged-in user email - this ensures data isolation
     const currentEmail = (localStorage.getItem('currentUserEmail') || '').trim().toLowerCase();
+    
+    console.log('🔐 Loading profile for email:', currentEmail || 'NONE');
+
+    // Clear any cached profile IDs from other sessions to prevent data leakage
     const urlProfileId = getProfileIdFromUrl();
-    const storedProfileId = localStorage.getItem('lastProfileId');
+    
+    // SECURITY: Only use URL profile ID if it belongs to current user
+    // This prevents users from accessing other users' profiles via URL manipulation
 
     try {
         const ready = await ensureSupabaseReady();
@@ -93,28 +100,51 @@ async function loadProfile() {
         let profile = null;
         let queryError = null;
 
-        if (urlProfileId) {
-            ({ data: profile, error: queryError } = await fetchProfileById(urlProfileId));
-        } else if (currentEmail) {
+        // ALWAYS load by email first to ensure data belongs to current user
+        if (currentEmail) {
+            console.log('🔍 Fetching profile by email:', currentEmail);
             ({ data: profile, error: queryError } = await fetchLatestProfileByEmail(currentEmail));
-        } else if (storedProfileId) {
-            ({ data: profile, error: queryError } = await fetchProfileById(storedProfileId));
+            
+            // If URL has a profile ID, verify it matches the user's email
+            if (urlProfileId && profile && profile.id !== urlProfileId) {
+                console.warn('⚠️ URL profile ID does not match user email - using email-based profile');
+            }
+        } else if (urlProfileId) {
+            // Fallback: If no email but URL ID provided (coming from edit redirect)
+            console.log('🔍 Fetching profile by URL ID:', urlProfileId);
+            ({ data: profile, error: queryError } = await fetchProfileById(urlProfileId));
+            
+            // Verify this profile matches the stored email for security
+            if (profile && profile.email) {
+                const storedEmail = (localStorage.getItem('currentUserEmail') || '').trim().toLowerCase();
+                if (storedEmail && profile.email.toLowerCase() !== storedEmail) {
+                    console.error('❌ Security: Profile email mismatch');
+                    profile = null;
+                    throw new Error('Access denied: Profile does not belong to current user');
+                }
+            }
         }
 
         if (queryError) throw queryError;
 
         if (!profile) {
+            console.log('ℹ️ No profile found for user');
             // No profile yet – show empty template with guidance
             initializeEmptyProfile(currentEmail);
             return;
         }
 
-        // Cache the id so we can revisit without URL param
-        if (profile.id) localStorage.setItem('lastProfileId', profile.id);
+        console.log('✅ Profile loaded:', profile.full_name);
+        
+        // Store profile ID for current session ONLY
+        if (profile.id) {
+            localStorage.setItem('lastProfileId', profile.id);
+            localStorage.setItem('lastProfileEmail', profile.email); // Track which email this ID belongs to
+        }
 
         displayProfile(profile);
     } catch (err) {
-        console.error('Error loading profile:', err);
+        console.error('❌ Error loading profile:', err);
         loadingDiv.style.display = 'none';
         errorDiv.style.display = 'block';
         errorDiv.querySelector('div').textContent = err.message || 'Unable to load profile.';
@@ -214,8 +244,25 @@ function initAuthNav() {
     }
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
+            // Clear all cached profile data to prevent cross-account contamination
+            localStorage.removeItem('lastProfileId');
+            localStorage.removeItem('lastProfileEmail');
+            console.log('🧹 Cleared cached profile data on logout');
             showLogoutConfirm('../login.html');
         });
+    }
+}
+
+// Clear cached profile data when email changes (account switch detection)
+function detectAccountSwitch() {
+    const currentEmail = (localStorage.getItem('currentUserEmail') || '').trim().toLowerCase();
+    const lastEmail = localStorage.getItem('lastProfileEmail');
+    
+    if (lastEmail && currentEmail && lastEmail !== currentEmail) {
+        console.log('🔄 Account switch detected:', lastEmail, '→', currentEmail);
+        localStorage.removeItem('lastProfileId');
+        localStorage.removeItem('lastProfileEmail');
+        console.log('🧹 Cleared old profile cache');
     }
 }
 
@@ -245,6 +292,7 @@ function checkForUpdateSuccess() {
 
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', function() {
+    detectAccountSwitch(); // Check for account changes before loading
     initAuthNav();
     checkForUpdateSuccess();
     loadProfile();

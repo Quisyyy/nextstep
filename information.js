@@ -12,23 +12,16 @@ function getEditProfileId() {
 async function loadProfileForEdit(profileId) {
     console.log('🔍 loadProfileForEdit called with ID:', profileId);
     
-    const debugDiv = document.getElementById('debugInfo');
-    const debugText = document.getElementById('debugText');
-    if (debugDiv) debugDiv.style.display = 'block';
-    if (debugText) debugText.innerHTML = `Attempting to load profile ID: ${profileId}...`;
-    
     try {
         console.log('⏳ Waiting for Supabase to be ready...');
         const ready = await ensureSupabaseReady(10000); // Increased to 10 seconds
         
         if (!ready) {
             console.error('❌ Supabase not ready after 10 seconds');
-            if (debugText) debugText.innerHTML = 'ERROR: Database connection not ready';
             return null;
         }
         
         console.log('✅ Supabase is ready, fetching profile...');
-        if (debugText) debugText.innerHTML = `Fetching profile ${profileId} from database...`;
 
         const { data, error } = await window.supabase
             .from('alumni_profiles')
@@ -38,23 +31,28 @@ async function loadProfileForEdit(profileId) {
 
         if (error) {
             console.error('❌ Error loading profile:', error);
-            if (debugText) debugText.innerHTML = `ERROR: ${error.message}`;
             return null;
         }
         
         if (!data) {
             console.warn('⚠️ No data returned for profile ID:', profileId);
-            if (debugText) debugText.innerHTML = 'ERROR: Profile not found';
+            return null;
+        }
+        
+        // SECURITY: Verify this profile belongs to the current user
+        const currentEmail = (localStorage.getItem('currentUserEmail') || '').trim().toLowerCase();
+        if (currentEmail && data.email && data.email.toLowerCase() !== currentEmail) {
+            console.error('❌ Security: Attempted to edit another user\'s profile');
+            alert('Access denied: You can only edit your own profile.');
+            window.location.href = 'alumni/profile.html';
             return null;
         }
 
         console.log('✅ Profile data loaded successfully:', data);
-        if (debugText) debugText.innerHTML = `Profile loaded: ${data.full_name || 'No name'}`;
         return data;
         
     } catch (err) {
         console.error('❌ Exception in loadProfileForEdit:', err);
-        if (debugText) debugText.innerHTML = `EXCEPTION: ${err.message}`;
         return null;
     }
 }
