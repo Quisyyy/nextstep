@@ -446,6 +446,20 @@ document.addEventListener('DOMContentLoaded', async function() {
     console.log('✅ Initialization complete - ready for user interaction');
     console.log('═══════════════════════════════════════');
 
+    // Auto-populate email from logged-in user (only for new profiles)
+    if (!editProfileId) {
+        const currentEmail = localStorage.getItem('currentUserEmail');
+        if (currentEmail) {
+            const emailField = document.getElementById('email');
+            if (emailField && !emailField.value) {
+                emailField.value = currentEmail;
+                emailField.readOnly = true; // Prevent changing email
+                emailField.style.backgroundColor = '#f5f5f5';
+                console.log('✅ Auto-populated email:', currentEmail);
+            }
+        }
+    }
+
     saveButton.addEventListener('click', async function(e) {
         e.preventDefault();
         const status = document.getElementById('saveStatus');
@@ -453,6 +467,20 @@ document.addEventListener('DOMContentLoaded', async function() {
             status.innerHTML = '';
             status.style.fontSize = '';
             status.style.color = '';
+        }
+
+        // Check if user is logged in (required for saving profile)
+        const currentEmail = localStorage.getItem('currentUserEmail');
+        if (!currentEmail && !getEditProfileId()) {
+            if (status) {
+                status.textContent = 'Please login first to save your profile';
+                status.style.color = 'red';
+            }
+            alert('You must be logged in to save your profile.\n\nPlease login or signup first.');
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+            return;
         }
 
         // Validate student number before submission
