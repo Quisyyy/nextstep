@@ -41,6 +41,28 @@ function ensureSupabaseReady(timeoutMs = 5000) {
     });
 }
 
+// Check if email has already been used for signup
+async function checkEmailExists(email) {
+    try {
+        const supabase = await ensureSupabaseReady();
+        const { data, error } = await supabase
+            .from('signups')
+            .select('id')
+            .eq('email', email.toLowerCase())
+            .limit(1);
+
+        if (error) {
+            console.error('Error checking email:', error);
+            return false; // Allow signup if we can't check (network issue)
+        }
+
+        return data && data.length > 0;
+    } catch (error) {
+        console.error('Exception checking email:', error);
+        return false; // Allow signup if we can't check
+    }
+}
+
 // Queue signup data for later submission
 function queueSignup(signupData) {
     try {
@@ -169,6 +191,17 @@ async function handleSignupSubmission(event) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
         statusSpan.textContent = 'Please enter a valid email address';
+        statusSpan.style.color = '#d32f2f';
+        return;
+    }
+
+    statusSpan.textContent = 'Checking email...';
+    statusSpan.style.color = '#0b66b3';
+
+    // Check if email already exists
+    const emailExists = await checkEmailExists(formData.email);
+    if (emailExists) {
+        statusSpan.textContent = 'Email already registered. Please use a different email or login.';
         statusSpan.style.color = '#d32f2f';
         return;
     }
