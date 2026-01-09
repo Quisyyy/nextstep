@@ -235,21 +235,10 @@ function displayProfile(data) {
 }
 
 function initAuthNav() {
-    const email = (localStorage.getItem('currentUserEmail') || '').trim().toLowerCase();
-    const loginLink = document.getElementById('nav-login');
-    const logoutBtn = document.getElementById('nav-logout');
-    if (email) {
-        if (loginLink) loginLink.style.display = 'none';
-        if (logoutBtn) logoutBtn.style.display = 'inline-block';
-    }
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            // Clear all cached profile data to prevent cross-account contamination
-            localStorage.removeItem('lastProfileId');
-            localStorage.removeItem('lastProfileEmail');
-            console.log('🧹 Cleared cached profile data on logout');
-            showLogoutConfirm('../login.html');
-        });
+    // Auth nav is handled by auth-nav.js
+    // Just refresh it in case it wasn't ready earlier
+    if (window.updateAuthNav) {
+        window.updateAuthNav();
     }
 }
 

@@ -111,18 +111,11 @@ async function waitForSupabase(ms = 4000) {
 }
 
 document.addEventListener('DOMContentLoaded', async() => {
-    const email = (localStorage.getItem('currentUserEmail') || '').trim().toLowerCase();
-    const loginLink = document.getElementById('nav-login');
-    const logoutBtn = document.getElementById('nav-logout');
+    const email = window.updateAuthNav ? window.updateAuthNav() : (localStorage.getItem('currentUserEmail') || '').trim().toLowerCase();
     const heroCta = document.getElementById('hero-cta');
     const vid = document.getElementById('myVideo');
     const aboutLink = document.getElementById('nav-about');
     const contactLink = document.getElementById('nav-contact');
-
-    if (email) {
-        if (loginLink) loginLink.style.display = 'none';
-        if (logoutBtn) logoutBtn.style.display = 'inline-block';
-    }
 
     // Decide CTA ('Go to Profile' vs 'Fill up') based on profile existence
     if (email && heroCta) {
@@ -188,12 +181,6 @@ document.addEventListener('DOMContentLoaded', async() => {
         contactLink.addEventListener('click', (e) => {
             e.preventDefault();
             smoothScroll('#site-contact');
-        });
-    }
-
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            showLogoutConfirm('login.html');
         });
     }
 });

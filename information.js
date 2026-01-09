@@ -745,22 +745,5 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     });
 
-    // Initialize logout button
-    initAuthNav();
 });
 
-// Handle auth navigation (login/logout button visibility)
-function initAuthNav() {
-    const email = (localStorage.getItem('currentUserEmail') || '').trim().toLowerCase();
-    const loginLink = document.getElementById('nav-login');
-    const logoutBtn = document.getElementById('nav-logout');
-    if (email) {
-        if (loginLink) loginLink.style.display = 'none';
-        if (logoutBtn) logoutBtn.style.display = 'inline-block';
-    }
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            showLogoutConfirm('login.html');
-        });
-    }
-}
