@@ -539,8 +539,28 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         console.log('Starting save operation. Edit mode:', isEditMode, 'Profile ID:', editProfileId);
         
+        // Show saving status
+        if (status) {
+            status.textContent = '⏳ Saving...';
+            status.style.color = '#0066cc';
+        }
+        
         try {
+            console.log('🔌 Checking Supabase connection...');
             const ready = await ensureSupabaseReady(10000); // Increased to 10 seconds
+            
+            if (!ready) {
+                console.error('❌ Supabase not ready!');
+                if (status) {
+                    status.textContent = '❌ Database connection failed. Check your internet connection.';
+                    status.style.color = 'red';
+                }
+                alert('Cannot connect to database.\n\nPlease check:\n1. Your internet connection\n2. Browser console (F12) for errors');
+                return;
+            }
+            
+            console.log('✅ Supabase is ready');
+            
             if (ready) {
                 payload.degree_label = labelForDegree(payload.degree);
 
@@ -625,10 +645,42 @@ document.addEventListener('DOMContentLoaded', async function() {
                 } else {
                     // INSERT new record
                     console.log('📝 Creating new profile');
+                    console.log('Payload:', JSON.stringify(payload, null, 2));
+                    
                     const result = await window.supabase.from('alumni_profiles').insert([payload]).select();
                     data = result.data;
                     error = result.error;
-                    console.log('Insert result:', { data, error });
+                    
+                    console.log('✅ Insert result:', { data, error });
+                    
+                    if (error) {
+                        console.error('❌ Insert error:', error);
+                        console.error('Error details:', {
+                            message: error.message,
+                            details: error.details,
+                            hint: error.hint,
+                            code: error.code
+                        });
+                        
+                        // Check if it's a unique constraint violation
+                        if (error.code === '23505') {
+                            const constraintMatch = error.message.match(/alumni_profiles_(\w+)_key/);
+                            const field = constraintMatch ? constraintMatch[1] : 'field';
+                            
+                            if (status) {
+                                status.textContent = `❌ Error: This ${field} is already in use`;
+                                status.style.color = 'red';
+                            }
+                            alert(`Cannot save: The ${field} you entered is already used by another profile.\n\nPlease use a different ${field}.`);
+                        } else {
+                            if (status) {
+                                status.textContent = '❌ Save failed: ' + (error.message || 'Unknown error');
+                                status.style.color = 'red';
+                            }
+                            alert('Save failed: ' + error.message + '\n\nPlease check the browser console (F12) for details.');
+                        }
+                        return; // Stop execution
+                    }
                 }
 
                 if (error) throw error;
@@ -639,6 +691,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (profileId) {
                     console.log('✅ Save successful! Profile ID:', profileId);
                     localStorage.setItem('lastProfileId', profileId);
+                    
+                    if (status) {
+                        status.textContent = '✅ Profile saved successfully! Redirecting...';
+                        status.style.color = '#28a745';
+                    }
                     
                     // Store the email to ensure profile loads correctly
                     const savedEmail = data && data[0] && data[0].email ? data[0].email : payload.email;
