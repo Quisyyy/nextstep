@@ -272,13 +272,13 @@ function validateStudentNumber(studentNum) {
         return { valid: true, message: '' }; // Allow empty (optional field)
     }
     
-    // Pattern: 2019-xxxxx-SM-0 to 2022-xxxxx-SM-0
-    const pattern = /^20(19|20|21|22)-\d{5}-SM-0$/;
+    // Pattern: 2019-xxxxx-SM-0 to 2026-xxxxx-SM-0
+    const pattern = /^20(19|20|21|22|23|24|25|26)-\d{5}-SM-0$/;
     
     if (!pattern.test(studentNum)) {
         return { 
             valid: false, 
-            message: 'Invalid student number format. Must be 2019-xxxxx-SM-0 to 2022-xxxxx-SM-0' 
+            message: 'Invalid student number format. Must be 2019-xxxxx-SM-0 to 2026-xxxxx-SM-0' 
         };
     }
     
