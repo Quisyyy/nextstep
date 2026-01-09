@@ -46,7 +46,11 @@ function showLogoutConfirm(redirectUrl) {
     logoutBtn.onmouseover = () => logoutBtn.style.background = '#b71c1c';
     logoutBtn.onmouseout = () => logoutBtn.style.background = '#d32f2f';
     logoutBtn.addEventListener('click', () => {
+        // Clear ALL user data to prevent cross-contamination
         localStorage.removeItem('currentUserEmail');
+        localStorage.removeItem('lastProfileId');
+        localStorage.removeItem('lastProfileEmail');
+        console.log('🧹 Cleared all user session data on logout');
         window.location.href = redirectUrl;
     });
     
