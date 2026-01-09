@@ -85,7 +85,13 @@ async function loadProfile() {
     // CRITICAL: Get current logged-in user email - this ensures data isolation
     const currentEmail = (localStorage.getItem('currentUserEmail') || '').trim().toLowerCase();
     
-    console.log('🔐 Loading profile for email:', currentEmail || 'NONE');
+    // FALLBACK: If not logged in, try to use the last profile email (user created a profile before)
+    const fallbackEmail = !currentEmail ? (localStorage.getItem('lastProfileEmail') || '').trim().toLowerCase() : '';
+    const emailToUse = currentEmail || fallbackEmail;
+    
+    console.log('🔐 Loading profile for email:', emailToUse || 'NONE');
+    console.log('Current session email:', currentEmail || 'NONE');
+    console.log('Last profile email (fallback):', fallbackEmail || 'NONE');
 
     // Clear any cached profile IDs from other sessions to prevent data leakage
     const urlProfileId = getProfileIdFromUrl();
@@ -100,29 +106,19 @@ async function loadProfile() {
         let profile = null;
         let queryError = null;
 
-        // ALWAYS load by email first to ensure data belongs to current user
-        if (currentEmail) {
-            console.log('🔍 Fetching profile by email:', currentEmail);
-            ({ data: profile, error: queryError } = await fetchLatestProfileByEmail(currentEmail));
+        // Load by email (with fallback)
+        if (emailToUse) {
+            console.log('🔍 Fetching profile by email:', emailToUse);
+            ({ data: profile, error: queryError } = await fetchLatestProfileByEmail(emailToUse));
             
-            // If URL has a profile ID, verify it matches the user's email
+            // If URL has a profile ID, verify it matches the email
             if (urlProfileId && profile && profile.id !== urlProfileId) {
-                console.warn('⚠️ URL profile ID does not match user email - using email-based profile');
+                console.warn('⚠️ URL profile ID does not match profile email - using email-based profile');
             }
         } else if (urlProfileId) {
-            // Fallback: If no email but URL ID provided (coming from edit redirect)
+            // Fallback: If no email at all but URL ID provided
             console.log('🔍 Fetching profile by URL ID:', urlProfileId);
             ({ data: profile, error: queryError } = await fetchProfileById(urlProfileId));
-            
-            // Verify this profile matches the stored email for security
-            if (profile && profile.email) {
-                const storedEmail = (localStorage.getItem('currentUserEmail') || '').trim().toLowerCase();
-                if (storedEmail && profile.email.toLowerCase() !== storedEmail) {
-                    console.error('❌ Security: Profile email mismatch');
-                    profile = null;
-                    throw new Error('Access denied: Profile does not belong to current user');
-                }
-            }
         }
 
         if (queryError) throw queryError;
@@ -130,7 +126,7 @@ async function loadProfile() {
         if (!profile) {
             console.log('ℹ️ No profile found for user');
             // No profile yet – show empty template with guidance
-            initializeEmptyProfile(currentEmail);
+            initializeEmptyProfile(emailToUse || currentEmail);
             return;
         }
 
