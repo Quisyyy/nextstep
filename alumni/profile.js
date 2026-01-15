@@ -220,6 +220,15 @@ function displayProfile(data) {
     document.getElementById('honors').textContent = data.honors || '-';
     document.getElementById('graduated').textContent = data.graduated_year || '-';
 
+    // Job Status & Career Information
+    document.getElementById('jobStatus').textContent = data.job_status || '-';
+    document.getElementById('currentJob').textContent = data.current_job || '-';
+    document.getElementById('previousRoles').textContent = data.previous_roles || '-';
+    document.getElementById('careerPath').textContent = data.career_path || '-';
+    document.getElementById('industry').textContent = data.industry || '-';
+    document.getElementById('professionalCertificates').textContent = data.professional_certificates || '-';
+    document.getElementById('openForMentorship').textContent = data.open_for_mentorship || '-';
+
     // Update edit button to include profile ID for editing
     const editButton = document.querySelector('a.btn-edit');
     if (editButton && data.id) {

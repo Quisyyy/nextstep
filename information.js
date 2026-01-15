@@ -446,20 +446,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     console.log('✅ Initialization complete - ready for user interaction');
     console.log('═══════════════════════════════════════');
 
-    // Auto-populate email from logged-in user (only for new profiles)
-    if (!editProfileId) {
-        const currentEmail = localStorage.getItem('currentUserEmail');
-        if (currentEmail) {
-            const emailField = document.getElementById('email');
-            if (emailField && !emailField.value) {
-                emailField.value = currentEmail;
-                emailField.readOnly = true; // Prevent changing email
-                emailField.style.backgroundColor = '#f5f5f5';
-                console.log('✅ Auto-populated email:', currentEmail);
-            }
-        }
-    }
-
     saveButton.addEventListener('click', async function(e) {
         e.preventDefault();
         const status = document.getElementById('saveStatus');
@@ -598,6 +584,16 @@ document.addEventListener('DOMContentLoaded', async function() {
                             hint: error.hint,
                             code: error.code
                         });
+                        
+                        // Check if it's an updated_at column error (database trigger issue)
+                        if (error.message && error.message.includes('updated_at')) {
+                            if (status) {
+                                status.textContent = 'Database configuration error. Please contact admin to run FIX_UPDATED_AT_ERROR.sql';
+                                status.style.color = 'red';
+                            }
+                            alert('Database Error: The database has an "updated_at" trigger that needs to be removed.\n\nPlease run the SQL script: sql/FIX_UPDATED_AT_ERROR.sql in Supabase SQL Editor.');
+                            return;
+                        }
                         
                         // Check if it's a unique constraint violation
                         if (error.code === '23505') {
