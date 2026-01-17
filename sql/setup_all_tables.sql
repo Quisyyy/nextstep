@@ -53,11 +53,11 @@ create index if not exists idx_alumni_degree on public.alumni_profiles (degree);
 alter table public.alumni_profiles enable row level security;
 
 -- RLS policies for alumni_profiles (permissive for development)
-drop policy if exists anon_select on public.alumni_profiles;
-create policy anon_select on public.alumni_profiles for select using (true);
+drop policy if exists alumni_anon_select on public.alumni_profiles;
+create policy alumni_anon_select on public.alumni_profiles for select using (true);
 
-drop policy if exists anon_insert on public.alumni_profiles;
-create policy anon_insert on public.alumni_profiles for insert with check (true);
+drop policy if exists alumni_anon_insert on public.alumni_profiles;
+create policy alumni_anon_insert on public.alumni_profiles for insert with check (true);
 
 -- Seed data for alumni_profiles
 insert into public.alumni_profiles (full_name, email, student_number, degree, degree_label, created_at)
@@ -100,11 +100,11 @@ create index if not exists idx_signups_email on public.signups (email);
 alter table public.signups enable row level security;
 
 -- RLS policies for signups (permissive for development)
-drop policy if exists anon_select on public.signups;
-create policy anon_select on public.signups for select using (true);
+drop policy if exists signups_anon_select on public.signups;
+create policy signups_anon_select on public.signups for select using (true);
 
-drop policy if exists anon_insert on public.signups;
-create policy anon_insert on public.signups for insert with check (true);
+drop policy if exists signups_anon_insert on public.signups;
+create policy signups_anon_insert on public.signups for insert with check (true);
 
 -- Seed data for signups
 insert into public.signups (full_name, email, phone, role, created_at)
