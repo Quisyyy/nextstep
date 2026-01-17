@@ -45,12 +45,29 @@ function showLogoutConfirm(redirectUrl) {
     `;
     logoutBtn.onmouseover = () => logoutBtn.style.background = '#b71c1c';
     logoutBtn.onmouseout = () => logoutBtn.style.background = '#d32f2f';
-    logoutBtn.addEventListener('click', () => {
+    logoutBtn.addEventListener('click', async () => {
+        logoutBtn.disabled = true;
+        logoutBtn.textContent = 'Logging out...';
+        
+        try {
+            // Sign out from Supabase Auth if available
+            if (window.supabase && typeof window.supabase.auth.signOut === 'function') {
+                await window.supabase.auth.signOut();
+                console.log('✅ Signed out from Supabase Auth');
+            }
+        } catch (err) {
+            console.warn('Error signing out from Supabase:', err.message);
+        }
+        
         // Clear ALL user data to prevent cross-contamination
         localStorage.removeItem('currentUserEmail');
+        localStorage.removeItem('currentUserId');
+        localStorage.removeItem('currentUserName');
         localStorage.removeItem('lastProfileId');
         localStorage.removeItem('lastProfileEmail');
         console.log('🧹 Cleared all user session data on logout');
+        
+        // Redirect to login page
         window.location.href = redirectUrl;
     });
     

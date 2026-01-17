@@ -40,7 +40,18 @@
                 } else {
                     // Fallback if logout-dialog.js not loaded
                     if (confirm('Do you want to Logout?')) {
+                        // Sign out from Supabase Auth if available
+                        if (window.supabase && typeof window.supabase.auth.signOut === 'function') {
+                            window.supabase.auth.signOut().then(() => {
+                                console.log('✅ Signed out from Supabase Auth');
+                            }).catch(err => {
+                                console.warn('Error signing out:', err);
+                            });
+                        }
+                        
                         localStorage.removeItem('currentUserEmail');
+                        localStorage.removeItem('currentUserId');
+                        localStorage.removeItem('currentUserName');
                         localStorage.removeItem('lastProfileId');
                         localStorage.removeItem('lastProfileEmail');
                         window.location.href = 'login.html';
