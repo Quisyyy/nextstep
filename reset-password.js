@@ -43,9 +43,38 @@ document.addEventListener('DOMContentLoaded', async () => {
     const hash = window.location.hash;
     console.log('URL hash:', hash);
     if (hash.includes('type=recovery')) {
-        console.log('Recovery token detected, showing password reset form');
-        step1.style.display = 'none';
-        step2.style.display = 'block';
+        console.log('Recovery token detected, verifying recovery session');
+        
+        // Extract the access_token and type from the hash
+        const params = new URLSearchParams(hash.substring(1));
+        const accessToken = params.get('access_token');
+        const type = params.get('type');
+        
+        if (accessToken && type === 'recovery') {
+            try {
+                // Verify the OTP to create a session from the recovery token
+                const { data, error } = await supabase.auth.verifyOtp({
+                    token_hash: accessToken,
+                    type: 'recovery'
+                });
+                
+                if (error) {
+                    console.error('Recovery session verification failed:', error);
+                    requestStatus.textContent = '✗ Recovery link is invalid or expired. Please request a new one.';
+                    requestStatus.className = 'status error';
+                    requestStatus.style.display = 'block';
+                } else {
+                    console.log('Recovery session verified successfully');
+                    step1.style.display = 'none';
+                    step2.style.display = 'block';
+                }
+            } catch (err) {
+                console.error('Error verifying recovery session:', err);
+                requestStatus.textContent = '✗ Error: ' + err.message;
+                requestStatus.className = 'status error';
+                requestStatus.style.display = 'block';
+            }
+        }
     }
 
     // Handle email verification request
