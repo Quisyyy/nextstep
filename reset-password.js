@@ -43,37 +43,48 @@ document.addEventListener('DOMContentLoaded', async () => {
     const hash = window.location.hash;
     console.log('URL hash:', hash);
     if (hash.includes('type=recovery')) {
-        console.log('Recovery token detected, verifying recovery session');
+        console.log('Recovery token detected, creating recovery session');
         
         // Extract the access_token and type from the hash
         const params = new URLSearchParams(hash.substring(1));
         const accessToken = params.get('access_token');
         const type = params.get('type');
         
+        console.log('Access token:', accessToken ? 'present (length: ' + accessToken.length + ')' : 'missing');
+        console.log('Type:', type);
+        
         if (accessToken && type === 'recovery') {
             try {
-                // Verify the OTP to create a session from the recovery token
-                const { data, error } = await supabase.auth.verifyOtp({
-                    token_hash: accessToken,
-                    type: 'recovery'
+                // For recovery links, set the session directly with the access token
+                const { data, error } = await supabase.auth.setSession({
+                    access_token: accessToken,
+                    refresh_token: '' // Recovery links don't provide a refresh token
                 });
                 
                 if (error) {
-                    console.error('Recovery session verification failed:', error);
+                    console.error('Recovery session creation failed:', error);
                     requestStatus.textContent = '✗ Recovery link is invalid or expired. Please request a new one.';
                     requestStatus.className = 'status error';
                     requestStatus.style.display = 'block';
                 } else {
-                    console.log('Recovery session verified successfully');
+                    console.log('Recovery session created successfully, showing password reset form');
+                    // Clear the hash to avoid re-processing
+                    window.history.replaceState({}, document.title, window.location.pathname);
                     step1.style.display = 'none';
                     step2.style.display = 'block';
+                    
+                    // Verify the session is actually set
+                    const session = await supabase.auth.getSession();
+                    console.log('Current session:', session.data.session ? 'exists' : 'missing');
                 }
             } catch (err) {
-                console.error('Error verifying recovery session:', err);
+                console.error('Error creating recovery session:', err);
                 requestStatus.textContent = '✗ Error: ' + err.message;
                 requestStatus.className = 'status error';
                 requestStatus.style.display = 'block';
             }
+        } else {
+            console.warn('Recovery type detected but missing access token');
         }
     }
 
