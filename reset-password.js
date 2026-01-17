@@ -97,8 +97,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         try {
             console.log('Sending reset password email to:', email);
+            // Use production URL for password reset redirect
+            const redirectUrl = 'https://nextstep-oi6a.vercel.app/reset-password.html';
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/reset-password.html`
+                redirectTo: redirectUrl
             });
 
             if (error) {
