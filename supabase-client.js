@@ -1,33 +1,20 @@
 (function() {
-    // --- Configuration ---
-    // Replace these with your Supabase project values.
-    // Example SUPABASE_URL: https://xyzabc.supabase.co
-    // Example SUPABASE_ANON_KEY: public-anon-key-xxx
-    // Project URL (you provided this)
-    const SUPABASE_URL = 'https://ziquhxrfxywsmvunuyzi.supabase.co';
-    // Paste your public anon key here (keep service_role secret - do NOT put it in client code)
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppcXVoeHJmeHl3c212dW51eXppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxNjM1NzQsImV4cCI6MjA3NzczOTU3NH0.IXCfC4IwcyJ5jv2jfDP2ZYfPCXUPS88kCupj0DMoVqc';
-
-    // If anon key is not present we still load the script but won't initialize the client.
-    if (!SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.includes('REPLACE_WITH')) {
-        console.info('supabase-client: anon key missing; client will not initialize. Configure SUPABASE_ANON_KEY to enable.');
-    }
-
-    // load supabase-js UMD from CDN and initialize a global client as `window.supabase`
+    // Load supabase-js UMD from CDN
     const s = document.createElement('script');
     s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
-    s.onload = () => {
+    s.onload = async () => {
         try {
-            if (!SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.includes('REPLACE_WITH')) {
-                console.info('supabase-client: anon key not configured; skipping client initialization');
-                window.supabaseClientReady = false;
-                window.supabaseInitError = 'anon key missing';
-                return;
+            // Fetch credentials securely from the backend
+            const response = await fetch('/api/supabase-config');
+            if (!response.ok) {
+                throw new Error('Failed to fetch Supabase configuration');
             }
+            
+            const { SUPABASE_URL, SUPABASE_ANON_KEY } = await response.json();
 
             // The UMD build may attach different globals depending on loader.
             // Try common names then fallback to attempting to read a default export.
-            const lib = window.supabase || window.supabaseJs || window.supabasejs || window.supabasejs || window.supabaseJsDefault || (typeof supabaseJs !== 'undefined' && supabaseJs);
+            const lib = window.supabase || window.supabaseJs || window.supabasejs || window.supabaseJsDefault || (typeof supabaseJs !== 'undefined' && supabaseJs);
             if (!lib) {
                 // If the CDN lib exposed a global we didn't expect, attempt to find createClient on any global
                 const maybe = Object.keys(window).find(k => window[k] && window[k].createClient && typeof window[k].createClient === 'function');
