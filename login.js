@@ -17,91 +17,34 @@
         el.style.color = type === 'error' ? '#d32f2f' : type === 'success' ? '#2e7d32' : '#0b66b3';
     }
 
-    // Simple password hashing for verification
-    async function simpleHash(password) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(password);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    async function verifyUserCredentials(email, password) {
-        const passwordHash = await simpleHash(password);
-        
-        // Try signups table first (has password_hash)
+    // Login using Supabase Auth
+    async function loginWithSupabaseAuth(email, password) {
         try {
-            let { data, error } = await window.supabase
-                .from('signups')
-                .select('email, password_hash')
-                .eq('email', email)
-                .limit(1);
-            
-            if (!error && Array.isArray(data) && data.length) {
-                const user = data[0];
-                if (user.password_hash === passwordHash) {
-                    return { success: true, user };
-                } else {
-                    return { success: false, error: 'The Password is incorrect.' };
+            const { data, error } = await window.supabase.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
+
+            if (error) {
+                console.error('Supabase Auth login error:', error);
+                if (error.message.includes('Invalid login credentials')) {
+                    return { success: false, error: 'Invalid email or password.' };
                 }
+                if (error.message.includes('Email not confirmed')) {
+                    return { success: false, error: 'Please confirm your email first. Check your inbox.' };
+                }
+                return { success: false, error: error.message };
             }
 
-            // ilike fallback
-            ({ data, error } = await window.supabase
-                .from('signups')
-                .select('email, password_hash')
-                .ilike('email', email)
-                .limit(1));
-            
-            if (!error && Array.isArray(data) && data.length) {
-                const user = data[0];
-                if (user.password_hash === passwordHash) {
-                    return { success: true, user };
-                } else {
-                    return { success: false, error: 'The Password is incorrect.' };
-                }
-            }
-        } catch (err) {
-            console.warn('signups table query failed', err);
-        }
-        
-        // Try alumni_profiles table (may have different password column)
-        try {
-            let { data, error } = await window.supabase
-                .from('alumni_profiles')
-                .select('email, password_hash')
-                .eq('email', email)
-                .limit(1);
-            
-            if (!error && Array.isArray(data) && data.length) {
-                const user = data[0];
-                if (user.password_hash === passwordHash) {
-                    return { success: true, user };
-                } else {
-                    return { success: false, error: 'The Password is incorrect.' };
-                }
+            if (data.user) {
+                return { success: true, user: data.user, session: data.session };
             }
 
-            // ilike fallback
-            ({ data, error } = await window.supabase
-                .from('alumni_profiles')
-                .select('email, password_hash')
-                .ilike('email', email)
-                .limit(1));
-            
-            if (!error && Array.isArray(data) && data.length) {
-                const user = data[0];
-                if (user.password_hash === passwordHash) {
-                    return { success: true, user };
-                } else {
-                    return { success: false, error: 'The Password is incorrect.' };
-                }
-            }
+            return { success: false, error: 'Login failed' };
         } catch (err) {
-            console.warn('alumni_profiles table query failed', err);
+            console.error('Auth login exception:', err);
+            return { success: false, error: err.message };
         }
-        
-        return { success: false, error: 'Account not found' };
     }
 
     async function handleLoginSubmit(e) {
@@ -122,12 +65,12 @@
             if (!ready) throw new Error('Service not ready. Try again shortly.');
             if (!window.supabase) throw new Error('Supabase client missing');
             
-            // Verify user credentials (email and password)
-            const result = await verifyUserCredentials(email, password);
+            // Login using Supabase Auth
+            const result = await loginWithSupabaseAuth(email, password);
             
             if (!result.success) {
-                if (result.error === 'Account not found') {
-                    setStatus(statusEl, "You don't have an account yet, Please create or sign up.", 'error');
+                if (result.error.includes('Invalid')) {
+                    setStatus(statusEl, "Invalid email or password. Please try again.", 'error');
                 } else {
                     setStatus(statusEl, result.error || 'Login failed', 'error');
                 }
@@ -138,6 +81,11 @@
             
             setStatus(statusEl, '✅ Login successful. Redirecting…', 'success');
             localStorage.setItem('currentUserEmail', email);
+            // Store user info from auth
+            if (result.user) {
+                localStorage.setItem('currentUserId', result.user.id);
+                localStorage.setItem('currentUserName', result.user.user_metadata?.full_name || '');
+            }
             // Go to app homepage after login
             setTimeout(() => { window.location.href = 'homepage.html'; }, 600);
         } catch (err) {

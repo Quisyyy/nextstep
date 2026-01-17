@@ -210,80 +210,78 @@ async function handleSignupSubmission(event) {
     statusSpan.style.color = '#0b66b3';
 
     try {
-        // Hash the password
-        const password_hash = await simpleHash(formData.password);
+        const supabase = await ensureSupabaseReady();
+        
+        // Use Supabase Auth to create the user (this enables password reset!)
+        console.log('Creating user with Supabase Auth...');
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+            email: formData.email,
+            password: formData.password,
+            options: {
+                data: {
+                    full_name: formData.full_name,
+                    phone: formData.phone,
+                    role: formData.role || 'user'
+                }
+            }
+        });
 
-        // Prepare data for Supabase (remove confirm_password, add hash)
+        if (authError) {
+            console.error('Supabase Auth signup error:', authError);
+            statusSpan.textContent = `Error: ${authError.message}`;
+            statusSpan.style.color = '#d32f2f';
+            return;
+        }
+
+        console.log('Auth signup successful:', authData);
+
+        // Also save to signups table for additional data tracking
         const signupPayload = {
             full_name: formData.full_name,
             email: formData.email,
             phone: formData.phone,
-            password_hash: password_hash,
-            role: formData.role,
+            password_hash: '[stored_in_auth]', // Password is managed by Supabase Auth
+            role: formData.role || 'user',
             confirmed: false,
             confirm_token: null,
-            metadata: {},
+            metadata: { auth_user_id: authData.user?.id },
             created_at: new Date().toISOString()
         };
 
-        console.log('Attempting signup submission:', {...signupPayload, password_hash: '[REDACTED]' });
-
-        // Try to submit to Supabase
-        const supabase = await ensureSupabaseReady();
-        const { data, error } = await supabase
+        // Try to save to signups table (non-blocking)
+        supabase
             .from('signups')
-            .insert([signupPayload]);
+            .insert([signupPayload])
+            .then(({ error }) => {
+                if (error) console.warn('Could not save to signups table:', error.message);
+            });
 
-        if (error) {
-            console.error('Supabase signup error:', error);
-
-            // Queue for later if it's a connection issue
-            if (error.message.includes('fetch') || error.message.includes('network')) {
-                if (queueSignup(signupPayload)) {
-                    statusSpan.textContent = 'Signup saved (will sync when online)';
-                    statusSpan.style.color = '#ff9800';
-                } else {
-                    statusSpan.textContent = 'Failed to save signup';
-                    statusSpan.style.color = '#d32f2f';
-                }
-            } else {
-                statusSpan.textContent = `Error: ${error.message}`;
-                statusSpan.style.color = '#d32f2f';
-            }
-            return;
+        // Check if email confirmation is required
+        if (authData.user && !authData.session) {
+            statusSpan.textContent = 'Account created! Please check your email to confirm.';
+            statusSpan.style.color = '#2e7d32';
+        } else {
+            statusSpan.textContent = 'Account created successfully!';
+            statusSpan.style.color = '#2e7d32';
         }
-
-        console.log('Signup successful:', data);
-        statusSpan.textContent = 'Account created successfully!';
-        statusSpan.style.color = '#2e7d32';
 
         // Clear form
         form.reset();
 
-        // Try to flush any queued signups
-        setTimeout(flushSignupQueue, 1000);
-
         // Dispatch success event
         window.dispatchEvent(new CustomEvent('signup:saved', {
-            detail: { data: data, payload: signupPayload }
+            detail: { data: authData, payload: signupPayload }
         }));
 
-        // Redirect to app homepage after a delay
+        // Redirect to login page after a delay
         setTimeout(() => {
-            window.location.href = 'homepage.html';
+            window.location.href = 'login.html';
         }, 2000);
 
     } catch (error) {
         console.error('Signup submission error:', error);
-
-        // Try to queue the signup
-        if (queueSignup(signupPayload)) {
-            statusSpan.textContent = 'Signup saved (will sync when online)';
-            statusSpan.style.color = '#ff9800';
-        } else {
-            statusSpan.textContent = 'Failed to create account';
-            statusSpan.style.color = '#d32f2f';
-        }
+        statusSpan.textContent = 'Failed to create account: ' + error.message;
+        statusSpan.style.color = '#d32f2f';
     }
 }
 
