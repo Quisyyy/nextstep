@@ -39,53 +39,54 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    // Check if we're returning from password reset link (recovery token in URL)
+    // Track if we have a valid recovery session
+    let hasRecoverySession = false;
+
+    // Listen for auth state changes - Supabase automatically handles the hash fragment
+    supabase.auth.onAuthStateChange(async (event, session) => {
+        console.log('Auth event:', event, 'Session:', session ? 'exists' : 'null');
+        
+        if (event === 'PASSWORD_RECOVERY') {
+            console.log('Password recovery event detected');
+            hasRecoverySession = true;
+            step1.style.display = 'none';
+            step2.style.display = 'block';
+            resetStatus.style.display = 'none';
+        } else if (event === 'SIGNED_IN' && session) {
+            // Check if this is from a recovery link
+            const hash = window.location.hash;
+            if (hash.includes('type=recovery')) {
+                console.log('Signed in via recovery link');
+                hasRecoverySession = true;
+                step1.style.display = 'none';
+                step2.style.display = 'block';
+                resetStatus.style.display = 'none';
+            }
+        }
+    });
+
+    // Also check URL hash on page load for recovery tokens
     const hash = window.location.hash;
     console.log('URL hash:', hash);
-    if (hash.includes('type=recovery')) {
-        console.log('Recovery token detected, creating recovery session');
+    
+    if (hash.includes('type=recovery') || hash.includes('access_token')) {
+        console.log('Recovery token in URL, checking session...');
         
-        // Extract the access_token and type from the hash
-        const params = new URLSearchParams(hash.substring(1));
-        const accessToken = params.get('access_token');
-        const type = params.get('type');
-        
-        console.log('Access token:', accessToken ? 'present (length: ' + accessToken.length + ')' : 'missing');
-        console.log('Type:', type);
-        
-        if (accessToken && type === 'recovery') {
-            try {
-                // For recovery links, set the session directly with the access token
-                const { data, error } = await supabase.auth.setSession({
-                    access_token: accessToken,
-                    refresh_token: '' // Recovery links don't provide a refresh token
-                });
-                
-                if (error) {
-                    console.error('Recovery session creation failed:', error);
-                    requestStatus.textContent = '✗ Recovery link is invalid or expired. Please request a new one.';
-                    requestStatus.className = 'status error';
-                    requestStatus.style.display = 'block';
-                } else {
-                    console.log('Recovery session created successfully, showing password reset form');
-                    // Clear the hash to avoid re-processing
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                    step1.style.display = 'none';
-                    step2.style.display = 'block';
-                    
-                    // Verify the session is actually set
-                    const session = await supabase.auth.getSession();
-                    console.log('Current session:', session.data.session ? 'exists' : 'missing');
-                }
-            } catch (err) {
-                console.error('Error creating recovery session:', err);
-                requestStatus.textContent = '✗ Error: ' + err.message;
-                requestStatus.className = 'status error';
-                requestStatus.style.display = 'block';
+        // Give Supabase a moment to process the hash
+        setTimeout(async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            console.log('Session check after timeout:', session ? 'exists' : 'missing');
+            
+            if (session) {
+                hasRecoverySession = true;
+                step1.style.display = 'none';
+                step2.style.display = 'block';
+                // Clear the hash
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else {
+                console.log('No session after recovery token - may need to request new link');
             }
-        } else {
-            console.warn('Recovery type detected but missing access token');
-        }
+        }, 500);
     }
 
     // Handle email verification request
@@ -153,6 +154,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         try {
+            // First check if we have a valid session
+            const { data: { session } } = await supabase.auth.getSession();
+            console.log('Session before password update:', session ? 'exists' : 'missing');
+            
+            if (!session) {
+                resetStatus.textContent = '✗ Auth session missing! Please click the reset link from your email again, or request a new one.';
+                resetStatus.className = 'status error';
+                resetStatus.style.display = 'block';
+                return;
+            }
+            
             console.log('Updating password...');
             const { error } = await supabase.auth.updateUser({
                 password: newPassword
@@ -168,6 +180,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 resetStatus.textContent = '✓ Password reset successful! Redirecting...';
                 resetStatus.className = 'status success';
                 resetStatus.style.display = 'block';
+                
+                // Sign out after password reset
+                await supabase.auth.signOut();
                 
                 // Clear session storage
                 sessionStorage.removeItem('reset-email');
