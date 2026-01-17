@@ -114,14 +114,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 requestStatus.className = 'status success';
                 requestStatus.style.display = 'block';
                 
-                // Save email to sessionStorage for next step
+                // Save email to sessionStorage for reference
                 sessionStorage.setItem('reset-email', email);
                 
-                // Show step 2 after 2 seconds
-                setTimeout(() => {
-                    step1.style.display = 'none';
-                    step2.style.display = 'block';
-                }, 2000);
+                // Stay on step 1 - user will click link from email to go to step 2
+                // Do NOT auto-advance to step 2
             }
         } catch (err) {
             console.error('Error:', err);
