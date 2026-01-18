@@ -21,6 +21,7 @@
           // Also expose as window.supabase for backward compatibility
           window.supabase = window.supabaseClient;
           window.supabaseClientReady = true;
+          window.supabaseReady = true;
           console.log("✓ Supabase initialized successfully");
           // Resolve the supabaseReady promise if it exists (for compatibility with reset-password.js)
           if (window.supabaseReadyResolve) {
