@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Flow Diagram - NEXT STEP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+        
+        .diagram-section {
+            margin-bottom: 50px;
+        }
+        
+        .diagram-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        svg {
+            width: 100%;
+            height: auto;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-shape {
+            width: 30px;
+            height: 30px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+        
+        .external {
+            background: #FFB6C6;
+            border: 2px solid #FF69B4;
+        }
+        
+        .process {
+            background: #B3E5FC;
+            border: 2px solid #0288D1;
+        }
+        
+        .database {
+            background: #C8E6C9;
+            border: 2px solid #388E3C;
+        }
+        
+        .datastore {
+            background: #FFF9C4;
+            border: 2px solid #FBC02D;
+        }
+        
+        .notes {
+            margin-top: 30px;
+            padding: 20px;
+            background: #E3F2FD;
+            border-left: 4px solid #1976D2;
+            border-radius: 4px;
+            line-height: 1.8;
+            color: #333;
+        }
+        
+        .notes h3 {
+            color: #1976D2;
+            margin-bottom: 10px;
+        }
+        
+        .notes ul {
+            margin-left: 20px;
+        }
+        
+        .notes li {
+            margin-bottom: 8px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Data Flow Diagram</h1>
+        <p class="subtitle">NEXT STEP - Alumni & Student Management System</p>
+        
+        <!-- Level 0 Context Diagram -->
+        <div class="diagram-section">
+            <div class="diagram-title">Level 0: Context Diagram</div>
+            <svg viewBox="0 0 1000 400" xmlns="http://www.w3.org/2000/svg">
+                <!-- External Entities -->
+                <rect x="50" y="50" width="150" height="100" fill="#FFB6C6" stroke="#FF69B4" stroke-width="2" rx="5"/>
+                <text x="125" y="105" text-anchor="middle" font-size="16" font-weight="bold">User</text>
+                <text x="125" y="125" text-anchor="middle" font-size="12">(Student/Alumni)</text>
+                
+                <rect x="800" y="50" width="150" height="100" fill="#FFB6C6" stroke="#FF69B4" stroke-width="2" rx="5"/>
+                <text x="875" y="100" text-anchor="middle" font-size="16" font-weight="bold">Email Service</text>
+                <text x="875" y="125" text-anchor="middle" font-size="12">(Nodemailer)</text>
+                
+                <!-- Main System -->
+                <circle cx="500" cy="200" r="80" fill="#B3E5FC" stroke="#0288D1" stroke-width="2"/>
+                <text x="500" y="195" text-anchor="middle" font-size="16" font-weight="bold">NEXT STEP</text>
+                <text x="500" y="215" text-anchor="middle" font-size="14">System</text>
+                
+                <!-- Data Store -->
+                <line x1="450" y1="350" x2="550" y2="350" stroke="#FBC02D" stroke-width="3"/>
+                <line x1="450" y1="360" x2="550" y2="360" stroke="#FBC02D" stroke-width="3"/>
+                <text x="500" y="385" text-anchor="middle" font-size="14" font-weight="bold">Supabase DB</text>
+                
+                <!-- Data Flows -->
+                <!-- User to System -->
+                <path d="M 200 100 Q 350 150 420 170" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="280" y="130" font-size="12" fill="#333">Login/Signup/Reset</text>
+                
+                <!-- System to User -->
+                <path d="M 420 230 Q 350 250 200 150" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="280" y="210" font-size="12" fill="#333">Auth Response</text>
+                
+                <!-- System to Email -->
+                <path d="M 580 170 Q 680 150 800 100" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="680" y="130" font-size="12" fill="#333">Send Email</text>
+                
+                <!-- Email to User -->
+                <path d="M 800 150 Q 450 250 200 150" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="450" y="220" font-size="12" fill="#333">Email (Reset Link)</text>
+                
+                <!-- System to DB -->
+                <path d="M 500 280 L 500 330" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="510" y="310" font-size="12" fill="#333">Query/Update</text>
+                
+                <!-- DB to System -->
+                <path d="M 490 330 L 490 280" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="440" y="310" font-size="12" fill="#333">Return Data</text>
+                
+                <!-- Arrow marker definition -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#333" />
+                    </marker>
+                </defs>
+            </svg>
+        </div>
+        
+        <!-- Level 1 DFD -->
+        <div class="diagram-section">
+            <div class="diagram-title">Level 1: Detailed Data Flow</div>
+            <svg viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
+                <!-- External Entities -->
+                <rect x="20" y="50" width="120" height="80" fill="#FFB6C6" stroke="#FF69B4" stroke-width="2" rx="5"/>
+                <text x="80" y="95" text-anchor="middle" font-size="14" font-weight="bold">User</text>
+                
+                <rect x="1050" y="50" width="130" height="80" fill="#FFB6C6" stroke="#FF69B4" stroke-width="2" rx="5"/>
+                <text x="1115" y="95" text-anchor="middle" font-size="14" font-weight="bold">Email Service</text>
+                
+                <rect x="1050" y="200" width="130" height="80" fill="#FFB6C6" stroke="#FF69B4" stroke-width="2" rx="5"/>
+                <text x="1115" y="245" text-anchor="middle" font-size="14" font-weight="bold">Admin</text>
+                
+                <!-- Processes -->
+                <rect x="150" y="50" width="120" height="80" fill="#B3E5FC" stroke="#0288D1" stroke-width="2" rx="5"/>
+                <text x="210" y="90" text-anchor="middle" font-size="13" font-weight="bold">1. Auth</text>
+                <text x="210" y="110" text-anchor="middle" font-size="11">Service</text>
+                
+                <rect x="350" y="50" width="120" height="80" fill="#B3E5FC" stroke="#0288D1" stroke-width="2" rx="5"/>
+                <text x="410" y="90" text-anchor="middle" font-size="13" font-weight="bold">2. Password</text>
+                <text x="410" y="110" text-anchor="middle" font-size="11">Reset</text>
+                
+                <rect x="150" y="200" width="120" height="80" fill="#B3E5FC" stroke="#0288D1" stroke-width="2" rx="5"/>
+                <text x="210" y="240" text-anchor="middle" font-size="13" font-weight="bold">3. Profile</text>
+                <text x="210" y="260" text-anchor="middle" font-size="11">Management</text>
+                
+                <rect x="350" y="200" width="120" height="80" fill="#B3E5FC" stroke="#0288D1" stroke-width="2" rx="5"/>
+                <text x="410" y="240" text-anchor="middle" font-size="13" font-weight="bold">4. Data</text>
+                <text x="410" y="260" text-anchor="middle" font-size="11">Validation</text>
+                
+                <rect x="250" y="380" width="120" height="80" fill="#B3E5FC" stroke="#0288D1" stroke-width="2" rx="5"/>
+                <text x="310" y="420" text-anchor="middle" font-size="13" font-weight="bold">5. Admin</text>
+                <text x="310" y="440" text-anchor="middle" font-size="11">Dashboard</text>
+                
+                <!-- Data Stores -->
+                <line x1="600" y1="80" x2="700" y2="80" stroke="#FBC02D" stroke-width="3"/>
+                <line x1="600" y1="90" x2="700" y2="90" stroke="#FBC02D" stroke-width="3"/>
+                <text x="650" y="120" text-anchor="middle" font-size="13" font-weight="bold">D1: Users</text>
+                
+                <line x1="600" y1="200" x2="700" y2="200" stroke="#FBC02D" stroke-width="3"/>
+                <line x1="600" y1="210" x2="700" y2="210" stroke="#FBC02D" stroke-width="3"/>
+                <text x="650" y="240" text-anchor="middle" font-size="13" font-weight="bold">D2: Profiles</text>
+                
+                <line x1="600" y1="320" x2="700" y2="320" stroke="#FBC02D" stroke-width="3"/>
+                <line x1="600" y1="330" x2="700" y2="330" stroke="#FBC02D" stroke-width="3"/>
+                <text x="650" y="360" text-anchor="middle" font-size="13" font-weight="bold">D3: Sessions</text>
+                
+                <line x1="800" y1="380" x2="900" y2="380" stroke="#FBC02D" stroke-width="3"/>
+                <line x1="800" y1="390" x2="900" y2="390" stroke="#FBC02D" stroke-width="3"/>
+                <text x="850" y="420" text-anchor="middle" font-size="13" font-weight="bold">D4: Logs</text>
+                
+                <!-- Data Flows (simplified with key flows) -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#333" />
+                    </marker>
+                </defs>
+                
+                <!-- User to Auth -->
+                <path d="M 140 90 L 150 90" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="145" y="80" text-anchor="middle" font-size="11">Login/Signup</text>
+                
+                <!-- Auth to Users DB -->
+                <path d="M 270 90 L 600 85" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="435" y="80" text-anchor="middle" font-size="11">Store Credentials</text>
+                
+                <!-- Users DB to Auth -->
+                <path d="M 600 95 L 270 110" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="435" y="120" text-anchor="middle" font-size="11">Verify User</text>
+                
+                <!-- Auth to Password Reset -->
+                <path d="M 270 90 L 350 90" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="310" y="80" text-anchor="middle" font-size="11">Auth Token</text>
+                
+                <!-- Password Reset to Email -->
+                <path d="M 470 90 L 1050 90" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="760" y="80" text-anchor="middle" font-size="11">Send Reset Link</text>
+                
+                <!-- User to Profile Mgmt -->
+                <path d="M 140 240 L 150 240" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="145" y="230" text-anchor="middle" font-size="11">Profile Data</text>
+                
+                <!-- Profile to Validation -->
+                <path d="M 270 240 L 350 240" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="310" y="230" text-anchor="middle" font-size="11">Raw Data</text>
+                
+                <!-- Validation to Profiles DB -->
+                <path d="M 470 220 L 600 210" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="535" y="210" text-anchor="middle" font-size="11">Validated Data</text>
+                
+                <!-- Profiles DB back -->
+                <path d="M 600 190 L 470 180" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="535" y="170" text-anchor="middle" font-size="11">Profile Info</text>
+                
+                <!-- Admin to Dashboard -->
+                <path d="M 1050 240 L 370 420" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="710" y="320" text-anchor="middle" font-size="11">Admin Access</text>
+                
+                <!-- Dashboard to Logs -->
+                <path d="M 370 420 L 800 400" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="585" y="410" text-anchor="middle" font-size="11">Log Events</text>
+            </svg>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-shape external"></div>
+                <span><strong>External Entity</strong> - User, Email Service, Admin</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-shape process"></div>
+                <span><strong>Process</strong> - System operations & services</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-shape datastore"></div>
+                <span><strong>Data Store</strong> - Database tables & storage</span>
+            </div>
+        </div>
+        
+        <div class="notes">
+            <h3>📝 Key Data Flows:</h3>
+            <ul>
+                <li><strong>Authentication Flow:</strong> User credentials → Auth Service → Users DB → Verification Response</li>
+                <li><strong>Password Reset Flow:</strong> User Email → Password Reset Service → Verification Code → Email Service → Reset Link</li>
+                <li><strong>Profile Management:</strong> User Profile Data → Validation → Profiles DB → Return User Profile</li>
+                <li><strong>Admin Operations:</strong> Admin Actions → Dashboard → Logs DB → System Audit Trail</li>
+                <li><strong>Data Validation:</strong> All incoming data passes through validation process before storage</li>
+                <li><strong>Session Management:</strong> Sessions table stores active user sessions and recovery tokens</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

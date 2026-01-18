@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Flowchart - NEXT STEP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+        
+        .flowchart-section {
+            margin-bottom: 50px;
+        }
+        
+        .flowchart-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #f5576c;
+            padding-bottom: 10px;
+        }
+        
+        .flow-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .flow-item {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .flow-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #f5576c;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f5576c;
+        }
+        
+        svg {
+            width: 100%;
+            height: auto;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+        }
+        
+        .legend-shape {
+            width: 40px;
+            height: 30px;
+            flex-shrink: 0;
+            border: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .start-end {
+            background: #FFD54F;
+            border-radius: 15px;
+        }
+        
+        .process {
+            background: #B3E5FC;
+        }
+        
+        .decision {
+            background: #C8E6C9;
+            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+        }
+        
+        .input-output {
+            background: #F8BBD0;
+            clip-path: polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%);
+        }
+        
+        .notes {
+            margin-top: 30px;
+            padding: 20px;
+            background: #FCE4EC;
+            border-left: 4px solid #f5576c;
+            border-radius: 4px;
+            line-height: 1.8;
+            color: #333;
+        }
+        
+        .notes h3 {
+            color: #f5576c;
+            margin-bottom: 10px;
+        }
+        
+        .notes ul {
+            margin-left: 20px;
+        }
+        
+        .notes li {
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 1024px) {
+            .flow-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Program Flowchart</h1>
+        <p class="subtitle">NEXT STEP - Key Process Flows</p>
+        
+        <div class="flowchart-section">
+            <div class="flowchart-title">Main Process Flows</div>
+            
+            <div class="flow-container">
+                <!-- Login Flow -->
+                <div class="flow-item">
+                    <div class="flow-title">1️⃣ Login Flow</div>
+                    <svg viewBox="0 0 300 700" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                                <polygon points="0 0, 10 3, 0 6" fill="#333" />
+                            </marker>
+                        </defs>
+                        
+                        <!-- Start -->
+                        <ellipse cx="150" cy="30" rx="40" ry="25" fill="#FFD54F" stroke="#333" stroke-width="2"/>
+                        <text x="150" y="35" text-anchor="middle" font-size="12" font-weight="bold">START</text>
+                        
+                        <!-- Arrow -->
+                        <path d="M 150 55 L 150 80" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- User enters credentials -->
+                        <path d="M 100 80 L 200 80 L 190 120 L 110 120 Z" fill="#F8BBD0" stroke="#333" stroke-width="2"/>
+                        <text x="150" y="100" text-anchor="middle" font-size="11" font-weight="bold">Enter Email</text>
+                        <text x="150" y="115" text-anchor="middle" font-size="11" font-weight="bold">&amp; Password</text>
+                        
+                        <!-- Arrow -->
+                        <path d="M 150 120 L 150 145" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Validate input -->
+                        <rect x="80" y="145" width="140" height="60" fill="#B3E5FC" stroke="#333" stroke-width="2" rx="5"/>
+                        <text x="150" y="170" text-anchor="middle" font-size="11" font-weight="bold">Validate</text>
+                        <text x="150" y="185" text-anchor="middle" font-size="11" font-weight="bold">Email Format</text>
+                        <text x="150" y="200" text-anchor="middle" font-size="10">&amp; Password Length</text>
+                        
+                        <!-- Arrow -->
+                        <path d="M 150 205 L 150 230" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Decision: Valid? -->
+                        <path d="M 150 230 L 210 280 L 150 330 L 90 280 Z" fill="#C8E6C9" stroke="#333" stroke-width="2"/>
+                        <text x="150" y="285" text-anchor="middle" font-size="11" font-weight="bold">Valid?</text>
+                        
+                        <!-- No path -->
+                        <path d="M 90 280 L 40 280" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="60" y="275" text-anchor="middle" font-size="10" fill="#D32F2F">No</text>
+                        
+                        <rect x="20" y="260" width="70" height="40" fill="#FFCDD2" stroke="#333" stroke-width="2" rx="3"/>
+                        <text x="55" y="280" text-anchor="middle" font-size="10" font-weight="bold">Show Error</text>
+                        <text x="55" y="293" text-anchor="middle" font-size="9">Message</text>
+                        
+                        <path d="M 55 300 L 55 340" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Yes path -->
+                        <path d="M 150 330 L 150 360" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="170" y="350" text-anchor="middle" font-size="10" fill="#388E3C">Yes</text>
+                        
+                        <!-- Query database -->
+                        <line x1="100" y1="360" x2="200" y2="360" stroke="#FBC02D" stroke-width="3"/>
+                        <line x1="100" y1="370" x2="200" y2="370" stroke="#FBC02D" stroke-width="3"/>
+                        <text x="150" y="390" text-anchor="middle" font-size="11" font-weight="bold">Query Users DB</text>
+                        
+                        <path d="M 150 390 L 150 420" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Check credentials -->
+                        <path d="M 150 420 L 210 470 L 150 520 L 90 470 Z" fill="#C8E6C9" stroke="#333" stroke-width="2"/>
+                        <text x="150" y="475" text-anchor="middle" font-size="11" font-weight="bold">Credentials</text>
+                        <text x="150" y="490" text-anchor="middle" font-size="11" font-weight="bold">Match?</text>
+                        
+                        <!-- No match -->
+                        <path d="M 90 470 L 40 470" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="60" y="465" text-anchor="middle" font-size="10" fill="#D32F2F">No</text>
+                        
+                        <rect x="20" y="450" width="70" height="40" fill="#FFCDD2" stroke="#333" stroke-width="2" rx="3"/>
+                        <text x="55" y="470" text-anchor="middle" font-size="10" font-weight="bold">Login Failed</text>
+                        
+                        <path d="M 55 490 L 55 530" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Match -->
+                        <path d="M 150 520 L 150 550" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="170" y="540" text-anchor="middle" font-size="10" fill="#388E3C">Yes</text>
+                        
+                        <!-- Create session -->
+                        <rect x="80" y="550" width="140" height="60" fill="#B3E5FC" stroke="#333" stroke-width="2" rx="5"/>
+                        <text x="150" y="575" text-anchor="middle" font-size="11" font-weight="bold">Create</text>
+                        <text x="150" y="590" text-anchor="middle" font-size="11" font-weight="bold">Session Token</text>
+                        <text x="150" y="605" text-anchor="middle" font-size="10">&amp; Store in DB</text>
+                        
+                        <path d="M 150 610 L 150 635" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Merge paths -->
+                        <rect x="80" y="530" width="140" height="40" fill="#FFCDD2" stroke="#333" stroke-width="2" rx="3"/>
+                        <text x="150" y="555" text-anchor="middle" font-size="11" font-weight="bold">Redirect to Home</text>
+                        
+                        <path d="M 150 635 L 150 660" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- End -->
+                        <ellipse cx="150" cy="680" rx="40" ry="20" fill="#FFD54F" stroke="#333" stroke-width="2"/>
+                        <text x="150" y="685" text-anchor="middle" font-size="12" font-weight="bold">END</text>
+                    </svg>
+                </div>
+                
+                <!-- Password Reset Flow -->
+                <div class="flow-item">
+                    <div class="flow-title">2️⃣ Password Reset Flow</div>
+                    <svg viewBox="0 0 300 800" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                                <polygon points="0 0, 10 3, 0 6" fill="#333" />
+                            </marker>
+                        </defs>
+                        
+                        <!-- Start -->
+                        <ellipse cx="150" cy="30" rx="40" ry="25" fill="#FFD54F" stroke="#333" stroke-width="2"/>
+                        <text x="150" y="35" text-anchor="middle" font-size="12" font-weight="bold">START</text>
+                        
+                        <path d="M 150 55 L 150 80" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- User enters email -->
+                        <path d="M 100 80 L 200 80 L 190 120 L 110 120 Z" fill="#F8BBD0" stroke="#333" stroke-width="2"/>
+                        <text x="150" y="105" text-anchor="middle" font-size="11" font-weight="bold">Enter Email</text>
+                        
+                        <path d="M 150 120 L 150 145" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Check if email exists -->
+                        <line x1="100" y1="145" x2="200" y2="145" stroke="#FBC02D" stroke-width="3"/>
+                        <line x1="100" y1="155" x2="200" y2="155" stroke="#FBC02D" stroke-width="3"/>
+                        <text x="150" y="175" text-anchor="middle" font-size="11" font-weight="bold">Query Users DB</text>
+                        
+                        <path d="M 150 175 L 150 200" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Decision: Email exists? -->
+                        <path d="M 150 200 L 210 250 L 150 300 L 90 250 Z" fill="#C8E6C9" stroke="#333" stroke-width="2"/>
+                        <text x="150" y="250" text-anchor="middle" font-size="11" font-weight="bold">Email</text>
+                        <text x="150" y="265" text-anchor="middle" font-size="11" font-weight="bold">Exists?</text>
+                        
+                        <!-- No email -->
+                        <path d="M 90 250 L 40 250" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="60" y="245" text-anchor="middle" font-size="10" fill="#D32F2F">No</text>
+                        
+                        <rect x="20" y="230" width="70" height="40" fill="#FFCDD2" stroke="#333" stroke-width="2" rx="3"/>
+                        <text x="55" y="250" text-anchor="middle" font-size="10" font-weight="bold">Show Generic</text>
+                        <text x="55" y="263" text-anchor="middle" font-size="9">Message</text>
+                        
+                        <!-- Yes path -->
+                        <path d="M 150 300 L 150 330" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="170" y="320" text-anchor="middle" font-size="10" fill="#388E3C">Yes</text>
+                        
+                        <!-- Generate recovery token -->
+                        <rect x="80" y="330" width="140" height="60" fill="#B3E5FC" stroke="#333" stroke-width="2" rx="5"/>
+                        <text x="150" y="350" text-anchor="middle" font-size="11" font-weight="bold">Generate</text>
+                        <text x="150" y="365" text-anchor="middle" font-size="11" font-weight="bold">Recovery Token</text>
+                        <text x="150" y="380" text-anchor="middle" font-size="10">(Valid for 15 min)</text>
+                        
+                        <path d="M 150 390 L 150 415" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Send email -->
+                        <rect x="80" y="415" width="140" height="60" fill="#B3E5FC" stroke="#333" stroke-width="2" rx="5"/>
+                        <text x="150" y="440" text-anchor="middle" font-size="11" font-weight="bold">Send Email with</text>
+                        <text x="150" y="455" text-anchor="middle" font-size="11" font-weight="bold">Reset Link</text>
+                        <text x="150" y="470" text-anchor="middle" font-size="10">&amp; Token</text>
+                        
+                        <path d="M 150 475 L 150 500" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Store token -->
+                        <line x1="100" y1="500" x2="200" y2="500" stroke="#FBC02D" stroke-width="3"/>
+                        <line x1="100" y1="510" x2="200" y2="510" stroke="#FBC02D" stroke-width="3"/>
+                        <text x="150" y="530" text-anchor="middle" font-size="11" font-weight="bold">Store Token in DB</text>
+                        
+                        <path d="M 150 530 L 150 555" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Show success -->
+                        <rect x="80" y="555" width="140" height="50" fill="#C8E6C9" stroke="#333" stroke-width="2" rx="5"/>
+                        <text x="150" y="575" text-anchor="middle" font-size="11" font-weight="bold">Show Success</text>
+                        <text x="150" y="590" text-anchor="middle" font-size="10">Message</text>
+                        
+                        <path d="M 150 605 L 150 630" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- User clicks link -->
+                        <path d="M 100 630 L 200 630 L 190 670 L 110 670 Z" fill="#F8BBD0" stroke="#333" stroke-width="2"/>
+                        <text x="150" y="655" text-anchor="middle" font-size="11" font-weight="bold">User Clicks Link</text>
+                        
+                        <path d="M 150 670 L 150 695" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Verify token -->
+                        <path d="M 150 695 L 210 745 L 150 795 L 90 745 Z" fill="#C8E6C9" stroke="#333" stroke-width="2"/>
+                        <text x="150" y="750" text-anchor="middle" font-size="11" font-weight="bold">Token</text>
+                        <text x="150" y="765" text-anchor="middle" font-size="11" font-weight="bold">Valid?</text>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="flow-container">
+                <!-- Signup Flow -->
+                <div class="flow-item">
+                    <div class="flow-title">3️⃣ Sign Up Flow</div>
+                    <svg viewBox="0 0 300 700" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                                <polygon points="0 0, 10 3, 0 6" fill="#333" />
+                            </marker>
+                        </defs>
+                        
+                        <!-- Start -->
+                        <ellipse cx="150" cy="30" rx="40" ry="25" fill="#FFD54F" stroke="#333" stroke-width="2"/>
+                        <text x="150" y="35" text-anchor="middle" font-size="12" font-weight="bold">START</text>
+                        
+                        <path d="M 150 55 L 150 80" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Enter signup data -->
+                        <path d="M 100 80 L 200 80 L 190 130 L 110 130 Z" fill="#F8BBD0" stroke="#333" stroke-width="2"/>
+                        <text x="150" y="100" text-anchor="middle" font-size="11" font-weight="bold">Enter Email,</text>
+                        <text x="150" y="115" text-anchor="middle" font-size="11" font-weight="bold">Password,</text>
+                        <text x="150" y="130" text-anchor="middle" font-size="10">Full Name, etc.</text>
+                        
+                        <path d="M 150 130 L 150 155" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Validate all fields -->
+                        <rect x="80" y="155" width="140" height="60" fill="#B3E5FC" stroke="#333" stroke-width="2" rx="5"/>
+                        <text x="150" y="175" text-anchor="middle" font-size="11" font-weight="bold">Validate All</text>
+                        <text x="150" y="190" text-anchor="middle" font-size="11" font-weight="bold">Input Fields</text>
+                        <text x="150" y="205" text-anchor="middle" font-size="9">&amp; Format</text>
+                        
+                        <path d="M 150 215 L 150 240" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Valid? -->
+                        <path d="M 150 240 L 210 290 L 150 340 L 90 290 Z" fill="#C8E6C9" stroke="#333" stroke-width="2"/>
+                        <text x="150" y="295" text-anchor="middle" font-size="11" font-weight="bold">All Valid?</text>
+                        
+                        <!-- No -->
+                        <path d="M 90 290 L 40 290" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="60" y="285" text-anchor="middle" font-size="10" fill="#D32F2F">No</text>
+                        
+                        <rect x="20" y="270" width="70" height="40" fill="#FFCDD2" stroke="#333" stroke-width="2" rx="3"/>
+                        <text x="55" y="290" text-anchor="middle" font-size="10" font-weight="bold">Show Error</text>
+                        <text x="55" y="303" text-anchor="middle" font-size="9">for Field</text>
+                        
+                        <path d="M 55 310 L 55 350" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Yes -->
+                        <path d="M 150 340 L 150 370" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="170" y="360" text-anchor="middle" font-size="10" fill="#388E3C">Yes</text>
+                        
+                        <!-- Check email exists -->
+                        <line x1="100" y1="370" x2="200" y2="370" stroke="#FBC02D" stroke-width="3"/>
+                        <line x1="100" y1="380" x2="200" y2="380" stroke="#FBC02D" stroke-width="3"/>
+                        <text x="150" y="400" text-anchor="middle" font-size="11" font-weight="bold">Check Email</text>
+                        <text x="150" y="415" text-anchor="middle" font-size="10">Already Exists</text>
+                        
+                        <path d="M 150 415 L 150 440" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Email exists? -->
+                        <path d="M 150 440 L 210 490 L 150 540 L 90 490 Z" fill="#C8E6C9" stroke="#333" stroke-width="2"/>
+                        <text x="150" y="495" text-anchor="middle" font-size="11" font-weight="bold">Email</text>
+                        <text x="150" y="510" text-anchor="middle" font-size="11" font-weight="bold">Exists?</text>
+                        
+                        <!-- Yes email exists -->
+                        <path d="M 90 490 L 40 490" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="60" y="485" text-anchor="middle" font-size="10" fill="#D32F2F">Yes</text>
+                        
+                        <rect x="20" y="470" width="70" height="40" fill="#FFCDD2" stroke="#333" stroke-width="2" rx="3"/>
+                        <text x="55" y="490" text-anchor="middle" font-size="9" font-weight="bold">Email Already</text>
+                        <text x="55" y="503" text-anchor="middle" font-size="9">Registered</text>
+                        
+                        <path d="M 55 510 L 55 550" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- No email doesn't exist -->
+                        <path d="M 150 540 L 150 570" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="170" y="560" text-anchor="middle" font-size="10" fill="#388E3C">No</text>
+                        
+                        <!-- Create account -->
+                        <rect x="80" y="570" width="140" height="60" fill="#B3E5FC" stroke="#333" stroke-width="2" rx="5"/>
+                        <text x="150" y="590" text-anchor="middle" font-size="11" font-weight="bold">Create New</text>
+                        <text x="150" y="605" text-anchor="middle" font-size="11" font-weight="bold">User Account</text>
+                        <text x="150" y="620" text-anchor="middle" font-size="10">in Database</text>
+                        
+                        <!-- Merge paths -->
+                        <path d="M 150 630 L 150 655" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- End -->
+                        <ellipse cx="150" cy="675" rx="40" ry="20" fill="#FFD54F" stroke="#333" stroke-width="2"/>
+                        <text x="150" y="680" text-anchor="middle" font-size="12" font-weight="bold">END</text>
+                    </svg>
+                </div>
+                
+                <!-- Profile Update Flow -->
+                <div class="flow-item">
+                    <div class="flow-title">4️⃣ Profile Update Flow</div>
+                    <svg viewBox="0 0 300 700" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                                <polygon points="0 0, 10 3, 0 6" fill="#333" />
+                            </marker>
+                        </defs>
+                        
+                        <!-- Start -->
+                        <ellipse cx="150" cy="30" rx="40" ry="25" fill="#FFD54F" stroke="#333" stroke-width="2"/>
+                        <text x="150" y="35" text-anchor="middle" font-size="12" font-weight="bold">START</text>
+                        
+                        <path d="M 150 55 L 150 80" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Check authentication -->
+                        <path d="M 150 80 L 210 130 L 150 180 L 90 130 Z" fill="#C8E6C9" stroke="#333" stroke-width="2"/>
+                        <text x="150" y="130" text-anchor="middle" font-size="11" font-weight="bold">User</text>
+                        <text x="150" y="145" text-anchor="middle" font-size="11" font-weight="bold">Logged In?</text>
+                        
+                        <!-- No -->
+                        <path d="M 90 130 L 40 130" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="60" y="125" text-anchor="middle" font-size="10" fill="#D32F2F">No</text>
+                        
+                        <rect x="20" y="110" width="70" height="40" fill="#FFCDD2" stroke="#333" stroke-width="2" rx="3"/>
+                        <text x="55" y="130" text-anchor="middle" font-size="10" font-weight="bold">Redirect to</text>
+                        <text x="55" y="143" text-anchor="middle" font-size="9">Login</text>
+                        
+                        <!-- Yes -->
+                        <path d="M 150 180 L 150 210" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="170" y="200" text-anchor="middle" font-size="10" fill="#388E3C">Yes</text>
+                        
+                        <!-- Load current profile -->
+                        <line x1="100" y1="210" x2="200" y2="210" stroke="#FBC02D" stroke-width="3"/>
+                        <line x1="100" y1="220" x2="200" y2="220" stroke="#FBC02D" stroke-width="3"/>
+                        <text x="150" y="240" text-anchor="middle" font-size="11" font-weight="bold">Load Current</text>
+                        <text x="150" y="255" text-anchor="middle" font-size="10">Profile Data</text>
+                        
+                        <path d="M 150 255 L 150 280" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- User updates profile -->
+                        <path d="M 100 280 L 200 280 L 190 320 L 110 320 Z" fill="#F8BBD0" stroke="#333" stroke-width="2"/>
+                        <text x="150" y="305" text-anchor="middle" font-size="11" font-weight="bold">Update Profile</text>
+                        
+                        <path d="M 150 320 L 150 345" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Validate changes -->
+                        <rect x="80" y="345" width="140" height="60" fill="#B3E5FC" stroke="#333" stroke-width="2" rx="5"/>
+                        <text x="150" y="365" text-anchor="middle" font-size="11" font-weight="bold">Validate</text>
+                        <text x="150" y="380" text-anchor="middle" font-size="11" font-weight="bold">Updated Data</text>
+                        <text x="150" y="395" text-anchor="middle" font-size="10">&amp; Format</text>
+                        
+                        <path d="M 150 405 L 150 430" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Valid? -->
+                        <path d="M 150 430 L 210 480 L 150 530 L 90 480 Z" fill="#C8E6C9" stroke="#333" stroke-width="2"/>
+                        <text x="150" y="485" text-anchor="middle" font-size="11" font-weight="bold">Valid?</text>
+                        
+                        <!-- No -->
+                        <path d="M 90 480 L 40 480" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="60" y="475" text-anchor="middle" font-size="10" fill="#D32F2F">No</text>
+                        
+                        <rect x="20" y="460" width="70" height="40" fill="#FFCDD2" stroke="#333" stroke-width="2" rx="3"/>
+                        <text x="55" y="480" text-anchor="middle" font-size="10" font-weight="bold">Show Error</text>
+                        <text x="55" y="493" text-anchor="middle" font-size="9">Message</text>
+                        
+                        <!-- Yes -->
+                        <path d="M 150 530 L 150 560" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="170" y="550" text-anchor="middle" font-size="10" fill="#388E3C">Yes</text>
+                        
+                        <!-- Update database -->
+                        <line x1="100" y1="560" x2="200" y2="560" stroke="#FBC02D" stroke-width="3"/>
+                        <line x1="100" y1="570" x2="200" y2="570" stroke="#FBC02D" stroke-width="3"/>
+                        <text x="150" y="590" text-anchor="middle" font-size="11" font-weight="bold">Update Profile</text>
+                        <text x="150" y="605" text-anchor="middle" font-size="10">in Database</text>
+                        
+                        <path d="M 150 605 L 150 630" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        
+                        <!-- Success -->
+                        <rect x="80" y="630" width="140" height="50" fill="#C8E6C9" stroke="#333" stroke-width="2" rx="5"/>
+                        <text x="150" y="650" text-anchor="middle" font-size="11" font-weight="bold">Show Success</text>
+                        <text x="150" y="665" text-anchor="middle" font-size="10">Message</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-shape start-end"></div>
+                <span><strong>Oval</strong> - Start/End point</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-shape process"></div>
+                <span><strong>Rectangle</strong> - Process/Action</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-shape decision"></div>
+                <span><strong>Diamond</strong> - Decision/Condition</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-shape input-output"></div>
+                <span><strong>Parallelogram</strong> - Input/Output</span>
+            </div>
+        </div>
+        
+        <div class="notes">
+            <h3>🔑 Key Process Details:</h3>
+            <ul>
+                <li><strong>Login:</strong> Validates format → Checks credentials → Creates session token → Redirects to home</li>
+                <li><strong>Password Reset:</strong> Validates email → Generates recovery token → Sends email → Stores token in DB with 15-minute expiry</li>
+                <li><strong>Sign Up:</strong> Validates all fields → Checks email uniqueness → Creates account → Stores in database</li>
+                <li><strong>Profile Update:</strong> Checks authentication → Loads current data → Validates changes → Updates database</li>
+                <li><strong>Error Handling:</strong> Each process validates input and shows specific error messages for failed conditions</li>
+                <li><strong>Database Operations:</strong> All data writes are validated and transactions are logged for audit trail</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
