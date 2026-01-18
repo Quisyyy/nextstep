@@ -576,5 +576,54 @@
             </ul>
         </div>
     </div>
+    
+    <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 8px;">
+        <button onclick="exportAsPNG()" style="background: #667eea; color: white; border: none; padding: 12px 30px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; margin-right: 10px;">
+            📥 Export as PNG (Browser)
+        </button>
+        <p style="margin-top: 10px; font-size: 12px; color: #666;">
+            💡 If export doesn't work, use: <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px;">python export_diagram.py</code>
+        </p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        function exportAsPNG() {
+            try {
+                const container = document.querySelector('.container');
+                if (!container) {
+                    alert('Error: Could not find diagram container');
+                    return;
+                }
+                
+                html2canvas(container, {
+                    scale: 2,
+                    backgroundColor: '#ffffff',
+                    useCORS: true,
+                    logging: false,
+                    allowTaint: true
+                }).then(canvas => {
+                    // Convert to blob and download
+                    canvas.toBlob(blob => {
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = 'PROGRAM_FLOWCHART.png';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                        alert('✓ Diagram saved as PNG successfully!');
+                    }, 'image/png', 0.95);
+                }).catch(error => {
+                    console.error('Export error:', error);
+                    alert('Error exporting diagram. Try using the Python script instead.\nRun: python export_diagram.py');
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error exporting diagram. Try using the Python script instead.');
+            }
+        }
+    </script>
 </body>
 </html>

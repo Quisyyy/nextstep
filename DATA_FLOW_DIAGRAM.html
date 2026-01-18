@@ -54,6 +54,11 @@
             padding-bottom: 10px;
         }
         
+        svg text {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            letter-spacing: 0.3px;
+        }
+        
         svg {
             width: 100%;
             height: auto;
@@ -149,12 +154,12 @@
             <svg viewBox="0 0 1000 400" xmlns="http://www.w3.org/2000/svg">
                 <!-- External Entities -->
                 <rect x="50" y="50" width="150" height="100" fill="#FFB6C6" stroke="#FF69B4" stroke-width="2" rx="5"/>
-                <text x="125" y="105" text-anchor="middle" font-size="16" font-weight="bold">User</text>
-                <text x="125" y="125" text-anchor="middle" font-size="12">(Student/Alumni)</text>
+                <text x="125" y="103" text-anchor="middle" font-size="16" font-weight="bold">User</text>
+                <text x="125" y="128" text-anchor="middle" font-size="12">(Student/Alumni)</text>
                 
                 <rect x="800" y="50" width="150" height="100" fill="#FFB6C6" stroke="#FF69B4" stroke-width="2" rx="5"/>
-                <text x="875" y="100" text-anchor="middle" font-size="16" font-weight="bold">Email Service</text>
-                <text x="875" y="125" text-anchor="middle" font-size="12">(Nodemailer)</text>
+                <text x="875" y="103" text-anchor="middle" font-size="16" font-weight="bold">Email Service</text>
+                <text x="875" y="128" text-anchor="middle" font-size="12">(Nodemailer)</text>
                 
                 <!-- Main System -->
                 <circle cx="500" cy="200" r="80" fill="#B3E5FC" stroke="#0288D1" stroke-width="2"/>
@@ -332,5 +337,52 @@
             </ul>
         </div>
     </div>
-</body>
-</html>
+    
+    <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 8px;">
+        <button onclick="exportAsPNG()" style="background: #667eea; color: white; border: none; padding: 12px 30px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; margin-right: 10px;">
+            📥 Export as PNG (Browser)
+        </button>
+        <p style="margin-top: 10px; font-size: 12px; color: #666;">
+            💡 If export doesn't work, use: <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px;">python export_diagram.py</code>
+        </p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        function exportAsPNG() {
+            try {
+                const container = document.querySelector('.container');
+                if (!container) {
+                    alert('Error: Could not find diagram container');
+                    return;
+                }
+                
+                html2canvas(container, {
+                    scale: 2,
+                    backgroundColor: '#ffffff',
+                    useCORS: true,
+                    logging: false,
+                    allowTaint: true
+                }).then(canvas => {
+                    // Convert to blob and download
+                    canvas.toBlob(blob => {
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = 'DATA_FLOW_DIAGRAM.png';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                        alert('✓ Diagram saved as PNG successfully!');
+                    }, 'image/png', 0.95);
+                }).catch(error => {
+                    console.error('Export error:', error);
+                    alert('Error exporting diagram. Try using the Python script instead.\nRun: python export_diagram.py');
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error exporting diagram. Try using the Python script instead.');
+            }
+        }
+    </script>
