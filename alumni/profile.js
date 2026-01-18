@@ -84,14 +84,9 @@ async function loadProfile() {
 
     // CRITICAL: Get current logged-in user email - this ensures data isolation
     const currentEmail = (localStorage.getItem('currentUserEmail') || '').trim().toLowerCase();
-    
-    console.log('🔐 Loading profile for email:', currentEmail || 'NONE');
-
-    // Clear any cached profile IDs from other sessions to prevent data leakage
     const urlProfileId = getProfileIdFromUrl();
     
-    // SECURITY: Only use URL profile ID if it belongs to current user
-    // This prevents users from accessing other users' profiles via URL manipulation
+    console.log('🔐 Loading profile - Email:', currentEmail || 'NONE', '- URL ID:', urlProfileId || 'NONE');
 
     try {
         const ready = await ensureSupabaseReady();
@@ -100,29 +95,30 @@ async function loadProfile() {
         let profile = null;
         let queryError = null;
 
-        // SECURITY: Only load by current logged-in user's email
-        if (currentEmail) {
-            console.log('🔍 Fetching profile by email:', currentEmail);
-            ({ data: profile, error: queryError } = await fetchLatestProfileByEmail(currentEmail));
-            
-            // If URL has a profile ID, verify it matches the user's email
-            if (urlProfileId && profile && profile.id !== urlProfileId) {
-                console.warn('⚠️ URL profile ID does not match user email - using email-based profile');
-            }
-        } else if (urlProfileId) {
-            // Fallback: If no email but URL ID provided (coming from edit redirect)
+        // PRIORITY 1: If URL has a profile ID, fetch it directly (used when redirecting from Information page)
+        if (urlProfileId) {
             console.log('🔍 Fetching profile by URL ID:', urlProfileId);
             ({ data: profile, error: queryError } = await fetchProfileById(urlProfileId));
             
-            // SECURITY: Verify this profile belongs to the current user
-            if (profile && profile.email) {
-                const storedEmail = (localStorage.getItem('currentUserEmail') || '').trim().toLowerCase();
-                if (storedEmail && profile.email.toLowerCase() !== storedEmail) {
+            if (!queryError && profile && currentEmail) {
+                // SECURITY: Verify profile email matches logged-in user (if logged in)
+                if (profile.email.toLowerCase() !== currentEmail) {
                     console.error('❌ Security: Profile email mismatch');
                     profile = null;
-                    throw new Error('Access denied: Profile does not belong to current user');
+                    queryError = new Error('Access denied: Profile does not belong to current user');
                 }
             }
+        } 
+        // PRIORITY 2: If logged in but no URL ID, fetch by email (user viewing their own profile)
+        else if (currentEmail) {
+            console.log('🔍 Fetching profile by email:', currentEmail);
+            ({ data: profile, error: queryError } = await fetchLatestProfileByEmail(currentEmail));
+        }
+        // PRIORITY 3: Neither email nor URL ID - user not logged in and no profile ID provided
+        else {
+            console.log('ℹ️ No profile ID or email available');
+            initializeEmptyProfile(null);
+            return;
         }
 
         if (queryError) throw queryError;

@@ -57,6 +57,17 @@ function populateFormWithData(data) {
     document.getElementById('honors').value = data.honors || '';
     if (data.graduated_year) document.getElementById('graduated').value = data.graduated_year;
 
+    // Career information
+    if (data.job_status) document.getElementById('jobStatus').value = data.job_status;
+    document.getElementById('currentJob').value = data.current_job || '';
+    document.getElementById('previousRoles').value = data.previous_roles || '';
+    document.getElementById('careerPath').value = data.career_path || '';
+    document.getElementById('industry').value = data.industry || '';
+    document.getElementById('professionalCertificates').value = data.professional_certificates || '';
+    if (document.getElementById('openForMentorship')) {
+        document.getElementById('openForMentorship').checked = data.open_for_mentorship || false;
+    }
+
     // Update form title to indicate edit mode
     const formTitle = document.querySelector('.form-title');
     if (formTitle) {
@@ -318,7 +329,13 @@ document.addEventListener('DOMContentLoaded', async function() {
             major: document.getElementById('major').value || null,
             honors: document.getElementById('honors').value || null,
             graduated_year: document.getElementById('graduated').value || null,
-            open_for_mentorship: document.getElementById('openForMentorship').value || null
+            job_status: document.getElementById('jobStatus').value || null,
+            current_job: document.getElementById('currentJob').value || null,
+            previous_roles: document.getElementById('previousRoles').value || null,
+            career_path: document.getElementById('careerPath').value || null,
+            industry: document.getElementById('industry').value || null,
+            professional_certificates: document.getElementById('professionalCertificates').value || null,
+            open_for_mentorship: document.getElementById('openForMentorship').checked || false
         };
 
         // Only set created_at for new records
@@ -366,17 +383,19 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
                 if (window.debugWidget) window.debugWidget.log(`✅ Successfully ${isEditMode ? 'updated' : 'saved'} to Supabase`);
 
-                // Store profile ID for the profile page
                 if (data && data[0] && data[0].id) {
                     localStorage.setItem('lastProfileId', data[0].id);
-                    // Redirect to profile page after successful save/update
+                    localStorage.setItem('lastProfileEmail', data[0].email);
+                    // Redirect to profile page after successful save/update with success flags
                     setTimeout(() => {
-                        window.location.href = 'profile.html?id=' + data[0].id;
+                        const isUpdate = isEditMode;
+                        const redirectUrl = 'profile.html?id=' + data[0].id + (isUpdate ? '&updated=true' : '&created=true');
+                        window.location.href = redirectUrl;
                     }, 1000);
                 } else if (isEditMode && effectiveEditId) {
                     // For updates, use the existing ID
                     setTimeout(() => {
-                        window.location.href = 'profile.html?id=' + effectiveEditId;
+                        window.location.href = 'profile.html?id=' + effectiveEditId + '&updated=true';
                     }, 1000);
                 }
 
