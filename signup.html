@@ -1,143 +1,417 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NEXT STEP | Sign Up</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
     <style>
-        .form-row {
-            margin-bottom: 15px;
-        }
-        
-        .form-row label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            color: #333;
-        }
-        
-        .form-row input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            box-sizing: border-box;
-        }
-        
-        .form-row input:focus {
-            outline: none;
-            border-color: #0b66b3;
-            box-shadow: 0 0 0 2px rgba(11, 102, 179, 0.1);
-        }
-        
-        .field-help {
-            font-size: 12px;
-            color: #666;
-            margin-top: 4px;
-        }
-        
-        .privacy-note {
-            font-size: 0.9rem;
-            color: #444;
-            margin-top: 10px;
-            line-height: 1.4;
-        }
-        
-        .privacy-note code {
-            background: #f5f5f5;
-            padding: 1px 4px;
-            border-radius: 2px;
-            font-size: 0.85em;
-        }
-    </style>
-</head>
+      /* Modern Signup Page Styles */
+      body {
+        background: #f5f5f5;
+        min-height: 100vh;
+        font-family: "Poppins", sans-serif;
+      }
 
-<body>
+      .signup-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 100%;
+        max-width: 480px;
+        margin: 120px auto 40px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .signup-header {
+        margin-bottom: 30px;
+      }
+
+      .signup-header .nav-logo {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 15px;
+        border-radius: 50%;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .signup-header h2 {
+        color: #2d3748;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+
+      .signup-header p {
+        color: #718096;
+        font-size: 16px;
+        margin-bottom: 0;
+      }
+
+      .form-group {
+        margin-bottom: 24px;
+        text-align: left;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #2d3748;
+        font-size: 14px;
+      }
+
+      .input-wrapper {
+        position: relative;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 16px 20px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 16px;
+        background: #fff;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: #0b66b3;
+        box-shadow: 0 0 0 3px rgba(11, 102, 179, 0.1);
+        transform: translateY(-1px);
+      }
+
+      .form-group input:valid {
+        border-color: #48bb78;
+      }
+
+      .field-help {
+        font-size: 13px;
+        color: #718096;
+        margin-top: 6px;
+        line-height: 1.4;
+      }
+
+      .field-error {
+        color: #e53e3e;
+        font-size: 13px;
+        margin-top: 6px;
+        display: none;
+      }
+
+      .checkbox-group {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin: 24px 0;
+        text-align: left;
+      }
+
+      .checkbox-group input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        margin: 0;
+        cursor: pointer;
+        accent-color: #0b66b3;
+      }
+
+      .checkbox-group label {
+        font-size: 14px;
+        line-height: 1.5;
+        color: #4a5568;
+        cursor: pointer;
+        margin: 0;
+      }
+
+      .checkbox-group a {
+        color: #0b66b3;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .checkbox-group a:hover {
+        text-decoration: underline;
+      }
+
+      .signup-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #0b66b3 0%, #004aad 100%);
+        color: white;
+        border: none;
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 16px;
+      }
+
+      .signup-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(11, 102, 179, 0.3);
+      }
+
+      .signup-btn:active {
+        transform: translateY(0);
+      }
+
+      .status-message {
+        min-height: 24px;
+        margin-bottom: 20px;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .login-link {
+        color: #718096;
+        font-size: 15px;
+        margin-bottom: 20px;
+      }
+
+      .login-link a {
+        color: #0b66b3;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .login-link a:hover {
+        text-decoration: underline;
+      }
+
+      .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #718096;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 14px;
+        transition: color 0.3s ease;
+      }
+
+      .back-btn:hover {
+        color: #0b66b3;
+      }
+
+      /* Password strength indicator */
+      .password-strength {
+        margin-top: 8px;
+        height: 4px;
+        background: #e2e8f0;
+        border-radius: 2px;
+        overflow: hidden;
+      }
+
+      .password-strength-bar {
+        height: 100%;
+        width: 0%;
+        transition: all 0.3s ease;
+        border-radius: 2px;
+      }
+
+      .strength-weak {
+        background: #e53e3e;
+        width: 25%;
+      }
+      .strength-fair {
+        background: #ed8936;
+        width: 50%;
+      }
+      .strength-good {
+        background: #38b2ac;
+        width: 75%;
+      }
+      .strength-strong {
+        background: #48bb78;
+        width: 100%;
+      }
+
+      /* Responsive design */
+      @media (max-width: 640px) {
+        .signup-container {
+          margin: 100px 20px 40px;
+          padding: 30px 24px;
+        }
+
+        .signup-header h2 {
+          font-size: 24px;
+        }
+
+        .form-group input {
+          padding: 14px 16px;
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
     <header class="navbar">
-        <div class="logo-area">
-            <div class="logo-circle">
-                <img src="logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg" class="nav-logo" alt="Next Step logo" onerror="this.onerror=null;this.src='logo/557536151_1257403522824074_2017646524872962832_n.png'">
-            </div>
-            <h3 class="brand">NEXT STEP</h3>
+      <div class="logo-area">
+        <div class="logo-circle">
+          <img
+            src="logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg"
+            class="nav-logo"
+            alt="Next Step logo"
+            onerror="
+              this.onerror = null;
+              this.src =
+                'logo/557536151_1257403522824074_2017646524872962832_n.png';
+            "
+          />
         </div>
-        <nav class="main-nav">
-            <a href="index.html">Home</a>
-            <a href="index.html#about">About</a>
-            <a href="index.html#site-contact">Contact</a>
-        </nav>
+        <h3 class="brand">NEXT STEP</h3>
+      </div>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#site-contact">Contact</a>
+      </nav>
     </header>
 
-    <div class="container">
-        <img src="logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg" class="nav-logo" alt="Next Step logo" onerror="this.onerror=null;this.src='logo/557536151_1257403522824074_2017646524872962832_n.png'">
-        <h2>Welcome to NEXT STEP</h2>
-        <!--
-            Signup form
-            - Fields are referenced by `signup.js`:
-                * #signupName   -> full name
-                * #signupEmail  -> email
-                * #signupPhone  -> optional phone
-                * #signupPassword -> password (signup.js should hash or send securely)
-                * #signupConfirm -> password confirmation
-            - On success the script dispatches `signup:saved` and stores queued items in localStorage key `signup_queue` when offline.
-            - Developer: consider moving password hashing to server-side; the `signups` table expects a `password_hash` column.
-        -->
-        <form id="signupForm" novalidate>
-            <div class="form-row">
-                <label for="signupName">Full name</label>
-                <input id="signupName" name="full_name" type="text" placeholder="Full name" required aria-required="true">
-            </div>
+    <div class="signup-container">
+      <div class="signup-header">
+        <img
+          src="logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg"
+          class="nav-logo"
+          alt="Next Step logo"
+          onerror="
+            this.onerror = null;
+            this.src =
+              'logo/557536151_1257403522824074_2017646524872962832_n.png';
+          "
+        />
+        <h2>Join NEXT STEP</h2>
+        <p>Create your account to start your learning journey</p>
+      </div>
 
-            <div class="form-row">
-                <label for="signupEmail">Email address</label>
-                <input id="signupEmail" name="email" type="email" placeholder="Email address" required aria-required="true">
-            </div>
+      <form id="signupForm" novalidate>
+        <div class="form-group">
+          <label for="signupName">Full Name</label>
+          <div class="input-wrapper">
+            <input
+              id="signupName"
+              name="full_name"
+              type="text"
+              placeholder="Enter your full name"
+              required
+              aria-required="true"
+            />
+          </div>
+          <div id="signupNameError" class="field-error"></div>
+        </div>
 
-            <div class="form-row">
-                <label for="signupPhone"> Contact number </label>
-                <input id="signupPhone" name="phone" type="tel" placeholder="e.g. +63 912 345 6789" aria-describedby="phoneHelp">
-                <div id="phoneHelp" class="field-help">We'll only use this to contact you about your account.</div>
-            </div>
+        <div class="form-group">
+          <label for="signupEmail">Email Address</label>
+          <div class="input-wrapper">
+            <input
+              id="signupEmail"
+              name="email"
+              type="email"
+              placeholder="Enter your email address"
+              required
+              aria-required="true"
+            />
+          </div>
+          <div id="signupEmailError" class="field-error"></div>
+        </div>
 
-            <div class="form-row">
-                <label for="signupPassword">Password</label>
-                <input id="signupPassword" name="password" type="password" placeholder="Password" required aria-required="true" aria-describedby="pwHelp">
-            </div>
+        <div class="form-group">
+          <label for="signupPhone"
+            >Contact Number
+            <span style="color: #718096; font-weight: 400"
+              >(Optional)</span
+            ></label
+          >
+          <div class="input-wrapper">
+            <input
+              id="signupPhone"
+              name="phone"
+              type="tel"
+              placeholder="e.g. +63 912 345 6789"
+              aria-describedby="phoneHelp"
+            />
+          </div>
+          <div id="phoneHelp" class="field-help">
+            We'll only use this to contact you about your account
+          </div>
+        </div>
 
-            <div class="form-row">
-                <label for="signupConfirm">Confirm password</label>
-                <input id="signupConfirm" name="confirm_password" type="password" placeholder="Confirm Password" required aria-required="true" aria-describedby="pwHelp">
-                <div id="pwHelp" class="field-help">Password should be at least 8 characters. Make sure both fields match.</div>
-            </div>
+        <div class="form-group">
+          <label for="signupPassword">Password</label>
+          <div class="input-wrapper">
+            <input
+              id="signupPassword"
+              name="password"
+              type="password"
+              placeholder="Create a strong password"
+              required
+              aria-required="true"
+              aria-describedby="pwHelp"
+            />
+          </div>
+          <div class="password-strength">
+            <div id="passwordStrengthBar" class="password-strength-bar"></div>
+          </div>
+          <div id="pwHelp" class="field-help">
+            Password must be at least 8 characters with uppercase, lowercase,
+            number, and symbol
+          </div>
+          <div id="signupPasswordError" class="field-error"></div>
+        </div>
 
-            <!-- hidden developer / UX fields -->
-            <input type="hidden" id="signupRole" name="role" value="student">
+        <div class="form-group">
+          <label for="signupConfirm">Confirm Password</label>
+          <div class="input-wrapper">
+            <input
+              id="signupConfirm"
+              name="confirm_password"
+              type="password"
+              placeholder="Confirm your password"
+              required
+              aria-required="true"
+            />
+          </div>
+          <div id="signupConfirmError" class="field-error"></div>
+        </div>
 
-            <div class="form-row" style="margin-top: 20px;">
-                <label style="display: flex; align-items: flex-start; font-weight: normal; cursor: pointer;">
-                    <input type="checkbox" id="signupTerms" name="terms" style="width: auto; margin-right: 8px; margin-top: 3px; cursor: pointer;" required>
-                    <span style="font-size: 14px; line-height: 1.5;">I agree to the <a href="terms-and-conditions.html" target="_blank" style="color: #0b66b3; text-decoration: underline;">Terms and Conditions</a> and <a href="privacy-policy.html" target="_blank" style="color: #0b66b3; text-decoration: underline;">Privacy Policy</a></span>
-                </label>
-            </div>
+        <input type="hidden" id="signupRole" name="role" value="student" />
 
-            <div style="margin-top:8px">
-                <button id="signupBtn" type="submit" class="btn">Sign Up</button>
-            </div>
-            
-            <div style="margin-top:12px; min-height: 24px;">
-                <span id="signupStatus" role="status" aria-live="polite" style="color:#0b66b3;font-weight:600;display:block"></span>
-            </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="signupTerms" name="terms" required />
+          <label for="signupTerms">
+            I agree to the
+            <a href="terms-and-conditions.html" target="_blank"
+              >Terms and Conditions</a
+            >
+            and <a href="privacy-policy.html" target="_blank">Privacy Policy</a>
+          </label>
+        </div>
 
-        </form>
-        <p>Already have an account? <a href="login.html">Login</a></p>
-        <a href="index.html" class="back-btn">← Back</a>
+        <div class="status-message">
+          <span id="signupStatus" role="status" aria-live="polite"></span>
+        </div>
+
+        <button id="signupBtn" type="submit" class="signup-btn">
+          Create Account
+        </button>
+      </form>
+
+      <div class="login-link">
+        <p>Already have an account? <a href="login.html">Sign in here</a></p>
+      </div>
+
+      <a href="index.html" class="back-btn"> <span>←</span> Back to Home </a>
     </div>
 
     <script src="supabase-client.js" defer></script>
     <script src="database-setup.js" defer></script>
-    <script src="signup-simple.js" defer></script>
-</body>
-
+    <script src="signup.js" defer></script>
+  </body>
 </html>

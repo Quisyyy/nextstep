@@ -1,45 +1,246 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NEXT STEP | Login</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* Modern Login Page Styles */
+      body {
+        background: #f5f5f5;
+        min-height: 100vh;
+        font-family: "Poppins", sans-serif;
+      }
 
-<body>
+      .login-container {
+        background: #fff;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 100%;
+        max-width: 420px;
+        margin: 120px auto 40px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .login-header {
+        margin-bottom: 30px;
+      }
+
+      .login-header .nav-logo {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 15px;
+        border-radius: 50%;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .login-header h2 {
+        color: #2d3748;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+
+      .form-group {
+        margin-bottom: 24px;
+        text-align: left;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #2d3748;
+        font-size: 14px;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 16px 20px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 16px;
+        background: #fff;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: #0b66b3;
+        box-shadow: 0 0 0 3px rgba(11, 102, 179, 0.1);
+        transform: translateY(-1px);
+      }
+
+      .login-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #0b66b3 0%, #004aad 100%);
+        color: white;
+        border: none;
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 16px;
+      }
+
+      .login-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(11, 102, 179, 0.3);
+      }
+
+      .login-btn:active {
+        transform: translateY(0);
+      }
+
+      .status {
+        min-height: 24px;
+        margin-bottom: 20px;
+        font-weight: 600;
+        font-size: 14px;
+        color: #e53e3e;
+      }
+
+      .forgot-link {
+        color: #0b66b3;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 20px;
+        display: block;
+      }
+
+      .forgot-link:hover {
+        text-decoration: underline;
+      }
+
+      .signup-link {
+        color: #718096;
+        font-size: 15px;
+        margin-bottom: 20px;
+      }
+
+      .signup-link a {
+        color: #0b66b3;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .signup-link a:hover {
+        text-decoration: underline;
+      }
+
+      .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #718096;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 14px;
+        transition: color 0.3s ease;
+      }
+
+      .back-btn:hover {
+        color: #0b66b3;
+      }
+
+      /* Responsive design */
+      @media (max-width: 640px) {
+        .login-container {
+          margin: 100px 20px 40px;
+          padding: 30px 24px;
+        }
+
+        .login-header h2 {
+          font-size: 24px;
+        }
+
+        .form-group input {
+          padding: 14px 16px;
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
     <header class="navbar">
-        <div class="logo-area">
-            <div class="logo-circle">
-                <img src="logo/557536151_1257403522824074_2017646524872962832_n.png" class="nav-logo" alt="Next Step logo">
-            </div>
-            <h3 class="brand">NEXT STEP</h3>
+      <div class="logo-area">
+        <div class="logo-circle">
+          <img
+            src="logo/557536151_1257403522824074_2017646524872962832_n.png"
+            class="nav-logo"
+            alt="Next Step logo"
+          />
         </div>
-        <nav class="main-nav">
-            <a href="index.html">Home</a>
-            <a href="index.html#about">About</a>
-            <a href="index.html#site-contact">Contact</a>
-        </nav>
-        <div class="nav-actions"></div>
+        <h3 class="brand">NEXT STEP</h3>
+      </div>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#site-contact">Contact</a>
+      </nav>
+      <div class="nav-actions"></div>
     </header>
 
-    <div class="container">
-        <img src="logo/557536151_1257403522824074_2017646524872962832_n.png" class="nav-logo" alt="Next Step logo">
-        <h2>Welcome to NEXT STEP</h2>
-        <form id="alumni-login-form">
-            <input type="email" name="email" placeholder="Email address" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <div class="status" style="display:none"></div>
-            <button type="submit" class="btn">Login</button>
-        </form>
-            <p><a href="reset-password.html" id="forgot-password-link">Forgot Password?</a></p>
-        <p>Don’t have an account? <a href="signup.html">Sign up</a></p>
-        <a href="index.html" class="back-btn">← Back</a>
+    <div class="login-container">
+      <div class="login-header">
+        <img
+          src="logo/557536151_1257403522824074_2017646524872962832_n.png"
+          class="nav-logo"
+          alt="Next Step logo"
+        />
+        <h2>Welcome Back</h2>
+      </div>
+
+      <form id="alumni-login-form">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter your email address"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+
+        <div class="status" style="display: none"></div>
+
+        <button type="submit" class="login-btn">Sign In</button>
+      </form>
+
+      <a
+        href="reset-password.html"
+        id="forgot-password-link"
+        class="forgot-link"
+        >Forgot Password?</a
+      >
+
+      <div class="signup-link">
+        <p>Don't have an account? <a href="signup.html">Sign up here</a></p>
+      </div>
+
+      <a href="index.html" class="back-btn"> <span>←</span> Back to Home </a>
     </div>
+
     <script src="supabase-client.js" defer></script>
     <script src="database-setup.js" defer></script>
-    <script src="login-simple.js" defer></script>
-</body>
-
+    <script src="login.js" defer></script>
+  </body>
 </html>
