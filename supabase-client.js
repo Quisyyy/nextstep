@@ -20,9 +20,12 @@
           );
           // Also expose as window.supabase for backward compatibility
           window.supabase = window.supabaseClient;
-          window.supabaseReady = true;
           window.supabaseClientReady = true;
           console.log("✓ Supabase initialized successfully");
+          // Resolve the supabaseReady promise if it exists (for compatibility with reset-password.js)
+          if (window.supabaseReadyResolve) {
+            window.supabaseReadyResolve(window.supabaseClient);
+          }
           // Dispatch custom event
           window.dispatchEvent(new CustomEvent("supabaseReady"));
         } else {
@@ -31,8 +34,10 @@
       }, 100);
     } catch (err) {
       console.error("Error initializing Supabase:", err);
-      window.supabaseReady = false;
       window.supabaseError = err.message;
+      if (window.supabaseReadyReject) {
+        window.supabaseReadyReject(err);
+      }
     }
   };
 

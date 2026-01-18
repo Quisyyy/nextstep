@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const resetForm = document.getElementById('reset-password-form');
     const step1 = document.getElementById('step-1');
     const step2 = document.getElementById('step-2');
+    const step3 = document.getElementById('step-3');
     const requestStatus = requestForm.querySelector('.status');
     const resetStatus = resetForm.querySelector('.status');
     const toggleButtons = document.querySelectorAll('.toggle-password');
@@ -42,51 +43,114 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Track if we have a valid recovery session
     let hasRecoverySession = false;
 
+    // Function to show password reset form
+    const showPasswordResetForm = () => {
+        hasRecoverySession = true;
+        step1.style.display = 'none';
+        step2.style.display = 'block';
+        step3.style.display = 'none';
+        resetStatus.style.display = 'none';
+        console.log('Showing password reset form');
+    };
+
+    // Function to show recovery error
+    const showRecoveryError = () => {
+        step1.style.display = 'none';
+        step2.style.display = 'none';
+        step3.style.display = 'block';
+        console.log('Showing recovery error (Step 3)');
+    };
+
     // Listen for auth state changes - Supabase automatically handles the hash fragment
     supabase.auth.onAuthStateChange(async (event, session) => {
         console.log('Auth event:', event, 'Session:', session ? 'exists' : 'null');
         
         if (event === 'PASSWORD_RECOVERY') {
             console.log('Password recovery event detected');
-            hasRecoverySession = true;
-            step1.style.display = 'none';
-            step2.style.display = 'block';
-            resetStatus.style.display = 'none';
+            showPasswordResetForm();
         } else if (event === 'SIGNED_IN' && session) {
             // Check if this is from a recovery link
             const hash = window.location.hash;
             if (hash.includes('type=recovery')) {
                 console.log('Signed in via recovery link');
-                hasRecoverySession = true;
-                step1.style.display = 'none';
-                step2.style.display = 'block';
-                resetStatus.style.display = 'none';
+                showPasswordResetForm();
             }
         }
     });
 
-    // Also check URL hash on page load for recovery tokens
+    // Check URL for recovery tokens - both in hash and query params
+    const fullUrl = window.location.href;
     const hash = window.location.hash;
-    console.log('URL hash:', hash);
+    const search = window.location.search;
+    console.log('Current URL:', fullUrl);
+    console.log('Hash:', hash);
+    console.log('Search:', search);
     
-    if (hash.includes('type=recovery') || hash.includes('access_token')) {
-        console.log('Recovery token in URL, checking session...');
+    const hasRecoveryToken = hash.includes('type=recovery') || 
+                             hash.includes('access_token') ||
+                             search.includes('type=recovery') ||
+                             search.includes('access_token');
+    
+    if (hasRecoveryToken) {
+        console.log('Recovery token detected in URL');
         
-        // Give Supabase a moment to process the hash
-        setTimeout(async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            console.log('Session check after timeout:', session ? 'exists' : 'missing');
+        // Supabase automatically handles the hash fragment
+        // but we need to wait for it to be processed
+        // Try multiple times to get the session
+        let attempts = 0;
+        const maxAttempts = 20; // Try for up to 10 seconds
+        
+        const checkSession = setInterval(async () => {
+            attempts++;
+            try {
+                // First, try to get the current session from storage
+                const { data: { session } } = await supabase.auth.getSession();
+                console.log('Session check attempt', attempts, '- Session exists:', !!session);
+                
+                if (session) {
+                    console.log('Recovery session established! User:', session.user?.email);
+                    clearInterval(checkSession);
+                    showPasswordResetForm();
+                    // Clear the hash after showing the form
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    return;
+                }
+                
+                // If still no session after first few attempts, try refreshing from hash
+                if (attempts === 1) {
+                    // Force Supabase to parse the hash by calling onAuthStateChange
+                    console.log('Triggering Supabase hash parsing...');
+                }
+            } catch (err) {
+                console.error('Error checking session:', err);
+            }
             
-            if (session) {
-                hasRecoverySession = true;
-                step1.style.display = 'none';
-                step2.style.display = 'block';
-                // Clear the hash
-                window.history.replaceState({}, document.title, window.location.pathname);
-            } else {
-                console.log('No session after recovery token - may need to request new link');
+            if (attempts >= maxAttempts) {
+                clearInterval(checkSession);
+                console.warn('Timeout: Could not establish recovery session after', maxAttempts * 500, 'ms');
+                console.warn('This may mean the reset link has expired or is invalid.');
+                showRecoveryError();
             }
         }, 500);
+        
+        // Also listen for the PASSWORD_RECOVERY event which should fire
+        const unsubscribe = supabase.auth.onAuthStateChange(async (event, session) => {
+            console.log('Auth state change event:', event, 'Has session:', !!session);
+            if (event === 'PASSWORD_RECOVERY') {
+                console.log('Detected PASSWORD_RECOVERY event');
+                clearInterval(checkSession);
+                unsubscribe?.();
+                showPasswordResetForm();
+            } else if (session && hasRecoveryToken) {
+                // User is signed in with recovery token
+                console.log('Detected signed in user with recovery token');
+                clearInterval(checkSession);
+                unsubscribe?.();
+                showPasswordResetForm();
+            }
+        });
+    } else {
+        console.log('No recovery token found in URL');
     }
 
     // Handle email verification request
@@ -97,8 +161,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         try {
             console.log('Sending reset password email to:', email);
-            // Use production URL for password reset redirect
-            const redirectUrl = 'https://nextstep-oi6a.vercel.app/reset-password.html';
+            
+            // Determine redirect URL based on current domain
+            let redirectUrl = 'https://nextstep-oi6a.vercel.app/reset-password.html';
+            
+            // For localhost development
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                redirectUrl = window.location.origin + '/reset-password.html';
+                console.log('Using localhost redirect:', redirectUrl);
+            } else if (window.location.hostname.includes('admin')) {
+                redirectUrl = 'https://admin-next-step.vercel.app/reset-password.html';
+            }
+            
+            console.log('Reset redirect URL:', redirectUrl);
+            
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
                 redirectTo: redirectUrl
             });
