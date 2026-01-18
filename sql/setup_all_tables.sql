@@ -2,114 +2,142 @@
 -- =====================================================================
 -- Complete database setup script for NEXT STEP project
 -- This script creates both alumni_profiles and signups tables with RLS policies
--- Safe to run multiple times (uses IF NOT EXISTS and safe column additions)
+-- Safe to run multiple times (uses IF NOT EXISTS)
 -- =====================================================================
 
 -- Enable required extensions
-create extension if not exists pgcrypto;
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 -- =====================================================================
--- alumni_profiles table (for Information form submissions)
+-- signups TABLE (User Registration / Account Creation)
 -- =====================================================================
-create table if not exists public.alumni_profiles (
-  id uuid default gen_random_uuid() primary key,
-  full_name text,
-  email text,
-  student_number text,
-  degree text,
-  degree_label text,
-  major text,
-  honors text,
-  birth_month int,
-  birth_day int,
-  birth_year int,
-  contact text,
-  address text,
-  graduated_year int,
-  created_at timestamptz default now()
+CREATE TABLE IF NOT EXISTS public.signups (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  full_name TEXT,
+  email TEXT UNIQUE,
+  phone TEXT,
+  password_hash TEXT,
+  role TEXT DEFAULT 'student',
+  confirmed BOOLEAN DEFAULT false,
+  confirm_token TEXT UNIQUE,
+  metadata JSONB,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
 );
-
--- Safe column additions for alumni_profiles
-alter table public.alumni_profiles add column if not exists full_name text;
-alter table public.alumni_profiles add column if not exists email text;
-alter table public.alumni_profiles add column if not exists student_number text;
-alter table public.alumni_profiles add column if not exists degree text;
-alter table public.alumni_profiles add column if not exists degree_label text;
-alter table public.alumni_profiles add column if not exists major text;
-alter table public.alumni_profiles add column if not exists honors text;
-alter table public.alumni_profiles add column if not exists birth_month int;
-alter table public.alumni_profiles add column if not exists birth_day int;
-alter table public.alumni_profiles add column if not exists birth_year int;
-alter table public.alumni_profiles add column if not exists contact text;
-alter table public.alumni_profiles add column if not exists address text;
-alter table public.alumni_profiles add column if not exists graduated_year int;
-alter table public.alumni_profiles add column if not exists created_at timestamptz default now();
-
--- Indexes for alumni_profiles
-create index if not exists idx_alumni_email on public.alumni_profiles (email);
-create index if not exists idx_alumni_degree on public.alumni_profiles (degree);
-
--- Enable RLS for alumni_profiles
-alter table public.alumni_profiles enable row level security;
-
--- RLS policies for alumni_profiles (permissive for development)
-drop policy if exists alumni_anon_select on public.alumni_profiles;
-create policy alumni_anon_select on public.alumni_profiles for select using (true);
-
-drop policy if exists alumni_anon_insert on public.alumni_profiles;
-create policy alumni_anon_insert on public.alumni_profiles for insert with check (true);
-
--- Seed data for alumni_profiles
-insert into public.alumni_profiles (full_name, email, student_number, degree, degree_label, created_at)
-values
-('Seed Alumni One','alumni1@example.com','2020-0001','BSA','Bachelor of Science in Accountancy (BSA)', now()),
-('Seed Alumni Two','alumni2@example.com','2021-0002','BSIT','Bachelor of Science in Information Technology (BSIT)', now())
-ON CONFLICT DO NOTHING;
-
--- =====================================================================
--- signups table (for user registration)
--- =====================================================================
-create table if not exists public.signups (
-  id uuid default gen_random_uuid() primary key,
-  full_name text,
-  email text,
-  phone text,
-  password_hash text,
-  role text,
-  confirmed boolean default false,
-  confirm_token text,
-  metadata jsonb,
-  created_at timestamptz default now()
-);
-
--- Safe column adds for signups
-alter table public.signups add column if not exists full_name text;
-alter table public.signups add column if not exists email text;
-alter table public.signups add column if not exists phone text;
-alter table public.signups add column if not exists password_hash text;
-alter table public.signups add column if not exists role text;
-alter table public.signups add column if not exists confirmed boolean default false;
-alter table public.signups add column if not exists confirm_token text;
-alter table public.signups add column if not exists metadata jsonb;
-alter table public.signups add column if not exists created_at timestamptz default now();
 
 -- Indexes for signups
-create index if not exists idx_signups_email on public.signups (email);
+CREATE INDEX IF NOT EXISTS idx_signups_email ON public.signups (email);
+CREATE INDEX IF NOT EXISTS idx_signups_confirm_token ON public.signups (confirm_token);
+CREATE INDEX IF NOT EXISTS idx_signups_created_at ON public.signups (created_at DESC);
 
 -- Enable RLS for signups
-alter table public.signups enable row level security;
+ALTER TABLE public.signups ENABLE ROW LEVEL SECURITY;
 
--- RLS policies for signups (permissive for development)
-drop policy if exists signups_anon_select on public.signups;
-create policy signups_anon_select on public.signups for select using (true);
+-- RLS policies for signups
+DROP POLICY IF EXISTS signups_anon_select ON public.signups;
+CREATE POLICY signups_anon_select ON public.signups FOR SELECT USING (true);
 
-drop policy if exists signups_anon_insert on public.signups;
-create policy signups_anon_insert on public.signups for insert with check (true);
+DROP POLICY IF EXISTS signups_anon_insert ON public.signups;
+CREATE POLICY signups_anon_insert ON public.signups FOR INSERT WITH CHECK (true);
 
--- Seed data for signups
-insert into public.signups (full_name, email, phone, role, created_at)
-values ('Signup Test','signup-test@example.com','+63 900 000 0000','student', now())
-ON CONFLICT DO NOTHING;
+DROP POLICY IF EXISTS signups_authenticated_update ON public.signups;
+CREATE POLICY signups_authenticated_update ON public.signups FOR UPDATE USING (auth.uid()::text = id::text) WITH CHECK (auth.uid()::text = id::text);
+
+-- =====================================================================
+-- alumni_profiles TABLE (Alumni Information & Career Data)
+-- =====================================================================
+CREATE TABLE IF NOT EXISTS public.alumni_profiles (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  signup_id UUID REFERENCES public.signups(id) ON DELETE CASCADE,
+  full_name TEXT,
+  email TEXT UNIQUE,
+  student_number TEXT UNIQUE,
+  degree TEXT,
+  degree_label TEXT,
+  major TEXT,
+  honors TEXT,
+  birth_month INT,
+  birth_day INT,
+  birth_year INT,
+  contact TEXT,
+  address TEXT,
+  graduated_year INT,
+  job_status TEXT,
+  current_job TEXT,
+  current_company TEXT,
+  previous_roles TEXT,
+  career_path TEXT,
+  industry TEXT,
+  professional_certificates TEXT,
+  skills TEXT,
+  open_for_mentorship BOOLEAN DEFAULT false,
+  mentorship_areas TEXT,
+  linkedin_profile TEXT,
+  website_portfolio TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Indexes for alumni_profiles (for performance)
+CREATE INDEX IF NOT EXISTS idx_alumni_email ON public.alumni_profiles (email);
+CREATE INDEX IF NOT EXISTS idx_alumni_student_number ON public.alumni_profiles (student_number);
+CREATE INDEX IF NOT EXISTS idx_alumni_degree ON public.alumni_profiles (degree);
+CREATE INDEX IF NOT EXISTS idx_alumni_graduation ON public.alumni_profiles (graduated_year DESC);
+CREATE INDEX IF NOT EXISTS idx_alumni_job_status ON public.alumni_profiles (job_status);
+CREATE INDEX IF NOT EXISTS idx_alumni_mentorship ON public.alumni_profiles (open_for_mentorship);
+CREATE INDEX IF NOT EXISTS idx_alumni_signup_id ON public.alumni_profiles (signup_id);
+
+-- Enable RLS for alumni_profiles
+ALTER TABLE public.alumni_profiles ENABLE ROW LEVEL SECURITY;
+
+-- RLS policies for alumni_profiles
+DROP POLICY IF EXISTS alumni_anon_select ON public.alumni_profiles;
+CREATE POLICY alumni_anon_select ON public.alumni_profiles FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS alumni_anon_insert ON public.alumni_profiles;
+CREATE POLICY alumni_anon_insert ON public.alumni_profiles FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS alumni_authenticated_update ON public.alumni_profiles;
+CREATE POLICY alumni_authenticated_update ON public.alumni_profiles FOR UPDATE USING (auth.uid()::text = signup_id::text) WITH CHECK (auth.uid()::text = signup_id::text);
+
+DROP POLICY IF EXISTS alumni_authenticated_delete ON public.alumni_profiles;
+CREATE POLICY alumni_authenticated_delete ON public.alumni_profiles FOR DELETE USING (auth.uid()::text = signup_id::text);
+
+-- =====================================================================
+-- Seed Data (Development)
+-- =====================================================================
+
+-- Seed signups
+INSERT INTO public.signups (full_name, email, phone, role, confirmed)
+VALUES 
+  ('Test Alumni One', 'alumni1@example.com', '+63 900 000 0001', 'student', true),
+  ('Test Alumni Two', 'alumni2@example.com', '+63 900 000 0002', 'student', true)
+ON CONFLICT (email) DO NOTHING;
+
+-- Seed alumni profiles (linking to signups)
+INSERT INTO public.alumni_profiles (
+  signup_id, full_name, email, student_number, degree, degree_label, 
+  graduated_year, job_status, current_company, open_for_mentorship
+)
+SELECT 
+  s.id, s.full_name, s.email, 
+  '2020-0001', 'BSA', 'Bachelor of Science in Accountancy (BSA)',
+  2020, 'Employed', 'Tech Corp', true
+FROM public.signups s
+WHERE s.email = 'alumni1@example.com'
+ON CONFLICT (email) DO NOTHING;
+
+INSERT INTO public.alumni_profiles (
+  signup_id, full_name, email, student_number, degree, degree_label, 
+  graduated_year, job_status, current_company, open_for_mentorship
+)
+SELECT 
+  s.id, s.full_name, s.email,
+  '2021-0002', 'BSIT', 'Bachelor of Science in Information Technology (BSIT)',
+  2021, 'Employed', 'Innovation Labs', true
+FROM public.signups s
+WHERE s.email = 'alumni2@example.com'
+ON CONFLICT (email) DO NOTHING;
 
 -- =====================================================================
 -- End of setup script

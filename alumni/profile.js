@@ -5,7 +5,7 @@
 async function ensureSupabaseReady(timeout = 5000) {
     const start = Date.now();
     while (Date.now() - start < timeout) {
-        if (window.supabase && window.supabaseClientReady) return true;
+        if (window.supabaseClient && window.supabaseReady) return true;
         await new Promise(r => setTimeout(r, 100));
     }
     return false;
@@ -52,7 +52,7 @@ function getProfileIdFromUrl() {
 
 // Fetch a single profile by id
 async function fetchProfileById(id) {
-    const { data, error } = await window.supabase
+    const { data, error } = await window.supabaseClient
         .from('alumni_profiles')
         .select('*')
         .eq('id', id)
@@ -63,7 +63,7 @@ async function fetchProfileById(id) {
 
 // Fetch latest profile by email
 async function fetchLatestProfileByEmail(email) {
-    const { data, error } = await window.supabase
+    const { data, error } = await window.supabaseClient
         .from('alumni_profiles')
         .select('*')
         .eq('email', email)
@@ -227,7 +227,7 @@ function displayProfile(data) {
     document.getElementById('careerPath').textContent = data.career_path || '-';
     document.getElementById('industry').textContent = data.industry || '-';
     document.getElementById('professionalCertificates').textContent = data.professional_certificates || '-';
-    document.getElementById('openForMentorship').textContent = data.open_for_mentorship || '-';
+    document.getElementById('openForMentorship').textContent = data.open_for_mentorship ? 'Yes' : 'No';
 
     // Update edit button to include profile ID for editing
     const editButton = document.querySelector('a.btn-edit');

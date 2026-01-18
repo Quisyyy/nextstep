@@ -2,15 +2,15 @@
 // This runs once when the page loads to ensure database is ready
 
 async function ensureDatabaseReady() {
-    if (!window.supabase) {
+    if (!window.supabaseClient) {
         console.warn('Supabase client not available for database setup');
         return false;
     }
 
     try {
-        // Test if alumni_profiles table exists by trying to select from it
-        const { data, error } = await window.supabase
-            .from('alumni_profiles')
+        // Test if alumni_data table exists by trying to select from it
+        const { data, error } = await window.supabaseClient
+            .from('alumni_data')
             .select('id')
             .limit(1);
 
@@ -44,7 +44,7 @@ async function ensureDatabaseReady() {
     const maxAttempts = 30; // 3 seconds
 
     while (attempts < maxAttempts) {
-        if (window.supabase && typeof window.supabase.from === 'function') {
+        if (window.supabaseClient && typeof window.supabaseClient.from === 'function') {
             await ensureDatabaseReady();
             break;
         }

@@ -18,8 +18,8 @@
         </div>
         <nav class="main-nav">
             <a href="index.html">Home</a>
-            <a href="index.html#about">About</a>
-            <a href="index.html#site-contact">Contact</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
         </nav>
         <div class="nav-actions"></div>
     </header>
@@ -27,19 +27,14 @@
     <div class="container">
         <img src="logo/557536151_1257403522824074_2017646524872962832_n.png" class="nav-logo" alt="Next Step logo">
         <h2>Welcome to NEXT STEP</h2>
-        <form id="alumni-login-form">
-            <input type="email" name="email" placeholder="Email address" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <div class="status" style="display:none"></div>
+    <form action="homepage.html" method="get">
+            <input type="email" placeholder="Email address" required>
+            <input type="password" placeholder="Password" required>
             <button type="submit" class="btn">Login</button>
         </form>
-            <p><a href="reset-password.html" id="forgot-password-link">Forgot Password?</a></p>
         <p>Don’t have an account? <a href="signup.html">Sign up</a></p>
         <a href="index.html" class="back-btn">← Back</a>
     </div>
-    <script src="supabase-client.js" defer></script>
-    <script src="database-setup.js" defer></script>
-    <script src="login-simple.js" defer></script>
 </body>
 
 </html>

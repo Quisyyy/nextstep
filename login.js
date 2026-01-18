@@ -1,12 +1,21 @@
 // Alumni Login Gate: single clean implementation
 (function() {
-    async function ensureSupabaseReady(timeout = 5000) {
+    async function ensureSupabaseReady(timeout = 10000) {
         const start = Date.now();
+        
+        // Wait for supabaseReady flag
         while (Date.now() - start < timeout) {
-            if (window.supabase && window.supabaseClientReady) return true;
-            await new Promise(r => setTimeout(r, 120));
+            if (window.supabaseReady && window.supabaseClient) {
+                return true;
+            }
+            await new Promise(r => setTimeout(r, 100));
         }
-        return false;
+        
+        // Timeout - provide helpful error
+        if (window.supabaseError) {
+            throw new Error(`Supabase error: ${window.supabaseError}`);
+        }
+        throw new Error('Service initialization timeout. Please refresh the page.');
     }
 
     function setStatus(el, msg, type = 'info') {
@@ -20,7 +29,7 @@
     // Login using Supabase Auth
     async function loginWithSupabaseAuth(email, password) {
         try {
-            const { data, error } = await window.supabase.auth.signInWithPassword({
+            const { data, error } = await window.supabaseClient.auth.signInWithPassword({
                 email: email,
                 password: password
             });
@@ -63,7 +72,7 @@
         try {
             const ready = await ensureSupabaseReady();
             if (!ready) throw new Error('Service not ready. Try again shortly.');
-            if (!window.supabase) throw new Error('Supabase client missing');
+            if (!window.supabaseClient) throw new Error('Supabase client missing');
             
             // Login using Supabase Auth
             const result = await loginWithSupabaseAuth(email, password);

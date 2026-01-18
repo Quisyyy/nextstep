@@ -1,60 +1,41 @@
+// Initialize Supabase Client - Simple & Reliable
 (function() {
-    // Load supabase-js UMD from CDN
-    const s = document.createElement('script');
-    s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
-    s.onload = async () => {
+    const SUPABASE_URL = 'https://ziquhxrfxywsmvunuyzi.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_eDBOnbii8QQHNGAhuu9TWg_tPiGnpoY';
+    
+    // Load Supabase from CDN
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.0/dist/umd/supabase.min.js';
+    script.async = true;
+    
+    script.onload = function() {
         try {
-            // Fetch credentials securely from the backend
-            const response = await fetch('/api/supabase-config');
-            if (!response.ok) {
-                throw new Error('Failed to fetch Supabase configuration');
-            }
-            
-            const { SUPABASE_URL, SUPABASE_ANON_KEY } = await response.json();
-
-            // The UMD build may attach different globals depending on loader.
-            // Try common names then fallback to attempting to read a default export.
-            const lib = window.supabase || window.supabaseJs || window.supabasejs || window.supabaseJsDefault || (typeof supabaseJs !== 'undefined' && supabaseJs);
-            if (!lib) {
-                // If the CDN lib exposed a global we didn't expect, attempt to find createClient on any global
-                const maybe = Object.keys(window).find(k => window[k] && window[k].createClient && typeof window[k].createClient === 'function');
-                if (maybe) {
-                    window.supabase = window[maybe].createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            // Initialize with 100ms delay to ensure library is ready
+            setTimeout(() => {
+                if (window.supabase && window.supabase.createClient) {
+                    window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                    // Also expose as window.supabase for backward compatibility
+                    window.supabase = window.supabaseClient;
+                    window.supabaseReady = true;
+                    console.log('✓ Supabase initialized successfully');
+                    // Dispatch custom event
+                    window.dispatchEvent(new CustomEvent('supabaseReady'));
                 } else {
-                    console.warn('supabase-client: supabase UMD not found on window globals');
-                    window.supabaseClientReady = false;
-                    window.supabaseInitError = 'umd global not found';
-                    return;
+                    throw new Error('supabase library not available');
                 }
-            } else {
-                // lib may be the namespace or the module object
-                if (typeof lib.createClient === 'function') {
-                    window.supabase = lib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                } else if (lib && lib.default && typeof lib.default.createClient === 'function') {
-                    window.supabase = lib.default.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                } else if (typeof supabaseJs !== 'undefined' && typeof supabaseJs.createClient === 'function') {
-                    window.supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                } else {
-                    console.warn('supabase-client: found supabase namespace but createClient is not a function');
-                    window.supabaseClientReady = false;
-                    window.supabaseInitError = 'createClient not found';
-                    return;
-                }
-            }
-
-            window.supabaseClientReady = true;
-            window.supabaseInitError = null;
-            console.info('supabase-client: initialized');
-        } catch (e) {
-            console.warn('supabase-client: initialization failed', e);
-            window.supabaseClientReady = false;
-            window.supabaseInitError = e && e.message ? e.message : String(e);
+            }, 100);
+        } catch (err) {
+            console.error('Error initializing Supabase:', err);
+            window.supabaseReady = false;
+            window.supabaseError = err.message;
         }
     };
-    s.onerror = () => {
-        console.warn('supabase-client: failed to load supabase-js');
-        window.supabaseClientReady = false;
-        window.supabaseInitError = 'script load error';
+    
+    script.onerror = function() {
+        console.error('Failed to load Supabase library from CDN');
+        window.supabaseReady = false;
+        window.supabaseError = 'Failed to load library';
     };
-    document.head.appendChild(s);
+    
+    document.head.appendChild(script);
 })();

@@ -1,0 +1,167 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <canvas id="canvas" width="1400" height="1000"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const width = 1400, height = 1000;
+
+        // Background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, width, height);
+
+        // Grid
+        ctx.strokeStyle = '#c8c8dc';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < width; x += 50) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, height);
+            ctx.stroke();
+        }
+        for (let y = 0; y < height; y += 50) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(width, y);
+            ctx.stroke();
+        }
+
+        function drawRoundRect(x, y, w, h, r) {
+            ctx.fillStyle = '#9370db';
+            ctx.strokeStyle = '#5b4a7e';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            ctx.lineTo(x + r, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        function drawCircle(x, y, r, text) {
+            ctx.fillStyle = '#9370db';
+            ctx.strokeStyle = '#5b4a7e';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, x, y);
+        }
+
+        function drawBox(x, y, w, h, text) {
+            drawRoundRect(x - w / 2, y - h / 2, w, h, 5);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 13px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, x, y);
+        }
+
+        function drawArrow(fromX, fromY, toX, toY) {
+            const angle = Math.atan2(toY - fromY, toX - fromX);
+            ctx.strokeStyle = '#646464';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(toX, toY);
+            ctx.stroke();
+            ctx.fillStyle = '#646464';
+            ctx.beginPath();
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(toX - 15 * Math.cos(angle - Math.PI / 6), toY - 15 * Math.sin(angle - Math.PI / 6));
+            ctx.lineTo(toX - 15 * Math.cos(angle + Math.PI / 6), toY - 15 * Math.sin(angle + Math.PI / 6));
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        // Title
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold 28px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('Process Flowchart for Alumni Portal System', width / 2, 40);
+
+        ctx.font = '14px Arial';
+        ctx.fillStyle = '#666666';
+        ctx.fillText('User authentication, profile management, account administration and record management', width / 2, 70);
+
+        const y_start = 150;
+        drawBox(150, y_start, 140, 60, 'Alumni\nUser');
+        drawBox(700, y_start, 140, 60, 'Admin');
+        drawBox(1250, y_start, 140, 60, 'System');
+
+        const y_auth = y_start + 120;
+        drawCircle(350, y_auth, 60, 'Login/Signup');
+
+        const y_profile = y_auth + 150;
+        drawCircle(150, y_profile, 70, 'Profile Mgmt');
+        drawCircle(700, y_profile, 70, 'Admin Dashboard');
+        drawCircle(1250, y_auth, 70, 'Supabase DB');
+
+        drawBox(80, y_profile + 120, 110, 50, 'Profile Data');
+        drawBox(250, y_profile + 120, 110, 50, 'Career Info');
+        drawBox(650, y_profile + 120, 110, 50, 'User Mgmt');
+        drawBox(750, y_profile + 120, 110, 50, 'Reports');
+
+        const y_bottom = y_profile + 180;
+        drawBox(350, y_bottom, 140, 50, 'Email Service');
+        drawBox(700, y_bottom, 140, 50, 'Session Store');
+
+        drawArrow(200, y_start + 30, 300, y_auth - 60);
+        drawArrow(350, y_auth + 60, 200, y_profile - 70);
+        drawArrow(350, y_auth + 60, 700, y_profile - 70);
+        drawArrow(400, y_auth + 60, 1200, y_auth - 60);
+        drawArrow(100, y_profile + 70, 80, y_profile + 95);
+        drawArrow(200, y_profile + 70, 250, y_profile + 95);
+        drawArrow(650, y_profile + 70, 650, y_profile + 95);
+        drawArrow(750, y_profile + 70, 750, y_profile + 95);
+        drawArrow(200, y_profile + 70, 350, y_bottom - 25);
+        drawArrow(700, y_profile + 70, 700, y_bottom - 25);
+
+        const y_insights = y_bottom + 100;
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(50, y_insights, width - 100, 180);
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold 18px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText('Key Insights', 70, y_insights + 25);
+        ctx.font = '12px Arial';
+
+        const insights = [
+            'âœ“ Alumni users create accounts, manage profiles, and update career information',
+            'âœ“ Authentication via Supabase with secure password hashing',
+            'âœ“ Admin access for user management and system reports',
+            'âœ“ Email service for password reset and verification',
+            'âœ“ Real-time updates with localStorage session persistence'
+        ];
+
+        let y = y_insights + 50;
+        insights.forEach(text => {
+            ctx.fillText(text, 80, y);
+            y += 28;
+        });
+
+        // Convert to JPEG and download
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.download = 'SYSTEM_FLOWCHART.jpeg';
+        setTimeout(() => link.click(), 100);
+    </script>
+</body>
+</html>

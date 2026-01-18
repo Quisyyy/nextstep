@@ -21,21 +21,22 @@ async function simpleHash(password) {
 }
 
 // Wait for Supabase client to be ready with timeout
-function ensureSupabaseReady(timeoutMs = 5000) {
+function ensureSupabaseReady(timeoutMs = 15000) {
     return new Promise((resolve, reject) => {
-        if (window.supabase && window.supabaseClientReady) {
-            resolve(window.supabase);
+        if (window.supabaseClient && window.supabaseReady) {
+            resolve(window.supabaseClient);
             return;
         }
 
         const startTime = Date.now();
         const checkInterval = setInterval(() => {
-            if (window.supabase && window.supabaseClientReady) {
+            if (window.supabaseClient && window.supabaseReady) {
                 clearInterval(checkInterval);
-                resolve(window.supabase);
+                resolve(window.supabaseClient);
             } else if (Date.now() - startTime > timeoutMs) {
                 clearInterval(checkInterval);
-                reject(new Error('Supabase client not ready within timeout'));
+                const error = window.supabaseError || 'Supabase client not ready within timeout';
+                reject(new Error(error));
             }
         }, 100);
     });
@@ -46,7 +47,7 @@ async function checkEmailExists(email) {
     try {
         const supabase = await ensureSupabaseReady();
         const { data, error } = await supabase
-            .from('signups')
+            .from('alumni_profiles')
             .select('id')
             .eq('email', email.toLowerCase())
             .limit(1);
@@ -93,7 +94,7 @@ async function flushSignupQueue() {
 
         console.log(`Flushing ${queue.length} queued signups...`);
         const { data, error } = await supabase
-            .from('signups')
+            .from('alumni_profiles')
             .insert(queue);
 
         if (error) {
@@ -248,12 +249,12 @@ async function handleSignupSubmission(event) {
             created_at: new Date().toISOString()
         };
 
-        // Try to save to signups table (non-blocking)
+        // Try to save to alumni_profiles table (non-blocking)
         supabase
-            .from('signups')
+            .from('alumni_profiles')
             .insert([signupPayload])
             .then(({ error }) => {
-                if (error) console.warn('Could not save to signups table:', error.message);
+                if (error) console.warn('Could not save to alumni_profiles table:', error.message);
             });
 
         // Check if email confirmation is required

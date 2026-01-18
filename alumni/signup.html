@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXT STEP | Sign Up</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="logo-area">
+            <div class="logo-circle">
+                <img src="../logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg" class="nav-logo" alt="Next Step logo" onerror="this.onerror=null;this.src='../logo/557536151_1257403522824074_2017646524872962832_n.png'">
+            </div>
+            <h3 class="brand">NEXT STEP</h3>
+        </div>
+        <nav class="main-nav">
+            <a href="index.html">Home</a>
+            <a href="Information.html">Information</a>
+            <a href="profile.html">Profile</a>
+            <a href="#about">About</a>
+            <a href="#site-contact">Contact</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <img src="../logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg" class="nav-logo" alt="Next Step logo" onerror="this.onerror=null;this.src='../logo/557536151_1257403522824074_2017646524872962832_n.png'">
+        <h2>Welcome to NEXT STEP</h2>
+        <!--
+            Signup form
+            - Fields are referenced by `signup.js`:
+                * #signupName   -> full name
+                * #signupEmail  -> email
+                * #signupPhone  -> optional phone
+                * #signupPassword -> password (signup.js should hash or send securely)
+                * #signupConfirm -> password confirmation
+            - On success the script dispatches `signup:saved` and stores queued items in localStorage key `signup_queue` when offline.
+            - Developer: consider moving password hashing to server-side; the `signups` table expects a `password_hash` column.
+        -->
+        <form id="signupForm" novalidate>
+            <div class="form-row">
+                <label for="signupName">Full name</label>
+                <input id="signupName" name="full_name" type="text" placeholder="Full name" required aria-required="true">
+            </div>
+
+            <div class="form-row">
+                <label for="signupEmail">Email address</label>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <input id="signupEmail" name="email" type="email" placeholder="Email address" required aria-required="true" style="flex: 1;">
+                    <button id="sendOtpBtn" type="button" class="btn" style="white-space: nowrap; padding: 8px 16px;">Send OTP</button>
+                </div>
+                <div id="emailHelp" class="field-help"></div>
+            </div>
+
+            <div class="form-row" id="otpSection" style="display: none;">
+                <label for="signupOtp">Enter OTP</label>
+                <input id="signupOtp" name="otp" type="text" placeholder="Enter 6-digit OTP" maxlength="6" pattern="[0-9]{6}" aria-describedby="otpHelp">
+                <div id="otpHelp" class="field-help">Enter the 6-digit code sent to your email. Code expires in 10 minutes.</div>
+            </div>
+
+            <div class="form-row">
+                <label for="signupPhone">Contact number <small>(optional)</small></label>
+                <input id="signupPhone" name="phone" type="tel" placeholder="e.g. +63 912 345 6789" aria-describedby="phoneHelp">
+                <div id="phoneHelp" class="field-help">We'll only use this to contact you about your account.</div>
+            </div>
+
+            <div class="form-row">
+                <label for="signupPassword">Password</label>
+                <input id="signupPassword" name="password" type="password" placeholder="Password" required aria-required="true" aria-describedby="pwHelp">
+            </div>
+
+            <div class="form-row">
+                <label for="signupConfirm">Confirm password</label>
+                <input id="signupConfirm" name="confirm_password" type="password" placeholder="Confirm Password" required aria-required="true" aria-describedby="pwHelp">
+                <div id="pwHelp" class="field-help">Password should be at least 8 characters. Make sure both fields match.</div>
+            </div>
+
+            <!-- hidden developer / UX fields -->
+            <input type="hidden" id="signupRole" name="role" value="student">
+
+            <div style="margin-top:8px">
+                <button id="signupBtn" type="submit" class="btn" disabled>Sign Up</button>
+                <span id="signupStatus" role="status" aria-live="polite" style="margin-left:10px;color:#0b66b3;font-weight:600"></span>
+            </div>
+            <p class="privacy-note" style="margin-top:10px;font-size:0.9rem;color:#444">By signing up you agree to our terms and privacy policy. Your contact information will be stored in the project's <code>signups</code> table for admin review.</p>
+        </form>
+        <p>Already have an account? <a href="login.html">Login</a></p>
+        <a href="index.html" class="back-btn">← Back</a>
+    </div>
+
+    <script src="/supabase-client.js" defer></script>
+    <script src="/database-setup.js" defer></script>
+    <script src="/email-service.js" defer></script>
+    <script src="signup.js" defer></script>
+</body>
+
+</html>
