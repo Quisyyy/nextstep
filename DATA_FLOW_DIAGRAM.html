@@ -339,12 +339,34 @@
     </div>
     
     <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 8px;">
-        <button onclick="exportAsPNG()" style="background: #667eea; color: white; border: none; padding: 12px 30px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; margin-right: 10px;">
-            📥 Export as PNG (Browser)
-        </button>
-        <p style="margin-top: 10px; font-size: 12px; color: #666;">
-            💡 If export doesn't work, use: <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px;">python export_diagram.py</code>
-        </p>
+        <h3 style="margin-bottom: 15px; color: #333;">📥 Export to PNG</h3>
+        
+        <div style="margin-bottom: 15px;">
+            <button onclick="exportAsPNG()" style="background: #667eea; color: white; border: none; padding: 12px 30px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; margin-right: 10px;">
+                🖼️ Browser Export
+            </button>
+        </div>
+        
+        <div style="background: white; padding: 15px; border-radius: 6px; text-align: left; max-width: 600px; margin: 0 auto;">
+            <p style="margin-bottom: 10px; font-size: 13px; color: #555;">
+                <strong>✓ Browser Export:</strong> Works in most cases, click button above
+            </p>
+            <p style="margin-bottom: 10px; font-size: 13px; color: #555;">
+                <strong>✓ Python Export (Recommended):</strong> Better quality
+            </p>
+            <code style="background: #f0f0f0; padding: 10px; border-radius: 4px; display: block; margin-bottom: 10px; font-size: 12px; font-family: 'Courier New', monospace;">
+python export_diagram.py
+            </code>
+            <p style="margin-bottom: 10px; font-size: 13px; color: #555;">
+                <strong>Setup:</strong> First run this once:
+            </p>
+            <code style="background: #f0f0f0; padding: 10px; border-radius: 4px; display: block; font-size: 12px; font-family: 'Courier New', monospace;">
+pip install playwright && playwright install chromium
+            </code>
+            <p style="margin-top: 10px; font-size: 12px; color: #666;">
+                Or double-click <code>export_diagrams.bat</code> (Windows) for automatic setup
+            </p>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
