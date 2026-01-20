@@ -1,196 +1,301 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Information Sheet</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="informationsheet.css">
-</head>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="informationsheet.css" />
+  </head>
 
-<body>
+  <body>
     <header class="navbar">
-        <div class="logo-area">
-            <div class="logo-circle"><img src="logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg" class="nav-logo" alt="logo" onerror="this.onerror=null;this.src='logo/557536151_1257403522824074_2017646524872962832_n.png'"></div>
-            <h3 class="brand">NEXT STEP</h3>
+      <div class="logo-area">
+        <div class="logo-circle">
+          <img
+            src="logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg"
+            class="nav-logo"
+            alt="logo"
+            onerror="
+              this.onerror = null;
+              this.src =
+                'logo/557536151_1257403522824074_2017646524872962832_n.png';
+            "
+          />
         </div>
-        <nav class="main-nav"><a href="homepage.html">Home</a><a href="Information.html">Information</a><a href="alumni/profile.html">Profile</a><a href="homepage.html#about">About</a><a href="homepage.html#site-contact">Contact</a></nav>
-        <div class="nav-actions">
-            <a href="login.html" class="nav-cta" id="nav-login">Login</a>
-            <button id="nav-logout" class="nav-cta" style="display:none">Logout</button>
-        </div>
+        <h3 class="brand">NEXT STEP</h3>
+      </div>
+      <nav class="main-nav">
+        <a href="homepage.html">Home</a
+        ><a href="Information.html">Information</a
+        ><a href="alumni/profile.html">Profile</a
+        ><a href="homepage.html#about">About</a
+        ><a href="homepage.html#site-contact">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="login.html" class="nav-cta" id="nav-login">Login</a>
+        <button id="nav-logout" class="nav-cta" style="display: none">
+          Logout
+        </button>
+      </div>
     </header>
 
     <main class="info-form">
-        <h2 class="form-title">Information Sheet</h2>
+      <h2 class="form-title">Information Sheet</h2>
 
-        <div class="section-title">Personal Info:</div>
-        <div class="row">
-            <div class="col">
-                <label for="fullname">Full Name (LN, FN MI)</label>
-                <input id="fullname" type="text" placeholder="eg. Joaquin, John Martin C.">
-            </div>
-            <div class="col">
-                <label for="email">Email Address</label>
-                <input id="email" type="email" placeholder="eg. johnmartin@example.com">
-            </div>
+      <div class="section-title">Personal Info:</div>
+      <div class="row">
+        <div class="col">
+          <label for="fullname">Full Name (LN, FN MI)</label>
+          <input
+            id="fullname"
+            type="text"
+            placeholder="eg. Joaquin, John Martin C."
+          />
         </div>
+        <div class="col">
+          <label for="email">Email Address</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="eg. johnmartin@example.com"
+          />
+        </div>
+      </div>
 
-        <div class="row">
-            <div class="col">
-                <label>Birthday</label>
-                <div class="birthday-selects">
-                    <select id="birth-month" aria-label="Month"></select>
-                    <select id="birth-day" aria-label="Day"></select>
-                    <select id="birth-year" aria-label="Year"></select>
-                </div>
-            </div>
-            <div class="col">
-                <label for="contact">Contact Number</label>
-                <input id="contact" type="text" placeholder="eg. +63 9XXXXXXXXX">
-            </div>
+      <div class="row">
+        <div class="col">
+          <label>Birthday</label>
+          <div class="birthday-selects">
+            <select id="birth-month" aria-label="Month"></select>
+            <select id="birth-day" aria-label="Day"></select>
+            <select id="birth-year" aria-label="Year"></select>
+          </div>
         </div>
+        <div class="col">
+          <label for="contact">Contact Number</label>
+          <input id="contact" type="text" placeholder="eg. +63 9XXXXXXXXX" />
+        </div>
+      </div>
 
-        <div class="row">
-            <div class="col">
-                <label for="age">Age</label>
-                <input id="age" type="text" readonly placeholder="e.g. 21 yrs.old">
-            </div>
-            <div class="col">
-                <label for="address">Address</label>
-                <input id="address" type="text" placeholder="Street, House Number, City">
-            </div>
+      <div class="row">
+        <div class="col">
+          <label for="age">Age</label>
+          <input id="age" type="text" readonly placeholder="e.g. 21 yrs.old" />
         </div>
-        <!-- Academic background -->
-        <div class="section-title">Academic background</div>
-        <div class="row">
-            <div class="col">
-                <label for="degree">Degree/Course</label>
-                <select id="degree">
-                    <option value="">Select Degree/Course</option>
-                    <option value="BSA">Bachelor of Science in Accountancy (BSA)</option>
-                    <option value="BSCpE">Bachelor of Science in Computer Engineering (BSCpE)</option>
-                    <option value="BSENTREP">Bachelor of Science in Entrepreneurship (BSENTREP)</option>
-                    <option value="BSHM">Bachelor of Science in Hospitality Management (BSHM)</option>
-                    <option value="BSIT">Bachelor of Science in Information Technology (BSIT)</option>
-                    <option value="BSEDEN">Bachelor of Secondary Education major in English (BSEDEN)</option>
-                    <option value="BSEDMT">Bachelor of Secondary Education major in Mathematics (BSEDMT)</option>
-                    <option value="DOMTLOM">Diploma in Office Management Technology- Legal Office Management (DOMTLOM)</option>
-                </select>
-            </div>
-            <div class="col">
-                <label for="studentNumber">College Student Number</label>
-                <input id="studentNumber" type="text" placeholder="e.g. 2019-12345-SM-0">
-                <small id="studentNumberError" style="color: red; display: none; margin-top: 4px;"></small>
-            </div>
+        <div class="col">
+          <label for="address">Address</label>
+          <input
+            id="address"
+            type="text"
+            placeholder="Street, House Number, City"
+          />
         </div>
+      </div>
+      <!-- Academic background -->
+      <div class="section-title">Academic background</div>
+      <div class="row">
+        <div class="col">
+          <label for="degree">Degree/Course</label>
+          <select id="degree">
+            <option value="">Select Degree/Course</option>
+            <option value="BSA">
+              Bachelor of Science in Accountancy (BSA)
+            </option>
+            <option value="BSCpE">
+              Bachelor of Science in Computer Engineering (BSCpE)
+            </option>
+            <option value="BSENTREP">
+              Bachelor of Science in Entrepreneurship (BSENTREP)
+            </option>
+            <option value="BSHM">
+              Bachelor of Science in Hospitality Management (BSHM)
+            </option>
+            <option value="BSIT">
+              Bachelor of Science in Information Technology (BSIT)
+            </option>
+            <option value="BSEDEN">
+              Bachelor of Secondary Education major in English (BSEDEN)
+            </option>
+            <option value="BSEDMT">
+              Bachelor of Secondary Education major in Mathematics (BSEDMT)
+            </option>
+            <option value="DOMTLOM">
+              Diploma in Office Management Technology- Legal Office Management
+              (DOMTLOM)
+            </option>
+          </select>
+        </div>
+        <div class="col">
+          <label for="studentNumber">College Student Number</label>
+          <input
+            id="studentNumber"
+            type="text"
+            placeholder="e.g. 2019-12345-SM-0"
+          />
+          <small
+            id="studentNumberError"
+            style="color: red; display: none; margin-top: 4px"
+          ></small>
+        </div>
+      </div>
 
-        <div class="row">
-            <div class="col">
-                <label for="major">Major/Specialization</label>
-                <input id="major" type="text" placeholder="Enter Major ex.(Cybersecurity)">
-            </div>
-            <div class="col">
-                <label for="honors">Academic Honors (if any)</label>
-                <input id="honors" type="text" placeholder="Technology / Cybersecurity">
-            </div>
+      <div class="row">
+        <div class="col">
+          <label for="major">Major/Specialization</label>
+          <input
+            id="major"
+            type="text"
+            placeholder="Enter Major ex.(Cybersecurity)"
+          />
         </div>
-
-        <div class="row">
-            <div class="col">
-                <label for="graduated">Year Graduated</label>
-                <select id="graduated"><option>Select year</option></select>
-            </div>
-            <div class="col"></div>
+        <div class="col">
+          <label for="honors">Academic Honors (if any)</label>
+          <input
+            id="honors"
+            type="text"
+            placeholder="Technology / Cybersecurity"
+          />
         </div>
+      </div>
 
-        <!-- Job Status & Career Information -->
-        <div class="section-title">Job Status & Career Information</div>
-        <div class="row">
-            <div class="col">
-                <label for="jobStatus">Job Status</label>
-                <select id="jobStatus">
-                    <option value="">Select Job Status</option>
-                    <option value="employed">Employed</option>
-                    <option value="self-employed">Self-Employed</option>
-                    <option value="unemployed">Unemployed</option>
-                    <option value="pursuing-further-studies">Pursuing further studies</option>
-                    <option value="freelancer">Freelancer</option>
-                </select>
-            </div>
-            <div class="col">
-                <label for="currentJob">Current Job/Position</label>
-                <input id="currentJob" type="text" placeholder="e.g. Software Engineer, Manager">
-            </div>
+      <div class="row">
+        <div class="col">
+          <label for="graduated">Year Graduated</label>
+          <select id="graduated">
+            <option>Select year</option>
+          </select>
         </div>
+        <div class="col"></div>
+      </div>
 
-        <div class="row">
-            <div class="col">
-                <label for="previousRoles">Previous Roles</label>
-                <input id="previousRoles" type="text" placeholder="e.g. Junior Developer, Intern">
-            </div>
-            <div class="col">
-                <label for="careerPath">Career Path</label>
-                <input id="careerPath" type="text" placeholder="e.g. Technology, Business, Education">
-            </div>
+      <!-- Job Status & Career Information -->
+      <div class="section-title">Job Status & Career Information</div>
+      <div class="row">
+        <div class="col">
+          <label for="jobStatus">Job Status</label>
+          <select id="jobStatus">
+            <option value="">Select Job Status</option>
+            <option value="employed">Employed</option>
+            <option value="self-employed">Self-Employed</option>
+            <option value="unemployed">Unemployed</option>
+            <option value="pursuing-further-studies">
+              Pursuing further studies
+            </option>
+            <option value="freelancer">Freelancer</option>
+          </select>
         </div>
-
-        <div class="row">
-            <div class="col">
-                <label for="industry">What industry are you in?</label>
-                <input id="industry" type="text" placeholder="e.g. IT, Finance, Healthcare, Education">
-            </div>
-            <div class="col">
-                <label for="professionalCertificates">Professional Certificates</label>
-                <input id="professionalCertificates" type="text" placeholder="e.g. AWS Certified, PMP, CPA">
-            </div>
+        <div class="col">
+          <label for="currentJob">Current Job/Position</label>
+          <input
+            id="currentJob"
+            type="text"
+            placeholder="e.g. Software Engineer, Manager"
+          />
         </div>
+      </div>
 
-        <div class="row">
-            <div class="col">
-                <label for="openForMentorship">Are you open for mentorship?</label>
-                <select id="openForMentorship">
-                    <option value="">Select Option</option>
-                    <option value="yes">Yes, I'm open to mentoring others</option>
-                    <option value="seeking">Yes, I'm seeking a mentor</option>
-                    <option value="both">Both - I can mentor and seek mentorship</option>
-                    <option value="no">No, not at this time</option>
-                </select>
-            </div>
-            <div class="col"></div>
+      <div class="row">
+        <div class="col">
+          <label for="previousRoles">Previous Roles</label>
+          <input
+            id="previousRoles"
+            type="text"
+            placeholder="e.g. Junior Developer, Intern"
+          />
         </div>
-
-        <div class="form-actions">
-            <button id="saveProfile" class="save-btn">Save</button>
-            <div id="saveStatus" style="margin-top: 15px; font-size: 14px; text-align: center;"></div>
+        <div class="col">
+          <label for="careerPath">Career Path</label>
+          <input
+            id="careerPath"
+            type="text"
+            placeholder="e.g. Technology, Business, Education"
+          />
         </div>
+      </div>
 
+      <div class="row">
+        <div class="col">
+          <label for="industry">What industry are you in?</label>
+          <input
+            id="industry"
+            type="text"
+            placeholder="e.g. IT, Finance, Healthcare, Education"
+          />
+        </div>
+        <div class="col">
+          <label for="professionalCertificates"
+            >Professional Certificates</label
+          >
+          <input
+            id="professionalCertificates"
+            type="text"
+            placeholder="e.g. AWS Certified, PMP, CPA"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label for="openForMentorship">Are you open for mentorship?</label>
+          <select id="openForMentorship">
+            <option value="">Select Option</option>
+            <option value="yes">Yes, I'm open to mentoring others</option>
+            <option value="seeking">Yes, I'm seeking a mentor</option>
+            <option value="both">
+              Both - I can mentor and seek mentorship
+            </option>
+            <option value="no">No, not at this time</option>
+          </select>
+        </div>
+        <div class="col"></div>
+      </div>
+
+      <div class="form-actions">
+        <button id="saveProfile" class="save-btn">Save</button>
+        <div
+          id="saveStatus"
+          style="margin-top: 15px; font-size: 14px; text-align: center"
+        ></div>
+      </div>
     </main>
 
     <footer id="site-contact">
-        <div class="footer-content">
-            <div>
-                <h4>VISIT US ON</h4>
-                <p>
-                    <a href="https://www.facebook.com/profile.php?id=61584321894998" target="_blank" class="footer-icons">Facebook</a>
-                    <a href="https://www.instagram.com/nextstep013?igsh=NTk2dXQ4a2F2OHh2" target="_blank" class="footer-icons">Instagram</a>
-                </p>
-            </div>
-            <div>
-                <h4>CONTACT INFORMATION</h4>
-                <p>Phone: 09940816650<br>Email: nextstep.future986@gmail.com</p>
-            </div>
-            <div>
-                <h4>CAMPUS ADDRESS</h4>
-                <p>Km. 38, Sitio Gulod<br>Brgy. Pulong-Buhangin<br>Municipality of Sta. Maria, Bulacan</p>
-            </div>
+      <div class="footer-content">
+        <div>
+          <h4>VISIT US ON</h4>
+          <p>
+            <a
+              href="https://www.facebook.com/profile.php?id=61584321894998"
+              target="_blank"
+              class="footer-icons"
+              >Facebook</a
+            >
+            <a
+              href="https://www.instagram.com/nextstep013?igsh=NTk2dXQ4a2F2OHh2"
+              target="_blank"
+              class="footer-icons"
+              >Instagram</a
+            >
+          </p>
         </div>
+        <div>
+          <h4>CONTACT INFORMATION</h4>
+          <p>Phone: 09940816650<br />Email: nextstep.future986@gmail.com</p>
+        </div>
+        <div>
+          <h4>CAMPUS ADDRESS</h4>
+          <p>
+            Km. 38, Sitio Gulod<br />Brgy. Pulong-Buhangin<br />Municipality of
+            Sta. Maria, Bulacan
+          </p>
+        </div>
+      </div>
     </footer>
     <script src="supabase-client.js" defer></script>
     <script src="logout-dialog.js" defer></script>
     <script src="auth-nav.js"></script>
     <script src="information.js" defer></script>
-</body>
-
+    <script src="protect-pages.js"></script>
+  </body>
 </html>

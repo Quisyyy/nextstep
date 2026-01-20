@@ -293,54 +293,34 @@
 
       <form id="signupForm" novalidate>
         <div class="form-group">
-          <label for="signupName">Full Name</label>
+          <label for="signupStudentNumber">Student Number</label>
           <div class="input-wrapper">
             <input
-              id="signupName"
-              name="full_name"
+              id="signupStudentNumber"
+              name="student_number"
               type="text"
-              placeholder="Enter your full name"
+              placeholder="Enter your student number"
+              required
+              aria-required="true"
+              autocomplete="off"
+            />
+          </div>
+          <div id="signupStudentNumberStatus" class="field-help"></div>
+          <div id="signupStudentNumberError" class="field-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="signupBirthday">Birthday</label>
+          <div class="input-wrapper">
+            <input
+              id="signupBirthday"
+              name="birthday"
+              type="date"
               required
               aria-required="true"
             />
           </div>
-          <div id="signupNameError" class="field-error"></div>
-        </div>
-
-        <div class="form-group">
-          <label for="signupEmail">Email Address</label>
-          <div class="input-wrapper">
-            <input
-              id="signupEmail"
-              name="email"
-              type="email"
-              placeholder="Enter your email address"
-              required
-              aria-required="true"
-            />
-          </div>
-          <div id="signupEmailError" class="field-error"></div>
-        </div>
-
-        <div class="form-group">
-          <label for="signupPhone"
-            >Contact Number
-            <span style="color: #718096; font-weight: 400"
-              >(Optional)</span
-            ></label
-          >
-          <div class="input-wrapper">
-            <input
-              id="signupPhone"
-              name="phone"
-              type="tel"
-              placeholder="e.g. +63 912 345 6789"
-              aria-describedby="phoneHelp"
-            />
-          </div>
-          <div id="phoneHelp" class="field-help">
-            We'll only use this to contact you about your account
-          </div>
+          <div id="signupBirthdayError" class="field-error"></div>
         </div>
 
         <div class="form-group">
@@ -379,19 +359,6 @@
             />
           </div>
           <div id="signupConfirmError" class="field-error"></div>
-        </div>
-
-        <input type="hidden" id="signupRole" name="role" value="student" />
-
-        <div class="checkbox-group">
-          <input type="checkbox" id="signupTerms" name="terms" required />
-          <label for="signupTerms">
-            I agree to the
-            <a href="terms-and-conditions.html" target="_blank"
-              >Terms and Conditions</a
-            >
-            and <a href="privacy-policy.html" target="_blank">Privacy Policy</a>
-          </label>
         </div>
 
         <div class="status-message">

@@ -51,32 +51,53 @@ function updatePasswordStrength(password) {
 }
 
 // Enhanced field validation with better UX
-function validateField(fieldId, value, validationType) {
+async function validateField(fieldId, value, validationType) {
   const errorElement = document.getElementById(fieldId + "Error");
   const inputElement = document.getElementById(fieldId);
-
   let isValid = true;
   let errorMessage = "";
 
   switch (validationType) {
-    case "name":
-      if (!value.trim()) {
-        errorMessage = "Full name is required";
+    case "student_number": {
+      const normalized = value.trim().toLowerCase();
+      if (!normalized) {
+        errorMessage = "Student number is required";
+        isValid = false;
+      } else {
+        const exists = await checkStudentNumberExists(normalized);
+        if (exists) {
+          errorMessage = "Student number already exists";
+          isValid = false;
+        }
+      }
+      // Update status message for real-time feedback (show only once)
+      const statusEl = document.getElementById("signupStudentNumberStatus");
+      if (!isValid && errorMessage) {
+        statusEl.textContent = errorMessage;
+        statusEl.style.color = "#e53e3e";
+        errorElement.textContent = ""; // Hide duplicate error below input
+        errorElement.style.display = "none";
+        document.getElementById("signupBtn").disabled = true;
+      } else if (normalized) {
+        statusEl.textContent = "Student number is available.";
+        statusEl.style.color = "#48bb78";
+        errorElement.textContent = "";
+        errorElement.style.display = "none";
+        document.getElementById("signupBtn").disabled = false;
+      } else {
+        statusEl.textContent = "";
+        errorElement.textContent = "";
+        errorElement.style.display = "none";
+        document.getElementById("signupBtn").disabled = true;
+      }
+      break;
+    }
+    case "birthday":
+      if (!value) {
+        errorMessage = "Birthday is required";
         isValid = false;
       }
       break;
-
-    case "email":
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!value.trim()) {
-        errorMessage = "Email is required";
-        isValid = false;
-      } else if (!emailRegex.test(value)) {
-        errorMessage = "Please enter a valid email address";
-        isValid = false;
-      }
-      break;
-
     case "password":
       const { checks } = checkPasswordStrength(value);
       if (!value) {
@@ -99,7 +120,6 @@ function validateField(fieldId, value, validationType) {
         isValid = false;
       }
       break;
-
     case "confirm":
       const originalPassword = document.getElementById("signupPassword").value;
       if (!value) {
@@ -112,16 +132,20 @@ function validateField(fieldId, value, validationType) {
       break;
   }
 
-  // Update UI
-  if (isValid) {
-    errorElement.style.display = "none";
-    inputElement.style.borderColor = value ? "#48bb78" : "#e2e8f0";
+  // For other fields, show error below input
+  if (validationType !== "student_number") {
+    if (isValid) {
+      errorElement.style.display = "none";
+      inputElement.style.borderColor = value ? "#48bb78" : "#e2e8f0";
+    } else {
+      errorElement.textContent = errorMessage;
+      errorElement.style.display = "block";
+      inputElement.style.borderColor = "#e53e3e";
+    }
   } else {
-    errorElement.textContent = errorMessage;
-    errorElement.style.display = "block";
-    inputElement.style.borderColor = "#e53e3e";
+    // For student_number, just update border color
+    inputElement.style.borderColor = isValid ? "#48bb78" : "#e53e3e";
   }
-
   return isValid;
 }
 
@@ -146,21 +170,24 @@ function ensureSupabaseReady(timeoutMs = 5000) {
   });
 }
 
-// Check if email has already been used for signup
-async function checkEmailExists(email) {
+// Check if student number has already been used for signup
+async function checkStudentNumberExists(studentNumber) {
   try {
+    const normalized = studentNumber.trim().toLowerCase();
+    console.log("[CHECK] Normalized student number:", normalized);
     const supabase = await ensureSupabaseReady();
     const { data, error } = await supabase
       .from("signups")
-      .select("id")
-      .eq("email", email.toLowerCase())
+      .select("id,student_number")
+      .eq("student_number", normalized)
       .limit(1);
-
     if (error) {
-      console.error("Error checking email:", error);
+      console.error("Error checking student number:", error);
       return false; // Allow signup if we can't check (network issue)
     }
-
+    if (data && data.length > 0) {
+      console.log("[CHECK] Found in DB:", data[0].student_number);
+    }
     return data && data.length > 0;
   } catch (error) {
     return false; // Allow signup if we can't check
@@ -220,40 +247,33 @@ async function flushSignupQueue() {
 // Main form submission handler
 async function handleSignupSubmission(event) {
   event.preventDefault();
-
-  const form = event.target;
   const statusSpan = document.getElementById("signupStatus");
   const submitBtn = document.getElementById("signupBtn");
 
   // Get form data
   const formData = {
-    full_name: document.getElementById("signupName").value.trim(),
-    email: document.getElementById("signupEmail").value.trim(),
-    phone: document.getElementById("signupPhone").value.trim() || null,
+    student_number: document
+      .getElementById("signupStudentNumber")
+      .value.trim()
+      .toLowerCase(),
+    birthday: document.getElementById("signupBirthday").value,
     password: document.getElementById("signupPassword").value,
     confirm_password: document.getElementById("signupConfirm").value,
-    role: document.getElementById("signupRole").value || "student",
   };
 
-  // Check terms and conditions checkbox
-  const termsCheckbox = document.getElementById("signupTerms");
-  if (!termsCheckbox || !termsCheckbox.checked) {
-    statusSpan.textContent =
-      "You must agree to the Terms and Conditions to sign up";
-    statusSpan.style.color = "#e53e3e";
-    return;
-  }
-
   // Validate all fields
-  const validations = [
-    validateField("signupName", formData.full_name, "name"),
-    validateField("signupEmail", formData.email, "email"),
+  const validations = await Promise.all([
+    validateField(
+      "signupStudentNumber",
+      formData.student_number,
+      "student_number",
+    ),
+    validateField("signupBirthday", formData.birthday, "birthday"),
     validateField("signupPassword", formData.password, "password"),
     validateField("signupConfirm", formData.confirm_password, "confirm"),
-  ];
+  ]);
 
   const isFormValid = validations.every((validation) => validation);
-
   if (!isFormValid) {
     statusSpan.textContent = "Please fix the errors above";
     statusSpan.style.color = "#e53e3e";
@@ -263,14 +283,13 @@ async function handleSignupSubmission(event) {
   // Disable submit button and show loading state
   submitBtn.disabled = true;
   submitBtn.textContent = "Creating Account...";
-  statusSpan.textContent = "Checking email availability...";
+  statusSpan.textContent = "Checking student number...";
   statusSpan.style.color = "#0b66b3";
 
-  // Check if email already exists
-  const emailExists = await checkEmailExists(formData.email);
-  if (emailExists) {
-    statusSpan.textContent =
-      "Email already registered. Please use a different email or sign in.";
+  // Check if student number already exists (redundant, but safe)
+  const studentExists = await checkStudentNumberExists(formData.student_number);
+  if (studentExists) {
+    statusSpan.textContent = "Student number already registered.";
     statusSpan.style.color = "#e53e3e";
     submitBtn.disabled = false;
     submitBtn.textContent = "Create Account";
@@ -282,40 +301,27 @@ async function handleSignupSubmission(event) {
 
   try {
     const supabase = await ensureSupabaseReady();
-
-    // Use Supabase Auth to create the user
-    console.log("Creating user with Supabase Auth...");
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email: formData.email,
-      password: formData.password,
-      options: {
-        data: {
-          full_name: formData.full_name,
-          phone: formData.phone,
-          role: formData.role || "user",
-        },
+    // Insert into signups table
+    const { data, error } = await supabase.from("signups").insert([
+      {
+        student_number: formData.student_number,
+        birthday: formData.birthday,
+        password_hash: formData.password, // In production, hash on backend!
       },
-    });
-
-    if (authError) {
-      console.error("Supabase Auth signup error:", authError);
-      statusSpan.textContent = `Error: ${authError.message}`;
+    ]);
+    if (error) {
+      statusSpan.textContent = `Error: ${error.message}`;
       statusSpan.style.color = "#e53e3e";
       submitBtn.disabled = false;
       submitBtn.textContent = "Create Account";
       return;
     }
-
-    console.log("Auth signup successful:", authData);
     statusSpan.textContent = "Account created successfully! Redirecting...";
     statusSpan.style.color = "#48bb78";
-
-    // Redirect after success
     setTimeout(() => {
       window.location.href = "login.html";
     }, 2000);
   } catch (error) {
-    console.error("Signup error:", error);
     statusSpan.textContent = "Network error. Please try again.";
     statusSpan.style.color = "#e53e3e";
     submitBtn.disabled = false;
@@ -328,8 +334,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const signupForm = document.getElementById("signupForm");
   const passwordInput = document.getElementById("signupPassword");
   const confirmInput = document.getElementById("signupConfirm");
-  const nameInput = document.getElementById("signupName");
-  const emailInput = document.getElementById("signupEmail");
+  const studentNumberInput = document.getElementById("signupStudentNumber");
+  const birthdayInput = document.getElementById("signupBirthday");
 
   // Form submission
   if (signupForm) {
@@ -348,16 +354,26 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Real-time validation for other fields
-  if (nameInput) {
-    nameInput.addEventListener("blur", function (e) {
-      validateField("signupName", e.target.value, "name");
+  // Real-time validation for student number uniqueness
+  if (studentNumberInput) {
+    let lastValue = "";
+    let debounceTimeout;
+    studentNumberInput.addEventListener("input", function (e) {
+      clearTimeout(debounceTimeout);
+      const value = e.target.value;
+      debounceTimeout = setTimeout(async () => {
+        const normalized = value.trim().toLowerCase();
+        if (normalized === lastValue) return;
+        lastValue = normalized;
+        await validateField("signupStudentNumber", value, "student_number");
+      }, 400);
     });
   }
 
-  if (emailInput) {
-    emailInput.addEventListener("blur", function (e) {
-      validateField("signupEmail", e.target.value, "email");
+  // Real-time birthday validation
+  if (birthdayInput) {
+    birthdayInput.addEventListener("blur", function (e) {
+      validateField("signupBirthday", e.target.value, "birthday");
     });
   }
 

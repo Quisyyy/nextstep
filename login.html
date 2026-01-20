@@ -201,12 +201,24 @@
 
       <form id="alumni-login-form">
         <div class="form-group">
-          <label for="email">Email Address</label>
+          <label for="student_number">Student Number</label>
           <input
-            type="email"
-            name="email"
-            placeholder="Enter your email address"
+            type="text"
+            name="student_number"
+            placeholder="Enter your student number"
             required
+            autocomplete="username"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="birthday">Birthday</label>
+          <input
+            type="date"
+            name="birthday"
+            placeholder="Enter your birthday"
+            required
+            autocomplete="bday"
           />
         </div>
 
@@ -217,6 +229,7 @@
             name="password"
             placeholder="Enter your password"
             required
+            autocomplete="current-password"
           />
         </div>
 
