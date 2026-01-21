@@ -218,20 +218,36 @@ function populateFormWithData(data) {
   }
   if (data.street) document.getElementById("streetDetails").value = data.street;
   // Academic
-  if (data.degree) document.getElementById("degree").value = data.degree;
+  function setDropdownValue(dropdownId, value) {
+    const select = document.getElementById(dropdownId);
+    if (!select) return;
+    if (value == null || value === "") return;
+    let found = false;
+    for (let i = 0; i < select.options.length; i++) {
+      if (select.options[i].value === value) {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      // Add missing value as an option
+      const opt = document.createElement("option");
+      opt.value = value;
+      opt.text = value;
+      select.appendChild(opt);
+    }
+    select.value = value;
+  }
+  setDropdownValue("degree", data.degree);
   if (data.student_number && document.getElementById("student_number"))
     document.getElementById("student_number").value = data.student_number;
-  if (data.major) document.getElementById("major").value = data.major;
+  setDropdownValue("major", data.major);
   if (data.honors) document.getElementById("honors").value = data.honors;
-  if (data.graduated_year)
-    document.getElementById("graduated").value = String(data.graduated_year);
+  setDropdownValue("graduated", String(data.graduated_year));
   // Job & Career
-  if (data.career_path)
-    document.getElementById("careerPath").value = data.career_path;
-  if (data.job_status)
-    document.getElementById("jobStatus").value = data.job_status;
-  if (data.current_job)
-    document.getElementById("currentJob").value = data.current_job;
+  setDropdownValue("careerPath", data.career_path);
+  setDropdownValue("jobStatus", data.job_status);
+  setDropdownValue("currentJob", data.current_job);
   if (data.previous_roles)
     document.getElementById("previousRoles").value = data.previous_roles;
   if (data.career_path)
@@ -261,9 +277,7 @@ function populateFormWithData(data) {
     saveButton.style.background = "#28a745";
   }
 
-  if (debugText)
-    debugText.innerHTML =
-      "✅ Form populated successfully! (Profile ID: " + data.id + ")";
+  // Remove debugText reference to fix ReferenceError
   console.log("✅ Form populated successfully");
 
   // Hide debug info after 3 seconds
