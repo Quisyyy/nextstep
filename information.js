@@ -2,15 +2,35 @@
 let existingProfileId = null;
 async function checkAndLoadAlumniProfile() {
   const studentNumber = localStorage.getItem("currentStudentNumber");
-  if (!studentNumber || !window.supabaseClient) return;
-  const { data, error } = await window.supabaseClient
-    .from("alumni_profiles")
-    .select("*")
-    .eq("student_number", studentNumber)
-    .limit(1);
-  if (data && data.length > 0) {
-    existingProfileId = data[0].id;
-    populateFormWithData(data[0]);
+  const currentEmail = (localStorage.getItem("currentUserEmail") || "")
+    .trim()
+    .toLowerCase();
+  if ((!studentNumber && !currentEmail) || !window.supabaseClient) return;
+  let data = null,
+    error = null;
+  // Try by student number first
+  if (studentNumber) {
+    ({ data, error } = await window.supabaseClient
+      .from("alumni_profiles")
+      .select("*")
+      .eq("student_number", studentNumber)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle());
+  }
+  // If not found, try by email
+  if ((!data || error) && currentEmail) {
+    ({ data, error } = await window.supabaseClient
+      .from("alumni_profiles")
+      .select("*")
+      .eq("email", currentEmail)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle());
+  }
+  if (data) {
+    existingProfileId = data.id;
+    populateFormWithData(data);
   } else {
     existingProfileId = null;
   }
@@ -168,42 +188,62 @@ function populateBirthdayDropdownsAndAutofill() {
 
 // --- Populate form with existing data ---
 function populateFormWithData(data) {
-  // Birthday fields (only set if not already filled)
-  if (document.getElementById("birth-day").value === "" && data.birth_day) {
-    document.getElementById("birth-day").value = String(data.birth_day);
-  }
-  if (document.getElementById("birth-year").value === "" && data.birth_year) {
-    document.getElementById("birth-year").value = String(data.birth_year);
-    updateDaysForSelection();
-  }
-  if (document.getElementById("birth-month").value === "" && data.birth_month) {
+  // Personal Info
+  if (data.full_name)
+    document.getElementById("fullname").value = data.full_name;
+  if (data.email) document.getElementById("email").value = data.email;
+  if (data.contact) document.getElementById("contact").value = data.contact;
+  // Birthday
+  if (data.birth_month)
     document.getElementById("birth-month").value = String(data.birth_month);
+  if (data.birth_day)
+    document.getElementById("birth-day").value = String(data.birth_day);
+  if (data.birth_year)
+    document.getElementById("birth-year").value = String(data.birth_year);
+  if (data.birth_month && data.birth_day && data.birth_year) computeAge();
+  // Address (with dropdown population)
+  if (data.province) {
+    document.getElementById("province").value = data.province;
+    if (typeof populateCities === "function")
+      populateCities().then(() => {
+        if (data.municipality) {
+          document.getElementById("city").value = data.municipality;
+          if (typeof populateBarangays === "function")
+            populateBarangays().then(() => {
+              if (data.barangay)
+                document.getElementById("barangay").value = data.barangay;
+            });
+        }
+      });
   }
-  computeAge();
-  // Academic information
-  if (data.degree) {
-    document.getElementById("degree").value = data.degree;
-  }
-  // FIX: Use correct id for student number
-  if (data.student_number && document.getElementById("student_number")) {
+  if (data.street) document.getElementById("streetDetails").value = data.street;
+  // Academic
+  if (data.degree) document.getElementById("degree").value = data.degree;
+  if (data.student_number && document.getElementById("student_number"))
     document.getElementById("student_number").value = data.student_number;
-  }
-  document.getElementById("major").value = data.major || "";
-  document.getElementById("honors").value = data.honors || "";
-  if (data.graduated_year) {
+  if (data.major) document.getElementById("major").value = data.major;
+  if (data.honors) document.getElementById("honors").value = data.honors;
+  if (data.graduated_year)
     document.getElementById("graduated").value = String(data.graduated_year);
-  }
-
-  // Job Status & Career Information
+  // Job & Career
+  if (data.career_path)
+    document.getElementById("careerPath").value = data.career_path;
   if (data.job_status)
     document.getElementById("jobStatus").value = data.job_status;
-  document.getElementById("currentJob").value = data.current_job || "";
-  document.getElementById("previousRoles").value = data.previous_roles || "";
-  document.getElementById("careerPath").value = data.career_path || "";
-  document.getElementById("industry").value = data.industry || "";
-  document.getElementById("professionalCertificates").value =
-    data.professional_certificates || "";
-  if (data.open_for_mentorship)
+  if (data.current_job)
+    document.getElementById("currentJob").value = data.current_job;
+  if (data.previous_roles)
+    document.getElementById("previousRoles").value = data.previous_roles;
+  if (data.career_path)
+    document.getElementById("careerPath").value = data.career_path;
+  if (data.industry) document.getElementById("industry").value = data.industry;
+  if (data.professional_certificates)
+    document.getElementById("professionalCertificates").value =
+      data.professional_certificates;
+  if (
+    data.open_for_mentorship !== undefined &&
+    document.getElementById("openForMentorship")
+  )
     document.getElementById("openForMentorship").value =
       data.open_for_mentorship;
 
@@ -908,14 +948,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         } else {
           console.error("❌ No profile ID available for redirect");
         }
-
-        // notify admin/list pages in the same origin to refresh
-        try {
-          window.dispatchEvent(
-            new CustomEvent("alumni:saved", { detail: { payload } }),
-          );
-        } catch (e) {}
-        flushSubmitQueue();
         return;
       }
     } catch (err) {
