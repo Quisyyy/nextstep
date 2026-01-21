@@ -59,7 +59,10 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 // --- Auto-fill birthday and compute age from signups table ---
 async function autofillBirthdayAndAge() {
-  const studentNumber = localStorage.getItem("currentStudentNumber");
+  const studentNumberRaw = localStorage.getItem("currentStudentNumber");
+  const studentNumber = studentNumberRaw
+    ? studentNumberRaw.trim().toUpperCase()
+    : null;
   if (studentNumber && window.supabaseClient) {
     try {
       const { data, error } = await window.supabaseClient
@@ -72,20 +75,25 @@ async function autofillBirthdayAndAge() {
         const birthday = data[0].birthday;
         const birthDate = new Date(birthday);
         console.log("[autofillBirthdayAndAge] Parsed birthday:", birthDate);
-        if (
-          document.getElementById("birth-day") &&
-          document.getElementById("birth-year") &&
-          document.getElementById("birth-month")
-        ) {
-          document.getElementById("birth-day").value = birthDate.getDate();
-          document.getElementById("birth-year").value = birthDate.getFullYear();
-          document.getElementById("birth-month").value =
-            birthDate.getMonth() + 1;
-          console.log("[autofillBirthdayAndAge] Set fields:", {
-            day: birthDate.getDate(),
-            year: birthDate.getFullYear(),
-            month: birthDate.getMonth() + 1,
-          });
+        const dayEl = document.getElementById("birth-day");
+        const yearEl = document.getElementById("birth-year");
+        const monthEl = document.getElementById("birth-month");
+        if (dayEl && yearEl && monthEl) {
+          dayEl.value = birthDate.getDate();
+          yearEl.value = birthDate.getFullYear();
+          monthEl.value = birthDate.getMonth() + 1;
+          // Make fields readonly/disabled after autofill
+          dayEl.disabled = true;
+          yearEl.disabled = true;
+          monthEl.disabled = true;
+          console.log(
+            "[autofillBirthdayAndAge] Set fields and made readonly:",
+            {
+              day: birthDate.getDate(),
+              year: birthDate.getFullYear(),
+              month: birthDate.getMonth() + 1,
+            },
+          );
         }
         // Compute age
         const today = new Date();
@@ -192,8 +200,19 @@ function populateBirthdayDropdownsAndAutofill() {
     o.text = d;
     daySelect.appendChild(o);
   }
-  // Now run autofill
-  autofillBirthdayAndAge();
+  // Wait for Supabase client to be ready before autofill
+  (async function waitAndAutofill(retries = 20) {
+    for (let i = 0; i < retries; i++) {
+      if (window.supabaseClient) {
+        await autofillBirthdayAndAge();
+        return;
+      }
+      await new Promise((r) => setTimeout(r, 200));
+    }
+    console.warn(
+      "[autofillBirthdayAndAge] Supabase client not ready after waiting",
+    );
+  })();
 }
 
 // --- Populate form with existing data ---
