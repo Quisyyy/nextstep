@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Profile - NEXT STEP</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="../informationsheet.css" />
+    <link rel="stylesheet" href="profilestyle.css" />
+  </head>
+
+  <body>
+    <header class="navbar">
+      <div class="logo-area">
+        <div class="logo-circle">
+          <img
+            src="../logo/Blue%20%26%20Orange%20Circle%20Illustrative%20Education%20Logo.jpg"
+            class="nav-logo"
+            alt="logo"
+            onerror="
+              this.onerror = null;
+              this.src =
+                '../logo/557536151_1257403522824074_2017646524872962832_n.png';
+            "
+          />
+        </div>
+        <h3 class="brand">NEXT STEP</h3>
+      </div>
+      <nav class="main-nav">
+        <a href="../homepage.html">Home</a>
+        <a href="../Information.html">Information</a>
+        <a href="profile.html">Profile</a>
+        <a href="../homepage.html#about">About</a>
+        <a href="../homepage.html#site-contact">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="../login.html" class="nav-cta" id="nav-login">Login</a>
+        <button id="nav-logout" class="nav-cta" style="display: none">
+          Logout
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <div class="profile-container">
+        <div id="loading" class="loading">
+          <div>Loading your profile...</div>
+        </div>
+
+        <div id="error" class="error" style="display: none">
+          <div>Unable to load profile. Please try again.</div>
+          <button
+            onclick="loadProfile()"
+            class="btn-edit"
+            style="margin-top: 15px"
+          >
+            Retry
+          </button>
+        </div>
+
+        <div id="profileContent" style="display: none">
+          <div class="profile-header">
+            <div class="profile-avatar" id="avatar">
+              <!-- Avatar will show first letter of name -->
+            </div>
+            <div class="profile-name" id="profileName">Loading...</div>
+            <div class="profile-degree" id="profileDegree">Loading...</div>
+            <div style="font-size: 14px; color: #888">
+              Member since <span id="joinDate">Loading...</span>
+            </div>
+          </div>
+
+          <div class="profile-section">
+            <div class="section-header">Personal Information</div>
+            <div class="profile-grid">
+              <div class="profile-field">
+                <div class="field-label">Full Name</div>
+                <div class="field-value" id="fullName">-</div>
+              </div>
+              <div class="profile-field">
+                <div class="field-label">Email Address</div>
+                <div class="field-value" id="email">-</div>
+              </div>
+              <div class="profile-field">
+                <div class="field-label">Contact Number</div>
+                <div class="field-value" id="contact">-</div>
+              </div>
+              <div class="profile-field">
+                <div class="field-label">Address</div>
+                <div class="field-value" id="address">-</div>
+              </div>
+              <div class="profile-field">
+                <div class="field-label">Birthday</div>
+                <div class="field-value" id="birthday">-</div>
+              </div>
+              <div class="profile-field">
+                <div class="field-label">Age</div>
+                <div class="field-value" id="age">-</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-section">
+            <div class="section-header">Academic Background</div>
+            <div class="profile-grid">
+              <div class="profile-field">
+                <div class="field-label">Degree/Course</div>
+                <div class="field-value" id="degree">-</div>
+              </div>
+              <div class="profile-field">
+                <div class="field-label">Student Number</div>
+                <div class="field-value" id="studentNumber">-</div>
+              </div>
+              <div class="profile-field">
+                <div class="field-label">Major/Specialization</div>
+                <div class="field-value" id="major">-</div>
+              </div>
+              <div class="profile-field">
+                <div class="field-label">Academic Honors</div>
+                <div class="field-value" id="honors">-</div>
+              </div>
+              <div class="profile-field">
+                <div class="field-label">Year Graduated</div>
+                <div class="field-value" id="graduated">-</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-section">
+            <div class="section-header">Job Status & Career Information</div>
+            <div class="profile-grid">
+              <div class="profile-field">
+                <div class="field-label">Job Status</div>
+                <div class="field-value" id="jobStatus">-</div>
+              </div>
+              <div class="profile-field">
+                <div class="field-label">Current Job/Position</div>
+                <div class="field-value" id="currentJob">-</div>
+              </div>
+              <div class="profile-field">
+                <div class="field-label">Career Path</div>
+                <div class="field-value" id="careerPath">-</div>
+              </div>
+              <div class="profile-field">
+                <div class="field-label">Related to Degree?</div>
+                <div class="field-value" id="isRelatedStatus">-</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <a href="./Information.html" class="btn-edit">Edit Profile</a>
+            <a href="../homepage.html" class="btn-secondary">Back to Home</a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- standardized footer -->
+    <footer id="site-contact">
+      <div class="footer-content">
+        <div>
+          <h4>VISIT US ON</h4>
+          <p>
+            <a
+              href="https://www.facebook.com/profile.php?id=61584321894998"
+              target="_blank"
+              class="footer-icons"
+              >Facebook</a
+            >
+            <a
+              href="https://www.instagram.com/nextstep013?igsh=NTk2dXQ4a2F2OHh2"
+              target="_blank"
+              class="footer-icons"
+              >Instagram</a
+            >
+          </p>
+        </div>
+        <div>
+          <h4>CONTACT INFORMATION</h4>
+          <p>Phone: 09940816650<br />Email: nextstep.future986@gmail.com</p>
+        </div>
+        <div>
+          <h4>CAMPUS ADDRESS</h4>
+          <p>
+            Km. 38, Sitio Gulod<br />Brgy. Pulong-Buhangin<br />Municipality of
+            Sta. Maria, Bulacan
+          </p>
+        </div>
+      </div>
+    </footer>
+    <script src="../supabase-client.js" defer></script>
+    <script src="../logout-dialog.js" defer></script>
+    <script src="../auth-nav.js"></script>
+    <script src="profile.js" defer></script>
+    <script src="../protect-pages.js"></script>
+  </body>
+</html>

@@ -1,5 +1,6 @@
 // --- Upsert logic for alumni_profiles ---
 let existingProfileId = null;
+let originalProfileData = null;
 async function checkAndLoadAlumniProfile() {
   const studentNumber = localStorage.getItem("currentStudentNumber");
   const currentEmail = (localStorage.getItem("currentUserEmail") || "")
@@ -30,9 +31,18 @@ async function checkAndLoadAlumniProfile() {
   }
   if (data) {
     existingProfileId = data.id;
+    originalProfileData = { ...data };
+    // If not already in edit mode, redirect to URL with ?id=profileId
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("id") !== String(data.id)) {
+      url.searchParams.set("id", data.id);
+      window.location.replace(url.toString());
+      return; // Stop further execution, page will reload
+    }
     populateFormWithData(data);
   } else {
     existingProfileId = null;
+    originalProfileData = null;
   }
 }
 
@@ -763,30 +773,34 @@ document.addEventListener("DOMContentLoaded", async function () {
         let data, error;
 
         if (isEditMode) {
-          // UPDATE existing record
+          // UPDATE only changed fields
+          let updatePayload = { ...payload };
+          if (originalProfileData) {
+            updatePayload = {};
+            for (const key in payload) {
+              if (payload[key] !== originalProfileData[key]) {
+                updatePayload[key] = payload[key];
+              }
+            }
+            // Always include degree_label if degree changed
+            if (updatePayload.degree && payload.degree_label)
+              updatePayload.degree_label = payload.degree_label;
+          }
           console.log("📝 Updating profile ID:", editProfileId);
-          console.log("Payload:", JSON.stringify(payload, null, 2));
-
-          // Remove any fields that might not exist in the database schema
-          const cleanPayload = { ...payload };
-          delete cleanPayload.updated_at; // Remove if exists
-
           console.log(
-            "Clean payload (no updated_at):",
-            JSON.stringify(cleanPayload, null, 2),
+            "Changed fields only:",
+            JSON.stringify(updatePayload, null, 2),
           );
-
-          // Important: When updating, we need to make sure we're not violating unique constraints
-          // The update should work because we're updating the same record
+          // Remove any fields that might not exist in the database schema
+          const cleanPayload = { ...updatePayload };
+          delete cleanPayload.updated_at; // Remove if exists
           const result = await window.supabase
             .from("alumni_profiles")
             .update(cleanPayload)
             .eq("id", editProfileId)
             .select();
-
           data = result.data;
           error = result.error;
-
           console.log("✅ Update result:", { data, error });
 
           if (error) {
@@ -992,21 +1006,38 @@ document.addEventListener("DOMContentLoaded", async function () {
   });
 });
 
-// Helper to ensure Supabase is ready before DB operations
-async function ensureSupabaseReady(timeout = 2000) {
+// --- Helper: Wait for Supabase to be ready ---
+async function ensureSupabaseReady(timeout = 5000) {
   const start = Date.now();
-  let attempts = 0;
   while (Date.now() - start < timeout) {
-    attempts++;
-    if (window.supabase && window.supabase.from) {
-      return true;
-    }
-    if (window.supabaseClientReady === false) {
-      return false;
-    }
+    if (window.supabaseClient) return true;
     await new Promise((r) => setTimeout(r, 100));
   }
-  return !!(window.supabase && window.supabase.from);
+  return false;
+}
+
+// --- Load existing profile data for editing ---
+async function loadProfileForEdit(profileId) {
+  try {
+    const ready = await ensureSupabaseReady(5000);
+    if (!ready) {
+      console.warn("Supabase not ready for loading profile data");
+      return null;
+    }
+    const { data, error } = await window.supabaseClient
+      .from("alumni_profiles")
+      .select("*")
+      .eq("id", profileId)
+      .maybeSingle();
+    if (error) {
+      console.error("Error loading profile for edit:", error);
+      return null;
+    }
+    return data;
+  } catch (err) {
+    console.error("Failed to load profile for edit:", err);
+    return null;
+  }
 }
 
 // Populate majors/specializations based on degree

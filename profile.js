@@ -201,7 +201,7 @@ function initializeEmptyProfile(email) {
 
   // Edit button just opens blank Information form (no edit param)
   const editButton = document.querySelector("a.btn-edit");
-  if (editButton) editButton.href = "/Information.html";
+  if (editButton) editButton.href = "Information.html";
 }
 
 // Display profile data in the UI
@@ -321,7 +321,7 @@ function displayProfile(data) {
   // Update edit button to include profile ID for editing
   const editButton = document.querySelector("a.btn-edit");
   if (editButton && data.id) {
-    const editUrl = `/Information.html?edit=${data.id}`;
+    const editUrl = `../Information.html?edit=${data.id}`;
     editButton.href = editUrl;
     console.log("✅ Edit button URL set to:", editUrl);
     console.log("Profile ID:", data.id);
