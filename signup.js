@@ -262,11 +262,20 @@ async function handleSignupSubmission(event) {
     student_number: document
       .getElementById("signupStudentNumber")
       .value.trim()
-      .toLowerCase(),
+      .toUpperCase(),
     birthday: document.getElementById("signupBirthday").value,
     password: document.getElementById("signupPassword").value,
     confirm_password: document.getElementById("signupConfirm").value,
   };
+
+  if (!validatePUPStudentNumberFormat(formData.student_number)) {
+    statusSpan.textContent =
+      "Student number must be in format: YYYY-XXXXX-CC or YYYY-XXXXX-CC-0 (e.g., 2021-00377-SM)";
+    statusSpan.style.color = "#e53e3e";
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Create Account";
+    return;
+  }
 
   // Validate all fields
   const validations = await Promise.all([
@@ -340,6 +349,11 @@ async function handleSignupSubmission(event) {
   }
 }
 
+function validatePUPStudentNumberFormat(studentNumber) {
+  const regex = /^(\d{4})-(\d+)-([A-Z]{2,})(?:-(\d))?$/;
+  return regex.test(studentNumber.trim().toUpperCase());
+}
+
 // Initialize form event listeners
 document.addEventListener("DOMContentLoaded", function () {
   const signupForm = document.getElementById("signupForm");
@@ -391,6 +405,23 @@ document.addEventListener("DOMContentLoaded", function () {
   if (confirmInput) {
     confirmInput.addEventListener("input", function (e) {
       validateField("signupConfirm", e.target.value, "confirm");
+    });
+  }
+
+  const signupBtn = document.getElementById("signupBtn");
+  const status = document.getElementById("signupStatus");
+  if (studentNumberInput) {
+    studentNumberInput.addEventListener("input", function () {
+      const value = studentNumberInput.value.trim().toUpperCase();
+      if (!validatePUPStudentNumberFormat(value)) {
+        status.textContent =
+          "Student number must be in format: YYYY-XXXXX-CC or YYYY-XXXXX-CC-0 (e.g., 2021-00377-SM)";
+        status.style.color = "#e53e3e";
+        signupBtn.disabled = true;
+      } else {
+        status.textContent = "";
+        signupBtn.disabled = false;
+      }
     });
   }
 
