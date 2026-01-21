@@ -27,7 +27,7 @@
   async function loginWithStudentNumber(student_number, birthday, password) {
     try {
       const supabase = window.supabaseClient;
-      const normalizedStudentNumber = student_number.trim().toLowerCase();
+      const normalizedStudentNumber = student_number.trim().toUpperCase();
       // Hash the password for comparison
       async function hashPassword(password) {
         const msgUint8 = new TextEncoder().encode(password);
