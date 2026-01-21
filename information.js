@@ -199,9 +199,14 @@ function populateBirthdayDropdownsAndAutofill() {
 // --- Populate form with existing data ---
 function populateFormWithData(data) {
   // Personal Info
-  if (data.full_name)
+  if (data.full_name) {
     document.getElementById("fullname").value = data.full_name;
-  if (data.email) document.getElementById("email").value = data.email;
+    document.getElementById("fullname").readOnly = true;
+  }
+  if (data.email) {
+    document.getElementById("email").value = data.email;
+    document.getElementById("email").readOnly = true;
+  }
   if (data.contact) document.getElementById("contact").value = data.contact;
   // Birthday
   if (data.birth_month)
@@ -210,7 +215,13 @@ function populateFormWithData(data) {
     document.getElementById("birth-day").value = String(data.birth_day);
   if (data.birth_year)
     document.getElementById("birth-year").value = String(data.birth_year);
-  if (data.birth_month && data.birth_day && data.birth_year) computeAge();
+  if (data.birth_month && data.birth_day && data.birth_year) {
+    computeAge();
+    // Make birthday fields readonly if all are filled
+    document.getElementById("birth-day").disabled = true;
+    document.getElementById("birth-month").disabled = true;
+    document.getElementById("birth-year").disabled = true;
+  }
   // Address (with dropdown population)
   if (data.province) {
     document.getElementById("province").value = data.province;
@@ -1039,155 +1050,3 @@ async function loadProfileForEdit(profileId) {
     return null;
   }
 }
-
-// Populate majors/specializations based on degree
-function populateMajorsForDegree(degree) {
-  const majorSelect = document.getElementById("major");
-  if (!majorSelect) return;
-  // Expanded mapping for more choices per degree
-  const majorsByDegree = {
-    BSA: [
-      "General Accountancy",
-      "Management Accounting",
-      "Internal Auditing",
-      "Other",
-    ],
-    BSCE: [
-      "Structural Engineering",
-      "Transportation Engineering",
-      "Geotechnical Engineering",
-      "Water Resources Engineering",
-      "Other",
-    ],
-    BSE: [
-      "English",
-      "Mathematics",
-      "Science",
-      "Filipino",
-      "Social Studies",
-      "Other",
-    ],
-    BSHM: [
-      "Hospitality Management",
-      "Tourism Management",
-      "Culinary Arts",
-      "Hotel Administration",
-      "Other",
-    ],
-    BSIT: [
-      "Information Technology",
-      "Web and Mobile Development",
-      "Network and Security",
-      "Data Science",
-      "Multimedia and Animation",
-      "Business Analytics",
-      "Other",
-    ],
-    "BSE(ENGLISH)": ["English", "Literature", "Linguistics", "Other"],
-    "BSE(MATH)": ["Mathematics", "Statistics", "Applied Mathematics", "Other"],
-    DOMT: [
-      "Legal Office Management",
-      "Medical Office Management",
-      "Corporate Office Management",
-      "Other",
-    ],
-    default: ["Other"],
-  };
-  const majors = majorsByDegree[degree] || majorsByDegree.default;
-  majorSelect.innerHTML = "";
-  majors.forEach((m) => {
-    const opt = document.createElement("option");
-    opt.value = m;
-    opt.text = m;
-    majorSelect.appendChild(opt);
-  });
-}
-
-// Populate jobs/positions based on career path
-function populateJobsForCareerPath(careerPath) {
-  const jobSelect = document.getElementById("currentJob");
-  if (!jobSelect) return;
-  // Example mapping, expand as needed
-  const jobsByPath = {
-    technology: [
-      "Software Developer",
-      "Web Developer",
-      "Mobile App Developer",
-      "IT Support Specialist",
-      "Network Administrator",
-      "UI/UX Designer",
-      "QA Engineer",
-      "Data Analyst",
-      "Cybersecurity Specialist",
-      "Other",
-    ],
-    business: [
-      "Business Analyst",
-      "Accountant",
-      "Marketing Specialist",
-      "Sales Executive",
-      "HR Officer",
-      "Entrepreneur",
-      "Financial Advisor",
-      "Other",
-    ],
-    education: [
-      "Teacher",
-      "Professor",
-      "School Administrator",
-      "Guidance Counselor",
-      "Librarian",
-      "Other",
-    ],
-    hospitality: [
-      "Hotel Manager",
-      "Chef",
-      "Event Coordinator",
-      "Tour Guide",
-      "Front Desk Officer",
-      "Other",
-    ],
-    engineering: [
-      "Civil Engineer",
-      "Mechanical Engineer",
-      "Electrical Engineer",
-      "Project Engineer",
-      "QA/QC Engineer",
-      "Other",
-    ],
-    legal: [
-      "Paralegal",
-      "Legal Assistant",
-      "Attorney",
-      "Legal Researcher",
-      "Other",
-    ],
-    other: ["Other"],
-    default: ["Other"],
-  };
-  const jobs = jobsByPath[careerPath] || jobsByPath.default;
-  jobSelect.innerHTML = "";
-  jobs.forEach((j) => {
-    const opt = document.createElement("option");
-    opt.value = j;
-    opt.text = j;
-    jobSelect.appendChild(opt);
-  });
-}
-
-// --- Wait for Supabase to be ready before calling autofillBirthdayAndAge ---
-window.addEventListener("supabaseReady", function () {
-  // Only autofill if the page is loaded
-  if (
-    document.readyState === "complete" ||
-    document.readyState === "interactive"
-  ) {
-    autofillBirthdayAndAge();
-  } else {
-    document.addEventListener("DOMContentLoaded", autofillBirthdayAndAge);
-  }
-});
-
-// Also call after DOMContentLoaded in case of manual input
-
-document.addEventListener("DOMContentLoaded", setBirthdayReadonlyIfFilled);

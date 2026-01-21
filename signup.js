@@ -59,7 +59,7 @@ async function validateField(fieldId, value, validationType) {
 
   switch (validationType) {
     case "student_number": {
-      const normalized = value.trim().toLowerCase();
+      const normalized = value.trim().toUpperCase();
       if (!normalized) {
         errorMessage = "Student number is required";
         isValid = false;
@@ -173,7 +173,7 @@ function ensureSupabaseReady(timeoutMs = 5000) {
 // Check if student number has already been used for signup
 async function checkStudentNumberExists(studentNumber) {
   try {
-    const normalized = studentNumber.trim().toLowerCase();
+    const normalized = studentNumber.trim().toUpperCase();
     console.log("[CHECK] Normalized student number:", normalized);
     const supabase = await ensureSupabaseReady();
     const { data, error } = await supabase
@@ -349,8 +349,11 @@ async function handleSignupSubmission(event) {
   }
 }
 
+// --- PUP-style student number format validation (allow any suffix after campus code) ---
 function validatePUPStudentNumberFormat(studentNumber) {
-  const regex = /^(\d{4})-(\d+)-([A-Z]{2,})(?:-(\d))?$/;
+  // Accepts: YYYY-XXXXX-CC or YYYY-XXXXX-CC-anything (year, sequence, campus, optional trailing part)
+  // Year: any 4 digits, Sequence: any number of digits, Campus: 2+ uppercase letters, Optional: -anything
+  const regex = /^(\d{4})-(\d+)-([A-Z]{2,})(?:-(.+))?$/;
   return regex.test(studentNumber.trim().toUpperCase());
 }
 
