@@ -1,0 +1,52 @@
+{
+  "Bulacan": {
+    "name": "Bulacan",
+    "municipalities": {
+      "Santa Maria": {
+        "name": "Santa Maria",
+        "barangays": [
+          "Bagbaguin",
+          "Balasing",
+          "Buenavista",
+          "Bulac",
+          "Camangyanan",
+          "Catmon",
+          "Caysio",
+          "Guyong",
+          "Mag-asawang Sapa",
+          "Manggahan",
+          "Parada",
+          "Poblacion",
+          "Pulong Buhangin",
+          "San Gabriel",
+          "San Jose Patag",
+          "San Vicente",
+          "Santa Cruz",
+          "Silangan",
+          "Tabing Bakod",
+          "Tumana"
+        ]
+      },
+      "Bocaue": {
+        "name": "Bocaue",
+        "barangays": [
+          "Bagumbayan",
+          "Bambang",
+          "Batia",
+          "Binang 1st",
+          "Binang 2nd",
+          "Bolacan",
+          "Bunlo",
+          "Caingin",
+          "Duhat",
+          "Lolomboy",
+          "Poblacion",
+          "Sulucan",
+          "Tambobong",
+          "Turo",
+          "Wakas"
+        ]
+      }
+    }
+  }
+}

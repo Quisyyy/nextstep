@@ -28,25 +28,42 @@
     try {
       const supabase = window.supabaseClient;
       const normalizedStudentNumber = student_number.trim().toLowerCase();
+      // Hash the password for comparison
+      async function hashPassword(password) {
+        const msgUint8 = new TextEncoder().encode(password);
+        const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+      }
+      const passwordHash = await hashPassword(password);
+      // Query signups for authentication
       const { data, error } = await supabase
         .from("signups")
         .select("id,student_number,birthday,password_hash")
         .eq("student_number", normalizedStudentNumber)
         .eq("birthday", birthday)
+        .eq("password_hash", passwordHash)
         .limit(1);
       if (error) {
-        console.error("Supabase login error:", error);
+        console.error("Custom login error:", error);
         return { success: false };
       }
       if (!data || data.length === 0) {
         return { success: false };
       }
       const user = data[0];
-      // In production, use hashed password check. Here, compare plain text for demo.
-      if (user.password_hash !== password) {
-        return { success: false };
-      }
-      return { success: true, user };
+      // After successful login, fetch profile from alumni_profiles
+      const { data: profileData, error: profileError } = await supabase
+        .from("alumni_profiles")
+        .select("*")
+        .eq("student_number", normalizedStudentNumber)
+        .limit(1);
+      // You can use profileData for further logic (e.g., display, edit)
+      return {
+        success: true,
+        user,
+        profile: profileData && profileData.length > 0 ? profileData[0] : null,
+      };
     } catch (err) {
       console.error("Login exception:", err);
       return { success: false };

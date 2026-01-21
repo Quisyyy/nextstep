@@ -246,6 +246,13 @@ async function flushSignupQueue() {
 
 // Main form submission handler
 async function handleSignupSubmission(event) {
+  // Hash password before saving
+  async function hashPassword(password) {
+    const msgUint8 = new TextEncoder().encode(password);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+  }
   event.preventDefault();
   const statusSpan = document.getElementById("signupStatus");
   const submitBtn = document.getElementById("signupBtn");
@@ -301,16 +308,20 @@ async function handleSignupSubmission(event) {
 
   try {
     const supabase = await ensureSupabaseReady();
-    // Insert into signups table
-    const { data, error } = await supabase.from("signups").insert([
-      {
-        student_number: formData.student_number,
-        birthday: formData.birthday,
-        password_hash: formData.password, // In production, hash on backend!
-      },
-    ]);
-    if (error) {
-      statusSpan.textContent = `Error: ${error.message}`;
+    // Hash the password before saving
+    const passwordHash = await hashPassword(formData.password);
+    // Insert into signups for authentication only
+    const { data: signupData, error: signupError } = await supabase
+      .from("signups")
+      .insert([
+        {
+          student_number: formData.student_number,
+          birthday: formData.birthday,
+          password_hash: passwordHash,
+        },
+      ]);
+    if (signupError) {
+      statusSpan.textContent = `Error: ${signupError.message}`;
       statusSpan.style.color = "#e53e3e";
       submitBtn.disabled = false;
       submitBtn.textContent = "Create Account";

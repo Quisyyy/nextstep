@@ -6,6 +6,11 @@
     <title>Information Sheet</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="informationsheet.css" />
+    <!-- intl-tel-input CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/css/intlTelInput.min.css"
+    />
   </head>
 
   <body>
@@ -46,6 +51,15 @@
       <div class="section-title">Personal Info:</div>
       <div class="row">
         <div class="col">
+          <label for="student_number">Student Number</label>
+          <input
+            id="student_number"
+            type="text"
+            readonly
+            style="background: #f3f3f3; color: #333; font-weight: bold"
+          />
+        </div>
+        <div class="col">
           <label for="fullname">Full Name (LN, FN MI)</label>
           <input
             id="fullname"
@@ -83,79 +97,67 @@
           <label for="age">Age</label>
           <input id="age" type="text" readonly placeholder="e.g. 21 yrs.old" />
         </div>
+      </div>
+
+      <!-- Address Section (Dropdowns) -->
+      <div class="section-title">Address</div>
+      <div class="row">
         <div class="col">
-          <label for="address">Address</label>
+          <label for="province">Province</label>
+          <select id="province"></select>
+        </div>
+        <div class="col">
+          <label for="city">City/Municipality</label>
+          <select id="city"></select>
+        </div>
+        <div class="col">
+          <label for="barangay">Barangay</label>
+          <select id="barangay"></select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label for="streetDetails">Street Details</label>
           <input
-            id="address"
+            id="streetDetails"
             type="text"
-            placeholder="Street, House Number, City"
+            placeholder="House No., Street, Subdivision, etc."
           />
         </div>
       </div>
       <!-- Academic background -->
-      <div class="section-title">Academic background</div>
+      <div class="section-title">Academic Background</div>
       <div class="row">
         <div class="col">
-          <label for="degree">Degree/Course</label>
+          <label for="degree">Program</label>
           <select id="degree">
-            <option value="">Select Degree/Course</option>
-            <option value="BSA">
-              Bachelor of Science in Accountancy (BSA)
-            </option>
-            <option value="BSCpE">
-              Bachelor of Science in Computer Engineering (BSCpE)
-            </option>
-            <option value="BSENTREP">
-              Bachelor of Science in Entrepreneurship (BSENTREP)
-            </option>
-            <option value="BSHM">
-              Bachelor of Science in Hospitality Management (BSHM)
-            </option>
-            <option value="BSIT">
-              Bachelor of Science in Information Technology (BSIT)
-            </option>
-            <option value="BSEDEN">
-              Bachelor of Secondary Education major in English (BSEDEN)
-            </option>
-            <option value="BSEDMT">
-              Bachelor of Secondary Education major in Mathematics (BSEDMT)
-            </option>
-            <option value="DOMTLOM">
-              Diploma in Office Management Technology- Legal Office Management
-              (DOMTLOM)
-            </option>
+            <option value="">Select Program</option>
+            <option value="BSA">BSA</option>
+            <option value="BSCE">BSCE</option>
+            <option value="BSE">BSE</option>
+            <option value="BSHM">BSHM</option>
+            <option value="BSIT">BSIT</option>
+            <option value="BSE(ENGLISH)">BSE(ENGLISH)</option>
+            <option value="BSE(MATH)">BSE(MATH)</option>
+            <option value="DOMT">DOMT</option>
           </select>
-        </div>
-        <div class="col">
-          <label for="studentNumber">College Student Number</label>
-          <input
-            id="studentNumber"
-            type="text"
-            placeholder="e.g. 2019-12345-SM-0"
-          />
-          <small
-            id="studentNumberError"
-            style="color: red; display: none; margin-top: 4px"
-          ></small>
         </div>
       </div>
 
       <div class="row">
         <div class="col">
           <label for="major">Major/Specialization</label>
+          <select id="major"></select>
           <input
-            id="major"
+            id="majorOther"
             type="text"
-            placeholder="Enter Major ex.(Cybersecurity)"
+            placeholder="Enter Major/Specialization"
+            style="display: none; margin-top: 5px"
           />
         </div>
         <div class="col">
           <label for="honors">Academic Honors (if any)</label>
-          <input
-            id="honors"
-            type="text"
-            placeholder="Technology / Cybersecurity"
-          />
+          <input id="honors" type="text" placeholder="e.g. Cum Laude" />
         </div>
       </div>
 
@@ -166,12 +168,30 @@
             <option>Select year</option>
           </select>
         </div>
-        <div class="col"></div>
       </div>
 
       <!-- Job Status & Career Information -->
       <div class="section-title">Job Status & Career Information</div>
       <div class="row">
+        <div class="col">
+          <label for="careerPath">Career Path</label>
+          <select id="careerPath">
+            <option value="">Select Career Path</option>
+            <option value="technology">Technology</option>
+            <option value="business">Business</option>
+            <option value="education">Education</option>
+            <option value="hospitality">Hospitality</option>
+            <option value="engineering">Engineering</option>
+            <option value="legal">Legal</option>
+            <option value="other">Other</option>
+          </select>
+          <input
+            id="careerPathOther"
+            type="text"
+            placeholder="Enter Career Path"
+            style="display: none; margin-top: 5px"
+          />
+        </div>
         <div class="col">
           <label for="jobStatus">Job Status</label>
           <select id="jobStatus">
@@ -179,76 +199,28 @@
             <option value="employed">Employed</option>
             <option value="self-employed">Self-Employed</option>
             <option value="unemployed">Unemployed</option>
-            <option value="pursuing-further-studies">
-              Pursuing further studies
-            </option>
             <option value="freelancer">Freelancer</option>
+            <option value="other">Other</option>
           </select>
+          <input
+            id="jobStatusOther"
+            type="text"
+            placeholder="Enter Job Status"
+            style="display: none; margin-top: 5px"
+          />
         </div>
+      </div>
+      <div class="row">
         <div class="col">
           <label for="currentJob">Current Job/Position</label>
+          <select id="currentJob"></select>
           <input
-            id="currentJob"
+            id="currentJobOther"
             type="text"
-            placeholder="e.g. Software Engineer, Manager"
+            placeholder="Enter Job/Position"
+            style="display: none; margin-top: 5px"
           />
         </div>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <label for="previousRoles">Previous Roles</label>
-          <input
-            id="previousRoles"
-            type="text"
-            placeholder="e.g. Junior Developer, Intern"
-          />
-        </div>
-        <div class="col">
-          <label for="careerPath">Career Path</label>
-          <input
-            id="careerPath"
-            type="text"
-            placeholder="e.g. Technology, Business, Education"
-          />
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <label for="industry">What industry are you in?</label>
-          <input
-            id="industry"
-            type="text"
-            placeholder="e.g. IT, Finance, Healthcare, Education"
-          />
-        </div>
-        <div class="col">
-          <label for="professionalCertificates"
-            >Professional Certificates</label
-          >
-          <input
-            id="professionalCertificates"
-            type="text"
-            placeholder="e.g. AWS Certified, PMP, CPA"
-          />
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <label for="openForMentorship">Are you open for mentorship?</label>
-          <select id="openForMentorship">
-            <option value="">Select Option</option>
-            <option value="yes">Yes, I'm open to mentoring others</option>
-            <option value="seeking">Yes, I'm seeking a mentor</option>
-            <option value="both">
-              Both - I can mentor and seek mentorship
-            </option>
-            <option value="no">No, not at this time</option>
-          </select>
-        </div>
-        <div class="col"></div>
       </div>
 
       <div class="form-actions">
@@ -295,6 +267,9 @@
     <script src="supabase-client.js" defer></script>
     <script src="logout-dialog.js" defer></script>
     <script src="auth-nav.js"></script>
+    <script src="ph-locations.js"></script>
+    <!-- intl-tel-input JS -->
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/intlTelInput.min.js"></script>
     <script src="information.js" defer></script>
     <script src="protect-pages.js"></script>
   </body>
