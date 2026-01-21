@@ -313,6 +313,10 @@ function displayProfile(data) {
   document.getElementById("jobStatus").textContent = data.job_status || "-";
   document.getElementById("currentJob").textContent = data.current_job || "-";
   document.getElementById("careerPath").textContent = data.career_path || "-";
+  // Related to Degree
+  const relatedText = data.is_related ? "Related" : "Not Related";
+  const relatedEl = document.getElementById("isRelatedStatus");
+  if (relatedEl) relatedEl.textContent = relatedText;
 
   // Update edit button to include profile ID for editing
   const editButton = document.querySelector("a.btn-edit");

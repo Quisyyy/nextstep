@@ -715,6 +715,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         (document.getElementById("currentJob").value === "Other"
           ? document.getElementById("currentJobOther").value
           : document.getElementById("currentJob").value) || null,
+      // Related to Degree
+      is_related:
+        document.getElementById("isRelated")?.value === "true" ? true : false,
     };
 
     // Only set created_at for new records
