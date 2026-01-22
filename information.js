@@ -238,6 +238,62 @@ async function checkAndLoadAlumniProfile() {
   } else {
     existingProfileId = null;
     originalProfileData = null;
+    // Autofill from signups for new users
+    try {
+      let signupData = null;
+      if (studentNumber) {
+        const res = await window.supabaseClient
+          .from("signups")
+          .select("full_name,email,birthday")
+          .eq("student_number", studentNumber)
+          .maybeSingle();
+        signupData = res.data;
+      }
+      if (!signupData && currentEmail) {
+        const res = await window.supabaseClient
+          .from("signups")
+          .select("full_name,email,birthday")
+          .eq("email", currentEmail)
+          .maybeSingle();
+        signupData = res.data;
+      }
+      if (signupData) {
+        if (signupData.full_name && document.getElementById("fullname")) {
+          document.getElementById("fullname").value = signupData.full_name;
+          document.getElementById("fullname").readOnly = true;
+        }
+        if (signupData.email && document.getElementById("email")) {
+          document.getElementById("email").value = signupData.email;
+          document.getElementById("email").readOnly = true;
+        }
+        if (signupData.birthday) {
+          const birthDate = new Date(signupData.birthday);
+          const dayEl = document.getElementById("birth-day");
+          const yearEl = document.getElementById("birth-year");
+          const monthEl = document.getElementById("birth-month");
+          if (dayEl && yearEl && monthEl) {
+            dayEl.value = birthDate.getDate();
+            yearEl.value = birthDate.getFullYear();
+            monthEl.value = birthDate.getMonth() + 1;
+            dayEl.disabled = true;
+            yearEl.disabled = true;
+            monthEl.disabled = true;
+          }
+          // Compute age
+          const today = new Date();
+          let age = today.getFullYear() - birthDate.getFullYear();
+          const m = today.getMonth() - birthDate.getMonth();
+          if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+          }
+          if (document.getElementById("age")) {
+            document.getElementById("age").value = age + " yrs";
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Autofill from signups failed", err);
+    }
   }
 }
 

@@ -52,12 +52,23 @@ function updatePasswordStrength(password) {
 
 // Enhanced field validation with better UX
 async function validateField(fieldId, value, validationType) {
+  // Email validation regex (simple)
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const errorElement = document.getElementById(fieldId + "Error");
   const inputElement = document.getElementById(fieldId);
   let isValid = true;
   let errorMessage = "";
 
   switch (validationType) {
+    case "email":
+      if (!value) {
+        errorMessage = "Email is required";
+        isValid = false;
+      } else if (!emailRegex.test(value)) {
+        errorMessage = "Please enter a valid email address";
+        isValid = false;
+      }
+      break;
     case "student_number": {
       const normalized = value.trim().toUpperCase();
       if (!normalized) {
@@ -259,6 +270,8 @@ async function handleSignupSubmission(event) {
 
   // Get form data
   const formData = {
+    full_name: document.getElementById("signupName").value.trim(),
+    email: document.getElementById("signupEmail").value.trim(),
     student_number: document
       .getElementById("signupStudentNumber")
       .value.trim()
@@ -327,6 +340,8 @@ async function handleSignupSubmission(event) {
           student_number: formData.student_number,
           birthday: formData.birthday,
           password_hash: passwordHash,
+          full_name: formData.full_name,
+          email: formData.email,
         },
       ]);
     if (signupError) {
@@ -359,6 +374,14 @@ function validatePUPStudentNumberFormat(studentNumber) {
 
 // Initialize form event listeners
 document.addEventListener("DOMContentLoaded", function () {
+  const emailInput = document.getElementById("signupEmail");
+
+  // Real-time email validation
+  if (emailInput) {
+    emailInput.addEventListener("input", function (e) {
+      validateField("signupEmail", e.target.value, "email");
+    });
+  }
   const signupForm = document.getElementById("signupForm");
   const passwordInput = document.getElementById("signupPassword");
   const confirmInput = document.getElementById("signupConfirm");

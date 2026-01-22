@@ -293,6 +293,37 @@
 
       <form id="signupForm" novalidate>
         <div class="form-group">
+          <label for="signupName">Full Name</label>
+          <div class="input-wrapper">
+            <input
+              id="signupName"
+              name="full_name"
+              type="text"
+              placeholder="Enter your full name"
+              required
+              aria-required="true"
+              autocomplete="name"
+            />
+          </div>
+          <div id="signupNameError" class="field-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="signupEmail">Email Address</label>
+          <div class="input-wrapper">
+            <input
+              id="signupEmail"
+              name="email"
+              type="email"
+              placeholder="Enter your email address"
+              required
+              aria-required="true"
+              autocomplete="email"
+            />
+          </div>
+          <div id="signupEmailError" class="field-error"></div>
+        </div>
+        <div class="form-group">
           <label for="signupStudentNumber">Student Number</label>
           <div class="input-wrapper">
             <input
