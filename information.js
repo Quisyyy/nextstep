@@ -114,6 +114,7 @@ function populateMajorsForDegree(degree) {
     BSA: "BSA",
     BSCE: "BSCE",
     BSCpE: "BSCpE",
+    BSEntrep: "BSENTREP",
     BSENTREP: "BSENTREP",
     BSHM: "BSHM",
     BSIT: "BSIT",
