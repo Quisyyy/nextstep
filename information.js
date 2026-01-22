@@ -719,6 +719,27 @@ if (gradSelect) {
 }
 
 // Degree label map
+// Map display values to internal codes (reuse from populateMajorsForDegree)
+function mapDegreeToCode(degree) {
+  const degreeMap = {
+    "BSE(ENGLISH)": "BSEDEN",
+    "BSE(MATHEMATICS)": "BSEDMT",
+    "BSE(MATH)": "BSEDMT",
+    BSE: "BSEDGEN",
+    DOMT: "DOMTLOM",
+    BSEDEN: "BSEDEN",
+    BSEDMT: "BSEDMT",
+    BSEDGEN: "BSEDGEN",
+    BSA: "BSA",
+    BSCE: "BSCE",
+    BSCpE: "BSCpE",
+    BSENTREP: "BSENTREP",
+    BSHM: "BSHM",
+    BSIT: "BSIT",
+    DOMTLOM: "DOMTLOM",
+  };
+  return degreeMap[degree] || degree;
+}
 const degreeLabels = {
   BSA: "Bachelor of Science in Accountancy (BSA)",
   BSCpE: "Bachelor of Science in Computer Engineering (BSCpE)",
@@ -993,7 +1014,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       municipality: document.getElementById("city").value || null,
       barangay: document.getElementById("barangay").value || null,
       street: document.getElementById("streetDetails").value || null,
-      degree: document.getElementById("degree").value || null,
+      degree: document.getElementById("degree").value || "n/a",
       // Use student number from signup/session
       student_number: localStorage.getItem("currentStudentNumber") || null,
       major:
@@ -1064,7 +1085,12 @@ document.addEventListener("DOMContentLoaded", async function () {
       console.log("✅ Supabase is ready");
 
       if (ready) {
-        payload.degree_label = labelForDegree(payload.degree);
+        // Always set degree_label, default to 'n/a' if degree is empty
+        const mappedDegree = mapDegreeToCode(payload.degree);
+        payload.degree_label = labelForDegree(mappedDegree);
+        if (!payload.degree_label || payload.degree === "n/a") {
+          payload.degree_label = "n/a";
+        }
 
         let data, error;
 
