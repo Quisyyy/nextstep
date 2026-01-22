@@ -1,3 +1,19 @@
+// Helper: Log to alumni_audit_trail
+async function logAlumniAuditTrail({ alumni_id, action, details }) {
+  try {
+    if (!window.supabaseClient) return;
+    await window.supabaseClient.from("alumni_audit_trail").insert([
+      {
+        alumni_id: alumni_id || null,
+        action,
+        details:
+          typeof details === "string" ? details : JSON.stringify(details),
+      },
+    ]);
+  } catch (err) {
+    console.warn("Audit log failed", err);
+  }
+}
 // Alumni Login Gate: single clean implementation
 (function () {
   async function ensureSupabaseReady(timeout = 10000) {
@@ -117,6 +133,19 @@
       localStorage.setItem("currentStudentNumber", student_number);
       localStorage.setItem("currentUserId", result.user.id);
       localStorage.setItem("isLoggedIn", "true");
+
+      // Audit log for login
+      let alumni_id = null;
+      if (result.profile && result.profile.id) alumni_id = result.profile.id;
+      await logAlumniAuditTrail({
+        alumni_id,
+        action: "login",
+        details: {
+          summary: "User logged in",
+          student_number,
+        },
+      });
+
       setTimeout(() => {
         window.location.href = "homepage.html";
       }, 600);

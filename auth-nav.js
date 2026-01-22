@@ -43,7 +43,7 @@
       logoutBtn.addEventListener("click", function () {
         console.log("🚪 Logout button clicked");
         if (typeof showLogoutConfirm === "function") {
-          showLogoutConfirm("login.html");
+          showLogoutConfirm("/login.html");
         } else {
           // Fallback if logout-dialog.js not loaded
           if (confirm("Do you want to Logout?")) {
@@ -51,7 +51,7 @@
             localStorage.removeItem("isLoggedIn");
             localStorage.removeItem("currentStudentNumber");
             localStorage.removeItem("currentUserId");
-            window.location.href = "login.html";
+            window.location.href = "/login.html";
           }
         }
       });
