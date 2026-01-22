@@ -394,6 +394,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.getElementById("professionalCertificates").value || null,
       open_for_mentorship:
         document.getElementById("openForMentorship").checked || false,
+      // Related to Degree (boolean)
+      is_related:
+        document.getElementById("isRelated")?.value === "true" ? true : false,
     };
 
     // Only set created_at for new records

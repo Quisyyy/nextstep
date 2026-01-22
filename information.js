@@ -1,3 +1,198 @@
+// --- Stub for missing function to prevent ReferenceError ---
+function populateJobsForCareerPath(careerPath) {
+  const jobSelect = document.getElementById("currentJob");
+  if (!jobSelect) return;
+  // Define jobs for each career path
+  const jobsByCareerPath = {
+    IT: [
+      "Software Developer",
+      "Web Developer",
+      "Network Administrator",
+      "IT Support Specialist",
+      "Database Administrator",
+      "Cybersecurity Analyst",
+      "UI/UX Designer",
+      "QA Tester",
+    ],
+    Technology: [
+      "Software Engineer",
+      "Systems Analyst",
+      "IT Project Manager",
+      "Cloud Engineer",
+      "DevOps Engineer",
+      "Mobile App Developer",
+      "Technical Support Specialist",
+    ],
+    Engineering: [
+      "Civil Engineer",
+      "Mechanical Engineer",
+      "Electrical Engineer",
+      "Electronics Engineer",
+      "Project Engineer",
+      "Structural Engineer",
+      "Field Engineer",
+    ],
+    Education: [
+      "Teacher",
+      "Instructor",
+      "Professor",
+      "Guidance Counselor",
+      "School Administrator",
+      "Curriculum Developer",
+    ],
+    Business: [
+      "Accountant",
+      "Business Analyst",
+      "Marketing Specialist",
+      "Sales Executive",
+      "HR Officer",
+      "Operations Manager",
+      "Entrepreneur",
+    ],
+    Hospitality: [
+      "Hotel Manager",
+      "Front Desk Officer",
+      "Event Coordinator",
+      "Tourism Officer",
+      "Food and Beverage Manager",
+    ],
+    Law: ["Legal Assistant", "Paralegal", "Office Clerk", "Records Officer"],
+    Legal: [
+      "Legal Researcher",
+      "Legal Secretary",
+      "Legal Officer",
+      "Paralegal",
+      "Records Officer",
+      "Compliance Officer",
+    ],
+    // Add more mappings as needed
+  };
+  // Normalize key: remove spaces, lowercase
+  const key = careerPath
+    ? careerPath.trim().replace(/\s+/g, "").toLowerCase()
+    : "";
+  // Build a lookup map with lowercased keys
+  const jobsMap = {};
+  Object.keys(jobsByCareerPath).forEach((k) => {
+    jobsMap[k.replace(/\s+/g, "").toLowerCase()] = jobsByCareerPath[k];
+  });
+  const jobs = jobsMap[key] || [];
+  jobSelect.innerHTML = "";
+  // Add default option
+  const defaultOpt = document.createElement("option");
+  defaultOpt.value = "";
+  defaultOpt.text = "Select Job Position";
+  jobSelect.appendChild(defaultOpt);
+  // Add jobs
+  jobs.forEach((j) => {
+    const opt = document.createElement("option");
+    opt.value = j;
+    opt.text = j;
+    jobSelect.appendChild(opt);
+  });
+  // Always add 'Other' option
+  const otherOpt = document.createElement("option");
+  otherOpt.value = "Other";
+  otherOpt.text = "Other";
+  jobSelect.appendChild(otherOpt);
+}
+// --- Stub for missing function to prevent ReferenceError ---
+function populateMajorsForDegree(degree) {
+  const majorSelect = document.getElementById("major");
+  if (!majorSelect) return;
+
+  // Map display values to internal codes
+  const degreeMap = {
+    "BSE(ENGLISH)": "BSEDEN",
+    "BSE(MATHEMATICS)": "BSEDMT",
+    "BSE(MATH)": "BSEDMT",
+    BSE: "BSEDGEN",
+    DOMT: "DOMTLOM",
+    BSEDEN: "BSEDEN",
+    BSEDMT: "BSEDMT",
+    BSEDGEN: "BSEDGEN",
+    BSA: "BSA",
+    BSCE: "BSCE",
+    BSCpE: "BSCpE",
+    BSENTREP: "BSENTREP",
+    BSHM: "BSHM",
+    BSIT: "BSIT",
+    DOMTLOM: "DOMTLOM",
+  };
+  const lookupKey = degreeMap[degree] || degree;
+  // Define majors for each degree
+  const majorsByDegree = {
+    BSA: ["Accountancy"],
+    BSCE: [
+      "Computer Engineering",
+      "Embedded Systems",
+      "Robotics",
+      "Communications",
+      "Microelectronics",
+      "Software Systems",
+    ],
+    BSENTREP: [
+      "Business Management",
+      "Marketing",
+      "Finance",
+      "Operations",
+      "Entrepreneurship",
+    ],
+    BSHM: [
+      "Hospitality Management",
+      "Culinary Arts",
+      "Hotel Management",
+      "Tourism Management",
+      "Events Management",
+    ],
+    BSIT: [
+      "Information Technology",
+      "Network Administration",
+      "Web Development",
+      "Software Engineering",
+      "Database Systems",
+      "Cybersecurity",
+      "Multimedia",
+    ],
+    BSEDEN: ["English", "Literature", "Linguistics", "Communication Arts"],
+    BSEDMT: [
+      "Mathematics",
+      "Statistics",
+      "Applied Mathematics",
+      "Mathematics Education",
+    ],
+    BSEDGEN: [
+      "General Education",
+      "Early Childhood Education",
+      "Special Education",
+      "Educational Management",
+    ],
+    DOMTLOM: [
+      "Legal Office Management",
+      "Office Administration",
+      "Records Management",
+    ],
+  };
+  const majors = majorsByDegree[lookupKey] || [];
+  majorSelect.innerHTML = "";
+  // Add default option
+  const defaultOpt = document.createElement("option");
+  defaultOpt.value = "";
+  defaultOpt.text = "Select Major/Specialization";
+  majorSelect.appendChild(defaultOpt);
+  // Add majors
+  majors.forEach((m) => {
+    const opt = document.createElement("option");
+    opt.value = m;
+    opt.text = m;
+    majorSelect.appendChild(opt);
+  });
+  // Always add 'Other' option
+  const otherOpt = document.createElement("option");
+  otherOpt.value = "Other";
+  otherOpt.text = "Other";
+  majorSelect.appendChild(otherOpt);
+}
 // --- Upsert logic for alumni_profiles ---
 let existingProfileId = null;
 let originalProfileData = null;
@@ -217,6 +412,15 @@ function populateBirthdayDropdownsAndAutofill() {
 
 // --- Populate form with existing data ---
 function populateFormWithData(data) {
+  // Set is_related dropdown (Related to Degree)
+  if (
+    typeof data.is_related !== "undefined" &&
+    document.getElementById("isRelated")
+  ) {
+    document.getElementById("isRelated").value = data.is_related
+      ? "true"
+      : "false";
+  }
   // Personal Info
   if (data.full_name) {
     document.getElementById("fullname").value = data.full_name;
@@ -815,6 +1019,8 @@ document.addEventListener("DOMContentLoaded", async function () {
             // Always include degree_label if degree changed
             if (updatePayload.degree && payload.degree_label)
               updatePayload.degree_label = payload.degree_label;
+            // Always include is_related (even if unchanged) to ensure DB receives the value
+            updatePayload.is_related = payload.is_related;
           }
           console.log("📝 Updating profile ID:", editProfileId);
           console.log(
