@@ -257,12 +257,8 @@ async function flushSignupQueue() {
 
 // Main form submission handler
 async function handleSignupSubmission(event) {
-  // Hash password before saving
-  async function hashPassword(password) {
-    const msgUint8 = new TextEncoder().encode(password);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+  function normalizeName(name) {
+    return name.toLowerCase().replace(/\s+/g, " ").trim();
   }
   event.preventDefault();
   const statusSpan = document.getElementById("signupStatus");
@@ -280,6 +276,54 @@ async function handleSignupSubmission(event) {
     password: document.getElementById("signupPassword").value,
     confirm_password: document.getElementById("signupConfirm").value,
   };
+
+  // Check alumni_profiles for existing student number and validate fields
+  const supabase = await ensureSupabaseReady();
+  const alumniRes = await supabase
+    .from("alumni_profiles")
+    .select("full_name,email,birth_year,birth_month,birth_day")
+    .eq("student_number", formData.student_number)
+    .single();
+
+  if (alumniRes.data) {
+    const alumni = alumniRes.data;
+    // Compare birthday parts
+    let birthMatch = true;
+    if (alumni.birth_year && alumni.birth_month && alumni.birth_day) {
+      // Split formData.birthday (YYYY-MM-DD)
+      const [yy, mm, dd] = formData.birthday.split("-");
+      if (
+        alumni.birth_year !== yy ||
+        alumni.birth_month !== mm ||
+        alumni.birth_day !== dd
+      ) {
+        birthMatch = false;
+      }
+    }
+    if (
+      (alumni.full_name &&
+        normalizeName(alumni.full_name) !==
+          normalizeName(formData.full_name)) ||
+      (alumni.email && alumni.email !== formData.email) ||
+      !birthMatch
+    ) {
+      statusSpan.textContent =
+        "Your details do not match our records. Please check your name, email, and birthday.";
+      statusSpan.style.color = "#e53e3e";
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Create Account";
+      return;
+    }
+    // If alumni_profiles field is empty, allow any value (no update here)
+  }
+
+  // Hash password before saving
+  async function hashPassword(password) {
+    const msgUint8 = new TextEncoder().encode(password);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+  }
 
   if (!validatePUPStudentNumberFormat(formData.student_number)) {
     statusSpan.textContent =
