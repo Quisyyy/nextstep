@@ -372,6 +372,13 @@ document.addEventListener("DOMContentLoaded", async function () {
         `🔄 Form submission started (${isEditMode ? "UPDATE" : "CREATE"} mode)`,
       );
 
+    // Debug: Log current degree dropdown value
+    const currentDegreeValue = document.getElementById("degree").value;
+    console.log(
+      "[DEBUG] Degree dropdown value before save:",
+      currentDegreeValue,
+    );
+
     const payload = {
       full_name: document.getElementById("fullname").value || null,
       email: document.getElementById("email").value || null,
@@ -380,7 +387,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       birth_year: document.getElementById("birth-year").value || null,
       contact: document.getElementById("contact").value || null,
       address: document.getElementById("address").value || null,
-      degree: document.getElementById("degree").value || null,
+      degree: currentDegreeValue || null,
       student_number: document.getElementById("studentNumber").value || null,
       major: document.getElementById("major").value || null,
       honors: document.getElementById("honors").value || null,
@@ -398,6 +405,9 @@ document.addEventListener("DOMContentLoaded", async function () {
       is_related:
         document.getElementById("isRelated")?.value === "true" ? true : false,
     };
+
+    // Debug: Log payload before save
+    console.log("[DEBUG] Payload before save:", payload);
 
     // Only set created_at for new records
     if (!isEditMode) {
@@ -465,21 +475,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (data && data[0] && data[0].id) {
           localStorage.setItem("lastProfileId", data[0].id);
           localStorage.setItem("lastProfileEmail", data[0].email);
-          // Redirect to profile page after successful save/update with success flags
-          setTimeout(() => {
-            const isUpdate = isEditMode;
-            const redirectUrl =
-              "profile.html?id=" +
-              data[0].id +
-              (isUpdate ? "&updated=true" : "&created=true");
-            window.location.href = redirectUrl;
-          }, 1000);
+          // Redirect removed for debugging; user stays on the same page
         } else if (isEditMode && effectiveEditId) {
-          // For updates, use the existing ID
-          setTimeout(() => {
-            window.location.href =
-              "profile.html?id=" + effectiveEditId + "&updated=true";
-          }, 1000);
+          // For updates, redirect removed for debugging; user stays on the same page
         }
 
         // notify admin/list pages in the same origin to refresh

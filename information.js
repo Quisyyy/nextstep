@@ -174,6 +174,7 @@ function populateMajorsForDegree(degree) {
     ],
   };
   const majors = majorsByDegree[lookupKey] || [];
+
   majorSelect.innerHTML = "";
   // Add default option
   const defaultOpt = document.createElement("option");
@@ -1020,6 +1021,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.getElementById("isRelated")?.value === "true" ? true : false,
     };
 
+    // DEBUG: Log the degree and major values being sent
+    console.log("[DEBUG] Degree value:", payload.degree);
+    console.log("[DEBUG] Major value:", payload.major);
+    console.log("[DEBUG] Full payload:", payload);
+
     // Only set created_at for new records
     if (!isEditMode) {
       payload.created_at = new Date().toISOString();
@@ -1061,6 +1067,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         payload.degree_label = labelForDegree(payload.degree);
 
         let data, error;
+
+        // DEBUG: Log before DB call
+        console.log("[DEBUG] About to save to alumni_profiles table:", payload);
 
         if (isEditMode) {
           // UPDATE only changed fields
