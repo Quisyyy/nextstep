@@ -132,6 +132,14 @@ function populateMajorsForDegree(degree) {
       "Microelectronics",
       "Software Systems",
     ],
+    BSCpE: [
+      "Computer Engineering",
+      "Embedded Systems",
+      "Robotics",
+      "Communications",
+      "Microelectronics",
+      "Software Systems",
+    ],
     BSENTREP: [
       "Business Management",
       "Marketing",
@@ -733,7 +741,8 @@ function mapDegreeToCode(degree) {
     BSEDGEN: "BSEDGEN",
     BSA: "BSA",
     BSCE: "BSCE",
-    BSCpE: "BSCpE",
+    BSCpE: "BSCE", // Map BSCpE to BSCE for consistency
+    BSEntrep: "BSENTREP",
     BSENTREP: "BSENTREP",
     BSHM: "BSHM",
     BSIT: "BSIT",
@@ -743,7 +752,8 @@ function mapDegreeToCode(degree) {
 }
 const degreeLabels = {
   BSA: "Bachelor of Science in Accountancy (BSA)",
-  BSCpE: "Bachelor of Science in Computer Engineering (BSCpE)",
+  BSCE: "Bachelor of Science in Computer Engineering (BSCE)",
+  BSCpE: "Bachelor of Science in Computer Engineering (BSCE)", // Keep for backward compatibility
   BSENTREP: "Bachelor of Science in Entrepreneurship (BSENTREP)",
   BSHM: "Bachelor of Science in Hospitality Management (BSHM)",
   BSIT: "Bachelor of Science in Information Technology (BSIT)",
@@ -1092,6 +1102,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (!payload.degree_label || payload.degree === "n/a") {
           payload.degree_label = "n/a";
         }
+
+        // DEBUG: Log degree mapping process
+        console.log("[DEBUG] Degree mapping process:");
+        console.log("  - Original degree:", payload.degree);
+        console.log("  - Mapped degree:", mappedDegree);
+        console.log("  - Final degree_label:", payload.degree_label);
 
         let data, error;
 
